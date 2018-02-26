@@ -1,6 +1,3 @@
-//TODO: pull out schema to seperate file
-//TODO: isPoll should be able to take a poll or a message that contains a poll.
-//TODO: copy Mix's pattern with constructors and inject.
 var Validate = require('is-my-json-valid')
 var { schema, validate } = require('./schema/poll.js')
 var { schema : chooseOneSchema, create: chooseOneCreate, isValidTypeString: isValidChooseOneTypeString } = require('./schema/pollTypes/chooseOne.js')
