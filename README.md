@@ -4,6 +4,9 @@
 
 background details relevant to understanding what this module does
 
+## ssb git repo
+`ssb://%uUPqduvyGE2mUBIWdVwMg4jYcKUjxN+TF2wG4a7StM8=.sha256`
+
 ## Usage
 
 ```js
