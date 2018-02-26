@@ -4,7 +4,7 @@
   "description": "Create and vote on polls on ssb",
   "main": "index.js",
   "scripts": {
-    "test": "node test/*.js"
+    "test": "tape test/**/*.js | tap-spec && tape test/**/**/*.js | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/pietgeursen/ssb-loomio-schema#readme",
   "devDependencies": {
+    "tap-spec": "^4.1.1",
     "tape": "^4.8.0"
   },
   "dependencies": {

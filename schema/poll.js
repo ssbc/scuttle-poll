@@ -1,10 +1,10 @@
 const Validate = require('is-my-json-valid')
 const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
 
-const dotType = require('./poll_types/dot.js')
-const proposalType = require('./poll_types/proposal.js')
-const scoreType = require('./poll_types/score.js')
-const { schema: chooseOneType } = require('./poll_types/chooseOne.js')
+const dotType = require('./pollTypes/dot.js')
+const proposalType = require('./pollTypes/proposal.js')
+const scoreType = require('./pollTypes/score.js')
+const { schema: chooseOneType } = require('./pollTypes/chooseOne.js')
 
 
 const schema = {

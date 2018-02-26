@@ -1,5 +1,5 @@
 var test = require('tape')
-var {poll, isPoll, response} = require('../');
+var {poll, isPoll, response} = require('../..');
 
 test('test', function(t) {
   t.true(true)
