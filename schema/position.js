@@ -1,15 +1,23 @@
 const Validate = require('is-my-json-valid')
 const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
-
-const dotType = require('./pollTypes/dot.js')
-const proposalType = require('./pollTypes/proposal.js')
-const scoreType = require('./pollTypes/score.js')
-const { schema: chooseOneType } = require('./pollTypes/chooseOne.js')
+//what would a message look like? 
+//
+//well for a chooseOne:
+//{
+//  pollId: msgId,
+//  choice: 'apple', //what if this is a key? Or a key and index number? I wonder if this is an argument for making each choice a separate message?
+//  reason: "I don't like doctorbs",
+//}
+//When do the various validations happen?
+//- when we're counting votes. We need to check it's a valid position for the type of poll
+//- when we try and create the vote?
+//
+//Can a schema always capture the types we need. Max stance score is 1 for a chooseOne. 
 
 const schema = {
   $schema: 'http://json-schema.org/schema#',
   type: 'object',
-  required: ['type', 'pollType'],
+  required: ['root', 'branch'],
   properties: {
     version: {
       type: 'string',
@@ -17,17 +25,7 @@ const schema = {
     },
     type: {
       type: 'string',
-      pattern: '^poll$'
-    },
-    pollType: {
-      oneOf: [
-        { $ref: '#/definitions/pollTypes/dot'},
-        { $ref: '#/definitions/pollTypes/proposal'},
-        { $ref: '#/definitions/pollTypes/score'},
-        { $ref: '#/definitions/pollTypes/chooseOne'},
-        //{ $ref: '#/definitions/pollTypes/rsvp'},
-        //{ $ref: '#/definitions/pollTypes/meeting'},
-      ] 
+      pattern: '^position$'
     },
     text: { type: 'string' },
     mentions: {
@@ -66,6 +64,25 @@ const schema = {
       type: 'string',
       pattern: msgIdRegex
     },
+    rootId: {
+      type: 'string',
+      pattern: msgIdRegex
+    },
+    branchId: {
+      oneOf: [
+        {
+          type: 'string',
+          pattern: msgIdRegex
+        },
+        {
+          type: 'array',
+          items: {
+            type: 'string',
+            pattern: msgIdRegex
+          }
+        }
+      ]
+    },
     feedId: {
       type: 'string',
       pattern: feedIdRegex
@@ -73,13 +90,6 @@ const schema = {
     blobId: {
       type: 'string',
       pattern: blobIdRegex
-    },
-    pollTypes: {
-      type: 'object',
-      dot: dotType,
-      proposal: proposalType,
-      score: scoreType,
-      chooseOne: chooseOneType
     },
     mentions: {
       message: {
