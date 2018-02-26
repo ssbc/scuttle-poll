@@ -1,11 +1,29 @@
 const Validate = require('is-my-json-valid')
+
+const typeString = 'chooseOne'
+const typeStringPattern =`^${typeString}$` 
+const typeStringRegex = new RegExp(typeStringPattern) 
+
+function isValidTypeString(string) {
+  return typeStringRegex.test(string) 
+}
+
+function create({choices}) {
+  return {
+    choices,
+    type: typeString,
+    maxStanceScore: 1,
+    maxChoiceScore: 1,
+  } 
+}
+
 var schema = {
   type: 'object',
   required: ['type', 'maxStanceScore', 'choices'],
   properties: {
     type: {
       type: 'string',
-      pattern: '^chooseOne'
+      pattern: typeStringPattern
     },
     maxStanceScore: {
       type: 'integer',
@@ -14,7 +32,7 @@ var schema = {
     },
     maxChoiceScore: {
       type: 'integer',
-      minimum: 0,
+      minimum: 1,
       minimum: 1,
     },
     choices: {
@@ -26,6 +44,8 @@ var schema = {
 const validate = Validate(schema, { verbose: true })
 
 module.exports = {
+  isValidTypeString,
   schema,
-  validate
+  validate,
+  create
 }

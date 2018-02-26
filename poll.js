@@ -3,6 +3,7 @@
 //TODO: copy Mix's pattern with constructors and inject.
 var Validate = require('is-my-json-valid')
 var { schema, validate } = require('./schema/poll.js')
+var { schema : chooseOneSchema, create: chooseOneCreate, isValidTypeString: isValidChooseOneTypeString } = require('./schema/pollTypes/chooseOne.js')
 var { link } = require('ssb-msg-schemas/util')
 
 function create({text, mentions, recps, channel, pollType, root, branch}){
@@ -37,6 +38,10 @@ function create({text, mentions, recps, channel, pollType, root, branch}){
     if (typeof channel !== 'string')
       throw new Error('channel must be a string')
     content.channel = channel
+  }
+
+  if(isValidChooseOneTypeString(pollType.type)){
+    content.pollType = chooseOneCreate({choices: pollType.choices})
   }
 
   return content
