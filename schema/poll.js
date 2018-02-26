@@ -4,7 +4,7 @@ const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
 const dotType = require('./poll_types/dot.js')
 const proposalType = require('./poll_types/proposal.js')
 const scoreType = require('./poll_types/score.js')
-const chooseOneType = require('./poll_types/chooseOne.js')
+const { schema: chooseOneType } = require('./poll_types/chooseOne.js')
 
 
 const schema = {

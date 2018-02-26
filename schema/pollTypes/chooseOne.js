@@ -1,3 +1,4 @@
+const Validate = require('is-my-json-valid')
 var schema = {
   type: 'object',
   required: ['type', 'maxStanceScore', 'choices'],
@@ -22,4 +23,9 @@ var schema = {
   }
 }
 
-module.exports = schema;
+const validate = Validate(schema, { verbose: true })
+
+module.exports = {
+  schema,
+  validate
+}
