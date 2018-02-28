@@ -1,7 +1,7 @@
 var Validate = require('is-my-json-valid')
 const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
 
-function create(){
+function create () {
 
 }
 

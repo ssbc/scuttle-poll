@@ -7,9 +7,9 @@ var schema = {
       pattern: '^proposal$'
     },
     proposal: {
-      type: 'string',
+      type: 'string'
     }
   }
 }
 
-module.exports = schema;
+module.exports = schema

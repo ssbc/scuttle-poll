@@ -1,18 +1,18 @@
 const Validate = require('is-my-json-valid')
 const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
-//what would a message look like? 
+// what would a message look like?
 //
-//well for a chooseOne:
-//{
+// well for a chooseOne:
+// {
 //  pollId: msgId,
 //  choice: 'apple', //what if this is a key? Or a key and index number? I wonder if this is an argument for making each choice a separate message?
 //  reason: "I don't like doctorbs",
-//}
-//When do the various validations happen?
-//- when we're counting votes. We need to check it's a valid position for the type of poll
-//- when we try and create the vote?
+// }
+// When do the various validations happen?
+// - when we're counting votes. We need to check it's a valid position for the type of poll
+// - when we try and create the vote?
 //
-//Can a schema always capture the types we need. Max stance score is 1 for a chooseOne. 
+// Can a schema always capture the types we need. Max stance score is 1 for a chooseOne.
 
 const schema = {
   $schema: 'http://json-schema.org/schema#',
@@ -51,7 +51,7 @@ const schema = {
           items: {
             oneOf: [
               { $ref: '#/definitions/feedId' },
-              { $ref: '#/definitions/mentions/feed' },
+              { $ref: '#/definitions/mentions/feed' }
             ]
           }
         }
@@ -116,7 +116,7 @@ const schema = {
         }
       }
     }
-  },
+  }
 }
 
 const validate = Validate(schema, { verbose: true })

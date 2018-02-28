@@ -19,5 +19,3 @@ function getMsgContent (obj) {
 
   return obj
 }
-
-

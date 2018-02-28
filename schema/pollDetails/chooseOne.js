@@ -1,17 +1,17 @@
 const Validate = require('is-my-json-valid')
 
 const typeString = 'chooseOne'
-const typeStringPattern =`^${typeString}$` 
-const typeStringRegex = new RegExp(typeStringPattern) 
+const typeStringPattern = `^${typeString}$`
+const typeStringRegex = new RegExp(typeStringPattern)
 
-function isValidTypeString(string) {
-  return typeStringRegex.test(string) 
+function isValidTypeString (string) {
+  return typeStringRegex.test(string)
 }
 
-function create({choices}) {
+function create ({choices}) {
   return {
     choices,
-    type: typeString,
+    type: typeString
   }
 }
 
@@ -24,7 +24,7 @@ var schema = {
       pattern: typeStringPattern
     },
     choices: {
-      type: 'array',
+      type: 'array'
     }
   }
 }

@@ -11,9 +11,9 @@ const schema = {
       minimum: 2
     },
     choices: {
-      type: 'array',
+      type: 'array'
     }
   }
 }
 
-module.exports = schema;
+module.exports = schema

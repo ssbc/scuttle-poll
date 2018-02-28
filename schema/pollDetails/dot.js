@@ -11,10 +11,9 @@ var schema = {
       minimum: 1
     },
     choices: {
-      type: 'array',
+      type: 'array'
     }
   }
 }
 
-
-module.exports = schema;
+module.exports = schema

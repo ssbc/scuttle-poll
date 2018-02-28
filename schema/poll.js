@@ -24,10 +24,10 @@ const schema = {
         { $ref: '#/definitions/pollDetails/dot'},
         { $ref: '#/definitions/pollDetails/proposal'},
         { $ref: '#/definitions/pollDetails/score'},
-        { $ref: '#/definitions/pollDetails/chooseOne'},
-        //{ $ref: '#/definitions/pollDetails/rsvp'},
-        //{ $ref: '#/definitions/pollDetails/meeting'},
-      ] 
+        { $ref: '#/definitions/pollDetails/chooseOne'}
+        // { $ref: '#/definitions/pollDetails/rsvp'},
+        // { $ref: '#/definitions/pollDetails/meeting'},
+      ]
     },
     text: { type: 'string' },
     mentions: {
@@ -53,7 +53,7 @@ const schema = {
           items: {
             oneOf: [
               { $ref: '#/definitions/feedId' },
-              { $ref: '#/definitions/mentions/feed' },
+              { $ref: '#/definitions/mentions/feed' }
             ]
           }
         }
@@ -106,7 +106,7 @@ const schema = {
         }
       }
     }
-  },
+  }
 }
 
 const validate = Validate(schema, { verbose: true })
