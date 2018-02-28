@@ -1,14 +1,14 @@
 {
-  "name": "ssb-loomio",
+  "name": "scuttle-poll",
   "version": "1.0.0",
   "description": "Create and vote on polls on ssb",
   "main": "index.js",
   "scripts": {
-    "test": "tape test/**/*.js | tap-spec && tape test/**/**/*.js | tap-spec"
+    "test": "tape 'test/**/*.js' | tap-spec"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pietgeursen/ssb-loomio-schema.git"
+    "url": "git+https://github.com/ssbc/scuttle-poll.git"
   },
   "keywords": [
     "loomio",
@@ -20,9 +20,9 @@
   "author": "pietgeursen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pietgeursen/ssb-loomio-schema/issues"
+    "url": "https://github.com/ssbc/scuttle-poll/issues"
   },
-  "homepage": "https://github.com/pietgeursen/ssb-loomio-schema#readme",
+  "homepage": "https://github.com/ssbc/scuttle-poll#readme",
   "devDependencies": {
     "tap-spec": "^4.1.1",
     "tape": "^4.8.0"
