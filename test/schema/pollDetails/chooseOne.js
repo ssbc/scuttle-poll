@@ -1,5 +1,5 @@
 var test = require('tape')
-var {create, validate} = require('../../../schema/pollTypes/chooseOne');
+var {create, validate} = require('../../../schema/pollDetails/chooseOne');
 
 test('create and validate an invalid chooseOne poll', function(t) {
   var myPoll = create({choices:"how"})

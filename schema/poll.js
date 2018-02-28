@@ -1,15 +1,15 @@
 const Validate = require('is-my-json-valid')
 const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
 
-const dotType = require('./pollTypes/dot.js')
-const proposalType = require('./pollTypes/proposal.js')
-const scoreType = require('./pollTypes/score.js')
-const { schema: chooseOneType } = require('./pollTypes/chooseOne.js')
+const dotType = require('./pollDetails/dot.js')
+const proposalType = require('./pollDetails/proposal.js')
+const scoreType = require('./pollDetails/score.js')
+const { schema: chooseOneType } = require('./pollDetails/chooseOne.js')
 
 const schema = {
   $schema: 'http://json-schema.org/schema#',
   type: 'object',
-  required: ['type', 'pollType'],
+  required: ['type', 'pollDetails'],
   properties: {
     version: {
       type: 'string',
@@ -19,14 +19,14 @@ const schema = {
       type: 'string',
       pattern: '^poll$'
     },
-    pollType: {
+    pollDetails: {
       oneOf: [
-        { $ref: '#/definitions/pollTypes/dot'},
-        { $ref: '#/definitions/pollTypes/proposal'},
-        { $ref: '#/definitions/pollTypes/score'},
-        { $ref: '#/definitions/pollTypes/chooseOne'},
-        //{ $ref: '#/definitions/pollTypes/rsvp'},
-        //{ $ref: '#/definitions/pollTypes/meeting'},
+        { $ref: '#/definitions/pollDetails/dot'},
+        { $ref: '#/definitions/pollDetails/proposal'},
+        { $ref: '#/definitions/pollDetails/score'},
+        { $ref: '#/definitions/pollDetails/chooseOne'},
+        //{ $ref: '#/definitions/pollDetails/rsvp'},
+        //{ $ref: '#/definitions/pollDetails/meeting'},
       ] 
     },
     text: { type: 'string' },
@@ -74,7 +74,7 @@ const schema = {
       type: 'string',
       pattern: blobIdRegex
     },
-    pollTypes: {
+    pollDetails: {
       type: 'object',
       dot: dotType,
       proposal: proposalType,

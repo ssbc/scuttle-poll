@@ -1,10 +1,12 @@
 var Validate = require('is-my-json-valid')
 var { schema, validate } = require('./schema/poll.js')
-var { schema : chooseOneSchema, create: chooseOneCreate, isValidTypeString: isValidChooseOneTypeString } = require('./schema/pollTypes/chooseOne.js')
+var { schema : chooseOneSchema, create: chooseOneCreate, isValidTypeString: isValidChooseOneTypeString } = require('./schema/pollDetails/chooseOne.js')
 var { link } = require('ssb-msg-schemas/util')
 
-function create({text, mentions, recps, channel, pollType, root, branch}){
-  var content = { type: 'poll', text, pollType}
+
+
+function create({text, mentions, recps, channel, pollOptions, root, branch}){
+  var content = { type: 'poll', text, pollOptions}
   if (root) {
     root = link(root)
     if (!root)
@@ -37,8 +39,8 @@ function create({text, mentions, recps, channel, pollType, root, branch}){
     content.channel = channel
   }
 
-  if(isValidChooseOneTypeString(pollType.type)){
-    content.pollType = chooseOneCreate({choices: pollType.choices})
+  if(isValidChooseOneTypeString(pollOptions.type)){
+    content.pollOptions = chooseOneCreate({choices: pollOptions.choices})
   }
 
   return content

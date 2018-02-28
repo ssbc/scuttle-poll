@@ -12,7 +12,7 @@ function create({choices}) {
   return {
     choices,
     type: typeString,
-  } 
+  }
 }
 
 var schema = {

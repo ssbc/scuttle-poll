@@ -6,13 +6,9 @@ var schema = {
       type: 'string',
       pattern: '^dot$'
     },
-    maxStanceScore: {
+    numDots: {
       type: 'integer',
-      minimum: 0
-    },
-    maxChoiceScore: {
-      type: 'integer',
-      minimum: 0
+      minimum: 1
     },
     choices: {
       type: 'array',
