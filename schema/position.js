@@ -5,7 +5,7 @@ const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
 // well for a chooseOne:
 // {
 //  pollId: msgId,
-//  choice: 'apple', //what if this is a key? Or a key and index number? I wonder if this is an argument for making each choice a separate message?
+//  choice: 0, // index of the choice
 //  reason: "I don't like doctorbs",
 // }
 // When do the various validations happen?
