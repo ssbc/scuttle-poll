@@ -1,10 +1,9 @@
-const Validate = require('is-my-json-valid')
 const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
 
-const dotType = require('./pollDetails/dot.js')
-const proposalType = require('./pollDetails/proposal.js')
-const scoreType = require('./pollDetails/score.js')
-const { schema: chooseOneType } = require('./pollDetails/chooseOne.js')
+const dotDetails = require('./details/dot.js')
+const proposalDetails = require('./details/proposal.js')
+const scoreDetails = require('./details/score.js')
+const chooseOneDetails = require('./details/chooseOne.js')
 
 const schema = {
   $schema: 'http://json-schema.org/schema#',
@@ -21,10 +20,10 @@ const schema = {
     },
     pollDetails: {
       oneOf: [
-        { $ref: '#/definitions/pollDetails/dot'},
-        { $ref: '#/definitions/pollDetails/proposal'},
-        { $ref: '#/definitions/pollDetails/score'},
-        { $ref: '#/definitions/pollDetails/chooseOne'}
+        // { $ref: '#/definitions/pollDetails/dot'},
+        // { $ref: '#/definitions/pollDetails/proposal'},
+        // { $ref: '#/definitions/pollDetails/score'},
+        { $ref: '#/definitions/pollDetails/chooseOne' }
         // { $ref: '#/definitions/pollDetails/rsvp'},
         // { $ref: '#/definitions/pollDetails/meeting'},
       ]
@@ -61,7 +60,6 @@ const schema = {
     }
   },
   definitions: {
-
     messageId: {
       type: 'string',
       pattern: msgIdRegex
@@ -76,10 +74,10 @@ const schema = {
     },
     pollDetails: {
       type: 'object',
-      dot: dotType,
-      proposal: proposalType,
-      score: scoreType,
-      chooseOne: chooseOneType
+      dot: dotDetails,
+      proposal: proposalDetails,
+      score: scoreDetails,
+      chooseOne: chooseOneDetails
     },
     mentions: {
       message: {
@@ -109,9 +107,4 @@ const schema = {
   }
 }
 
-const validate = Validate(schema, { verbose: true })
-
-module.exports = {
-  schema,
-  validate
-}
+module.exports = schema

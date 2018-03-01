@@ -1,40 +1,78 @@
-# ssb-loomio
+# scuttle-poll
 
 > Create and vote on polls on ssb
 
 background details relevant to understanding what this module does
 
-## ssb git repo
-`ssb://%uUPqduvyGE2mUBIWdVwMg4jYcKUjxN+TF2wG4a7StM8=.sha256`
+repos:
+- git-ssb: `ssb://%uUPqduvyGE2mUBIWdVwMg4jYcKUjxN+TF2wG4a7StM8=.sha256`
+- github: `git@github.com:ssbc/scuttle-poll.git`
 
 ## Usage
 
 ```js
-var ssbLoomio = require('ssb-loomio')
+var isPoll = require('scuttle-poll/isPoll')
 
-console.log('hello warld')
+isPoll(msg)
+// => Boolean
 ```
 
-outputs
+```js
+var scuttle = require('scuttle-poll')(server)
 
+var opts = {
+  title: 'where shall we have our community meeting?'
+  choices: [
+    'in person',
+    'talky.io',
+    'mumble',
+  ]
+}
+scuttle.poll.async.publishChooseOne(opts, (err, poll) => {
+  if (err) throw err
+
+  var myPosition 
+  scuttle.position.async.publishPosition(myPosition, cb)
+})
 ```
-hello warld
-```
+where `server` is a scuttlebot instance (or a remote connection provided by `ssb-client`)
+
+Note - `server` can also be an observeable which resolves to a scuttlebot instance
+(this is more experimental, it will turn your sync functions into obs functions)
+
 
 ## API
 
 ```js
-var ssbLoomio = require('ssb-loomio')
+var Scuttle = require('scuttle-poll')
+var scuttle = Scuttle(server)
 ```
 
-See [api_formatting.md](api_formatting.md) for tips.
+### Methods
+
+#### `scuttle.poll.sync.isPoll(msg) => Boolean`
+
+takes a msg or the contents of a msg
+
+#### `scuttle.poll.async.publishChooseOne(opts, cb)`
+
+where `opts` is an object of form:
+```js
+{
+  title: String,    // (required)
+  choices: Array,   // (required)
+  text: String,
+}
+```
+and `cb` is a callback of signature `(err, newPollMsg)`
+
 
 ## Install
 
 With [npm](https://npmjs.org/) installed, run
 
 ```
-$ npm install ssb-loomio
+$ npm install scuttle-poll
 ```
 
 ## Schemas
@@ -84,7 +122,9 @@ Position
 
 ## Acknowledgments
 
-ssb-loomio was inspired by loomio! Massive thanks to Rob Guthrie and James Kiesel for spending time giving us a brain dump of their data model.
+`scuttle-poll` was inspired by [Loomio](https://www.github.com/loomio/loomio)! Massive thanks to Rob Guthrie and James Kiesel for spending time giving us a brain dump of their data model.
+
+
 
 ## See Also
 
