@@ -1,20 +1,11 @@
-const {
-  create: poll,
-  schema: pollSchema,
-  validate: isPoll
-} = require('./poll')
+const inject = require('./lib/inject')
 
-const {
-  create: stance,
-  schema: stanceSchema,
-  validate: isStance
-} = require('./stance')
+const methods = {
+  sync: {
+    isPoll: require('./sync/isPoll')
+  }
+}
 
-module.exports = {
-  poll,
-  pollSchema,
-  isPoll,
-  stance,
-  stanceSchema,
-  isStance
+module.exports = function (server) {
+  return inject(server, methods)
 }
