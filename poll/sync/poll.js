@@ -1,7 +1,7 @@
 // var { link } = require('ssb-msg-schemas/util')
 
-function Poll ({ pollDetails, title, text, channel, recps, mentions }) {
-  var content = { type: 'poll', pollDetails, title, text }
+function Poll ({ pollDetails, title, body, channel, recps, mentions }) {
+  var content = { type: 'poll', pollDetails, title, body }
 
   // if (root) {
   //   root = link(root)

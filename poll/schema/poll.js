@@ -8,7 +8,7 @@ const chooseOneDetails = require('./details/chooseOne.js')
 const schema = {
   $schema: 'http://json-schema.org/schema#',
   type: 'object',
-  required: ['type', 'pollDetails'],
+  required: ['type', 'pollDetails', 'title'],
   properties: {
     version: {
       type: 'string',
@@ -28,7 +28,8 @@ const schema = {
         // { $ref: '#/definitions/pollDetails/meeting'},
       ]
     },
-    text: { type: 'string' },
+    title: { type: 'string' },
+    body: { type: 'string' },
     mentions: {
       oneOf: [
         { type: 'null' },

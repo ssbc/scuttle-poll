@@ -59,9 +59,9 @@ takes a msg or the contents of a msg
 where `opts` is an object of form:
 ```js
 {
-  title: String,    // (required)
-  choices: Array,   // (required)
-  text: String,
+  title: String,    // required
+  choices: Array,   // required
+  body: String,
 }
 ```
 and `cb` is a callback of signature `(err, newPollMsg)`
@@ -82,8 +82,9 @@ Poll message content
 {
   type: 'poll', // required
   pollType: oneOf:[dot, proposal, score] , // required
-  text: String, // required
-  mentions, //optional
+  title: String, // required
+  body: String,
+  mentions,
 }
 
 ```

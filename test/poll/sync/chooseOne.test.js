@@ -4,7 +4,7 @@ const isPoll = require('../../../isPoll')
 
 test('ChooseOne', function (t) {
   var validPoll = ChooseOne({choices: [1, 2, 'three'], title: 'how many food'})
-  t.ok(isPoll(validPoll), 'simple')
+  t.true(isPoll(validPoll), 'simple')
 
   var fullPollMsg = {
     key: '%somekey',
@@ -12,13 +12,13 @@ test('ChooseOne', function (t) {
       content: validPoll
     }
   }
-  t.ok(isPoll(fullPollMsg), 'simple (full msg)')
+  t.true(isPoll(fullPollMsg), 'simple (full msg)')
   // NOTE - we might want an isChooseOnePoll in future
-  // t.ok(isChooseOnePoll(fullPollMsg), 'simple (full msg)')
+  // t.true(isChooseOnePoll(fullPollMsg), 'simple (full msg)')
 
   var missingTitle = ChooseOne({choices: 'how'})
-  t.notOk(isPoll(missingTitle), 'only one choice => invalid')
-  t.ok(isPoll.errors, 'missing title => has errors')
+  t.false(isPoll(missingTitle), 'only one choice => invalid')
+  t.true(isPoll.errors, 'missing title => has errors')
 
   t.end()
 })
