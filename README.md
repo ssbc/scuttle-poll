@@ -77,20 +77,27 @@ $ npm install scuttle-poll
 
 ## Schemas
 
+### Poll
+
 Poll message content
-```
+```js
 {
-  type: 'poll', // required
-  pollType: oneOf:[dot, proposal, score] , // required
-  title: String, // required
-  body: String,
+  type:       'poll',          // required
+  pollDetails: PollDetails     // required
+  title:       String,         // required
+  closesAt:    Integer         // required
+  body:        String,
+  channel,
   mentions,
+  recps
 }
 
 ```
 
-Dot vote pollType
-```
+Where `PollDetails` is an object which has the details needed for each type of poll: Dot, Proposal, Score
+
+Dot vote PollDetails
+```js
 {
   type: 'dot', // required
   maxStanceScore: 'Integer >= 0', // required
@@ -99,16 +106,16 @@ Dot vote pollType
 }
 ```
 
-Proposal pollType
-```
+Proposal PollDetails
+```js
 {
   type: 'proposal', // required
   proposal: String, // required
 }
 ```
 
-Score pollType
-```
+Score PollDetails
+```js
 {
   type: 'score', // required
   maxChoiceScore: 'Integer >= 0', //required
@@ -116,7 +123,8 @@ Score pollType
 }
 ```
 
-Position
+### Position
+
 ```
 
 ```

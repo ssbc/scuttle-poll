@@ -8,7 +8,7 @@ const chooseOneDetails = require('./details/chooseOne.js')
 const schema = {
   $schema: 'http://json-schema.org/schema#',
   type: 'object',
-  required: ['type', 'pollDetails', 'title'],
+  required: ['type', 'pollDetails', 'title', 'closesAt'],
   properties: {
     version: {
       type: 'string',
@@ -29,6 +29,7 @@ const schema = {
       ]
     },
     title: { type: 'string' },
+    closesAt: { type: 'integer' },
     body: { type: 'string' },
     mentions: {
       oneOf: [

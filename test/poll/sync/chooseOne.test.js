@@ -3,7 +3,11 @@ const ChooseOne = require('../../../poll/sync/chooseOne')
 const isPoll = require('../../../isPoll')
 
 test('ChooseOne', function (t) {
-  var validPoll = ChooseOne({choices: [1, 2, 'three'], title: 'how many food'})
+  var validPoll = ChooseOne({
+    choices: [1, 2, 'three'],
+    title: 'how many food',
+    closesAt: Date.now()
+  })
   t.true(isPoll(validPoll), 'simple')
 
   var fullPollMsg = {
@@ -15,10 +19,6 @@ test('ChooseOne', function (t) {
   t.true(isPoll(fullPollMsg), 'simple (full msg)')
   // NOTE - we might want an isChooseOnePoll in future
   // t.true(isChooseOnePoll(fullPollMsg), 'simple (full msg)')
-
-  var missingTitle = ChooseOne({choices: 'how'})
-  t.false(isPoll(missingTitle), 'only one choice => invalid')
-  t.true(isPoll.errors, 'missing title => has errors')
 
   t.end()
 })
