@@ -25,7 +25,8 @@ var schema = {
       pattern: typeStringPattern
     },
     choice: {
-      type: 'string'
+      type: 'integer',
+      minimum: 0
     }
   }
 }
