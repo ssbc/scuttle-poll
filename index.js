@@ -1,20 +1,23 @@
-const {
-  create: poll,
-  schema: pollSchema,
-  validate: isPoll
-} = require('./poll')
+const verboseMethods = {
+  poll: {
+    async: {
+      // publishPoll: require('./async/publishPoll')
+    },
+    sync: {
+      isPoll: require('./sync/isPoll')
+      // Poll: // this is not exported - doesn't follow the inject pattern atm
+    }
+  },
+  position: {
 
-const {
-  create: stance,
-  schema: stanceSchema,
-  validate: isStance
-} = require('./stance')
+  }
+}
 
-module.exports = {
-  poll,
-  pollSchema,
-  isPoll,
-  stance,
-  stanceSchema,
-  isStance
+const easyMethods = {
+  isPoll: require('./sync/isPoll')
+}
+
+module.exports = function (server, opts) {
+  const methods = Object.assign({}, verboseMethods, easyMethods)
+  return require('./lib/inject')(server, methods)
 }
