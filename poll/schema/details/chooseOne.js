@@ -1,4 +1,4 @@
-const { chooseOneType } = require('../../types')
+const { chooseOneType } = require('../../../types')
 const typeStringPattern = `^${chooseOneType}$`
 
 var schema = {

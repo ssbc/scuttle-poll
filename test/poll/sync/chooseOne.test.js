@@ -2,7 +2,7 @@ const test = require('tape')
 const ChooseOne = require('../../../poll/sync/chooseOne')
 const isPoll = require('../../../isPoll')
 
-test('ChooseOne', function (t) {
+test('Position - ChooseOne', function (t) {
   var validPoll = ChooseOne({
     choices: [1, 2, 'three'],
     title: 'how many food',

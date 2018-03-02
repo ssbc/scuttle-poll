@@ -1,23 +1,11 @@
 const Validate = require('is-my-json-valid')
 const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
-// what would a message look like?
-//
-// well for a chooseOne:
-// {
-//  pollId: msgId,
-//  choice: 0, // index of the choice
-//  reason: "I don't like doctorbs",
-// }
-// When do the various validations happen?
-// - when we're counting votes. We need to check it's a valid position for the type of poll
-// - when we try and create the vote?
-//
-// Can a schema always capture the types we need. Max stance score is 1 for a chooseOne.
+const chooseOneDetails = require('./details/chooseOne')
 
 const schema = {
   $schema: 'http://json-schema.org/schema#',
   type: 'object',
-  required: ['root', 'branch'],
+  required: ['root', 'branch', 'positionDetails'],
   properties: {
     version: {
       type: 'string',
@@ -28,6 +16,17 @@ const schema = {
       pattern: '^position$'
     },
     text: { type: 'string' },
+    reason: { type: 'string' },
+    positionDetails: {
+      oneOf: [
+        // { $ref: '#/definitions/pollDetails/dot'},
+        // { $ref: '#/definitions/pollDetails/proposal'},
+        // { $ref: '#/definitions/pollDetails/score'},
+        { $ref: '#/definitions/positionDetails/chooseOne' }
+        // { $ref: '#/definitions/pollDetails/rsvp'},
+        // { $ref: '#/definitions/pollDetails/meeting'},
+      ]
+    },
     mentions: {
       oneOf: [
         { type: 'null' },
@@ -60,6 +59,10 @@ const schema = {
   },
   definitions: {
 
+    postionDetails: {
+      type: 'object',
+      chooseOne: chooseOneDetails
+    },
     messageId: {
       type: 'string',
       pattern: msgIdRegex
@@ -96,14 +99,14 @@ const schema = {
         type: 'object',
         required: ['link'],
         properties: {
-          link: { $ref: '#/definitions/messageId'}
+          link: { $ref: '#/definitions/messageId' }
         }
       },
       feed: {
         type: 'object',
         required: ['link', 'name'],
         properties: {
-          link: { $ref: '#/definitions/feedId'},
+          link: { $ref: '#/definitions/feedId' },
           name: { type: 'string' }
         }
       },
@@ -111,7 +114,7 @@ const schema = {
         type: 'object',
         required: ['link', 'name'],
         properties: {
-          link: { $ref: '#/definitions/blobId'},
+          link: { $ref: '#/definitions/blobId' },
           name: { type: 'string' }
         }
       }

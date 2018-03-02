@@ -1,9 +1,9 @@
-const Poll = require('./poll')
+const Postion = require('./position')
 const { chooseOneType } = require('../../types')
 
 function ChooseOne ({ choices, title, closesAt, body, channel, recps, mentions }) {
-  return Poll({
-    pollDetails: {
+  return Postion({
+    positionDetails: {
       choices,
       type: chooseOneType
     },
