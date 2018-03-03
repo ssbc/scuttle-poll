@@ -3,8 +3,7 @@ const ChooseOne = require('../../../position/sync/chooseOne')
 const isPosition = require('../../../isPosition')
 
 // this is for testing the attributes that are required for all polls
-
-test('Position - common requirements', function (t) {
+test('position - common requirements', function (t) {
   var missingTitle = ChooseOne({
     choices: [1, 2, 'three'],
     closesAt: Date.now()

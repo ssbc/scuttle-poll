@@ -19,12 +19,7 @@ const schema = {
     reason: { type: 'string' },
     positionDetails: {
       oneOf: [
-        // { $ref: '#/definitions/pollDetails/dot'},
-        // { $ref: '#/definitions/pollDetails/proposal'},
-        // { $ref: '#/definitions/pollDetails/score'},
         { $ref: '#/definitions/positionDetails/chooseOne' }
-        // { $ref: '#/definitions/pollDetails/rsvp'},
-        // { $ref: '#/definitions/pollDetails/meeting'},
       ]
     },
     mentions: {
