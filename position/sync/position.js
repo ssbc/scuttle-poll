@@ -1,6 +1,8 @@
 // var { link } = require('ssb-msg-schemas/util')
+var getMsgContend = require('../../lib/getMsgContent')
 
-function Position ({ poll, positionDetails, reason, channel, recps, mentions }) {
+function Position (msg) {
+  var { poll, positionDetails, reason, channel, recps, mentions } = getMsgContend(msg)
   var content = { type: 'position', poll, positionDetails, reason }
 
   // if (root) {
