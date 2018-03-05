@@ -27,23 +27,6 @@ test('Position - ChooseOneResults', function (t) {
   t.end()
 })
 
-test('Position - ChooseOneResults includes invalid poll in error on results', function (t) {
-  const badPositon = {reckon: 'nah'} // invalid poll
-  const positions = [
-    { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId } },
-    { value: { content: Position(ChooseOne({choice: 0, poll})), author: mixId } },
-    { value: { content: Position(ChooseOne({choice: 0, poll})), author: mikeyId } },
-    { value: { content: Position(ChooseOne({choice: 1, poll})), author: timmyId } },
-    { value: { content: Position(ChooseOne({choice: 1, poll})), author: tommyId } },
-    { value: { content: Position(ChooseOne({choice: 2, poll})), author: sallyId } },
-    badPositon
-  ]
-
-  const actual = chooseOneResults({positions})
-  t.deepEqual(actual.errors, {invalidPositions: [badPositon]})
-  t.end()
-})
-
 test.skip('Position - A position stated after the closing time of the poll is not counted', function(t) {
 
   t.end()
