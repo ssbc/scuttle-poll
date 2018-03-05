@@ -1,9 +1,9 @@
-const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
-
 const dotDetails = require('./details/dot.js')
 const proposalDetails = require('./details/proposal.js')
 const scoreDetails = require('./details/score.js')
 const chooseOneDetails = require('./details/chooseOne.js')
+
+const ssbSchemaDefintions = require('../../lib/ssbSchemaDefintions')
 
 const schema = {
   $schema: 'http://json-schema.org/schema#',
@@ -61,52 +61,18 @@ const schema = {
       ]
     }
   },
-  definitions: {
-    messageId: {
-      type: 'string',
-      pattern: msgIdRegex
-    },
-    feedId: {
-      type: 'string',
-      pattern: feedIdRegex
-    },
-    blobId: {
-      type: 'string',
-      pattern: blobIdRegex
-    },
-    pollDetails: {
-      type: 'object',
-      dot: dotDetails,
-      proposal: proposalDetails,
-      score: scoreDetails,
-      chooseOne: chooseOneDetails
-    },
-    mentions: {
-      message: {
+  definitions: Object.assign({},
+    ssbSchemaDefintions,
+    {
+      pollDetails: {
         type: 'object',
-        required: ['link'],
-        properties: {
-          link: { $ref: '#/definitions/messageId' }
-        }
-      },
-      feed: {
-        type: 'object',
-        required: ['link', 'name'],
-        properties: {
-          link: { $ref: '#/definitions/feedId' },
-          name: { type: 'string' }
-        }
-      },
-      blob: {
-        type: 'object',
-        required: ['link', 'name'],
-        properties: {
-          link: { $ref: '#/definitions/blobId' },
-          name: { type: 'string' }
-        }
+        dot: dotDetails,
+        proposal: proposalDetails,
+        score: scoreDetails,
+        chooseOne: chooseOneDetails
       }
     }
-  }
+  )
 }
 
 module.exports = schema

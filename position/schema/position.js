@@ -1,6 +1,7 @@
 const Validate = require('is-my-json-valid')
-const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
 const chooseOneDetails = require('./details/chooseOne')
+
+const ssbSchemaDefintions = require('../../lib/ssbSchemaDefintions')
 
 const schema = {
   $schema: 'http://json-schema.org/schema#',
@@ -19,7 +20,12 @@ const schema = {
     reason: { type: 'string' },
     positionDetails: {
       oneOf: [
+        // { $ref: '#/definitions/positionDetails/dot'},
+        // { $ref: '#/definitions/positionDetails/proposal'},
+        // { $ref: '#/definitions/positionDetails/score'},
         { $ref: '#/definitions/positionDetails/chooseOne' }
+        // { $ref: '#/definitions/positionDetails/rsvp'},
+        // { $ref: '#/definitions/positionDetails/meeting'},
       ]
     },
     mentions: {
@@ -52,69 +58,15 @@ const schema = {
       ]
     }
   },
-  definitions: {
-
-    positionDetails: {
-      type: 'object',
-      chooseOne: chooseOneDetails
-    },
-    messageId: {
-      type: 'string',
-      pattern: msgIdRegex
-    },
-    rootId: {
-      type: 'string',
-      pattern: msgIdRegex
-    },
-    branchId: {
-      oneOf: [
-        {
-          type: 'string',
-          pattern: msgIdRegex
-        },
-        {
-          type: 'array',
-          items: {
-            type: 'string',
-            pattern: msgIdRegex
-          }
-        }
-      ]
-    },
-    feedId: {
-      type: 'string',
-      pattern: feedIdRegex
-    },
-    blobId: {
-      type: 'string',
-      pattern: blobIdRegex
-    },
-    mentions: {
-      message: {
+  definitions: Object.assign({},
+    ssbSchemaDefintions,
+    {
+      positionDetails: {
         type: 'object',
-        required: ['link'],
-        properties: {
-          link: { $ref: '#/definitions/messageId' }
-        }
-      },
-      feed: {
-        type: 'object',
-        required: ['link', 'name'],
-        properties: {
-          link: { $ref: '#/definitions/feedId' },
-          name: { type: 'string' }
-        }
-      },
-      blob: {
-        type: 'object',
-        required: ['link', 'name'],
-        properties: {
-          link: { $ref: '#/definitions/blobId' },
-          name: { type: 'string' }
-        }
+        chooseOne: chooseOneDetails
       }
     }
-  }
+  )
 }
 
 module.exports = schema
