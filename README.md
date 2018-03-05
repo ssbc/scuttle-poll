@@ -41,6 +41,12 @@ Note - `server` can also be an observeable which resolves to a scuttlebot instan
 (this is more experimental, it will turn your sync functions into obs functions)
 
 
+## Dependencies
+
+Requires a scuttlebutt server with the following plugins installed:
+  - `ssb-backlinks`
+
+
 ## API
 
 ```js
@@ -54,7 +60,29 @@ var scuttle = Scuttle(server)
 
 takes a msg or the contents of a msg
 
+
+### `scuttle.poll.async.get(key, cb)`
+
+fetches all the messages associated with a particular poll, and returns a delightfully accessible object:
+
+```js
+{
+  key:       MessageKey,
+  value:     MessageValue,
+  author:    FeedId,
+  title:     String,
+  body:      (String|Null),
+
+  positions: Array,
+  results:   Object,
+  errors:    Object
+}
+```
+
+
 #### `scuttle.poll.async.publishChooseOne(opts, cb)`
+
+// NOT BUILT YET
 
 where `opts` is an object of form:
 ```js
