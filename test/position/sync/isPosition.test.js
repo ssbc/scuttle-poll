@@ -7,7 +7,6 @@ test('position - common requirements', function (t) {
     type: 'position',
     positionDetails: undefined
   }
-  console.log(isPosition({}))
   t.false(isPosition(missingDetails), 'needs details')
   t.true(isPosition.errors, 'failing validations have errors')
 
