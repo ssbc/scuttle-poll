@@ -13,7 +13,7 @@ const sallyId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/5=.ed25519'
 const poll = '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256'
 
 test('Position - ChooseOneResults', function (t) {
-  const results = [
+  const positions = [
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId } },
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: mixId } },
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: mikeyId } },
@@ -22,14 +22,14 @@ test('Position - ChooseOneResults', function (t) {
     { value: { content: Position(ChooseOne({choice: 2, poll})), author: sallyId } }
   ]
 
-  const actual = chooseOneResults(results)
+  const actual = chooseOneResults({positions})
   t.deepEqual(actual[0], [pietId, mixId, mikeyId])
   t.end()
 })
 
 test('Position - ChooseOneResults includes invalid poll in error on results', function (t) {
   const badPositon = {reckon: 'nah'} // invalid poll
-  const results = [
+  const positions = [
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId } },
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: mixId } },
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: mikeyId } },
@@ -39,7 +39,7 @@ test('Position - ChooseOneResults includes invalid poll in error on results', fu
     badPositon
   ]
 
-  const actual = chooseOneResults(results)
+  const actual = chooseOneResults({positions})
   t.deepEqual(actual.errors, {invalidPositions: [badPositon]})
   t.end()
 })

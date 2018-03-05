@@ -2,9 +2,9 @@ var isArray = require('isarray')
 var isPosition = require('../../isPosition')
 var Position = require('../../position/sync/position')
 
-module.exports = function (positions) {
+module.exports = function ({positions, poll}) { //postions must be of the correct type ie checked by the caller.
   return positions.reduce(function (results, position) {
-    if (!isPosition(position)) { //TODO: make this isChooseOne
+    if (!isPosition(position)) { //TODO: make this isChooseOnePosition
       results.errors.invalidPositions.push(position)
       return results
     }
