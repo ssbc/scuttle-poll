@@ -43,3 +43,8 @@ test('Position - ChooseOneResults includes invalid poll in error on results', fu
   t.deepEqual(actual.errors, {invalidPositions: [badPositon]})
   t.end()
 })
+
+test.skip('Position - A position stated after the closing time of the poll is not counted', function(t) {
+
+  t.end()
+})
