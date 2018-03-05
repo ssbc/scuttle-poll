@@ -1,11 +1,11 @@
 var isPosition = require('./isPosition')
 
 module.exports = function (positions) {
-  positions.reduce(function (results, position) {
+  return positions.reduce(function (results, position) {
     if (!isPosition(position)) {
       return results
     }
-    var { choice } = position
+    var { choice } = position.positionDetails
     var currentScore = results[choice]
     results[choice] = currentScore ? currentScore + 1 : 1
 
