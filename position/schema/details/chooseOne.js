@@ -1,7 +1,7 @@
 const Validate = require('is-my-json-valid')
 
-const typeString = 'chooseOne'
-const typeStringPattern = `^${typeString}$`
+const { chooseOnePositionType } = require('../../../types')
+const typeStringPattern = `^${chooseOnePositionType}$`
 const typeStringRegex = new RegExp(typeStringPattern)
 
 function isValidTypeString (string) {
@@ -11,7 +11,7 @@ function isValidTypeString (string) {
 function create ({choice, reason}) {
   return {
     choice,
-    type: typeString,
+    type: chooseOnePositionType,
     reason
   }
 }

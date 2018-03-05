@@ -1,3 +1,4 @@
 module.exports = {
-  chooseOneType: 'chooseOne',
+  chooseOnePollType: 'chooseOnePoll',
+  chooseOnePositionType: 'chooseOnePosition'
 }
