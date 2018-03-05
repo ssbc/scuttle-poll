@@ -5,7 +5,7 @@ const chooseOneDetails = require('./details/chooseOne')
 const schema = {
   $schema: 'http://json-schema.org/schema#',
   type: 'object',
-  required: ['root', 'branch', 'positionDetails'],
+  required: ['type', 'positionDetails'],
   properties: {
     version: {
       type: 'string',
@@ -54,7 +54,7 @@ const schema = {
   },
   definitions: {
 
-    postionDetails: {
+    positionDetails: {
       type: 'object',
       chooseOne: chooseOneDetails
     },
@@ -117,9 +117,4 @@ const schema = {
   }
 }
 
-const validate = Validate(schema, { verbose: true })
-
-module.exports = {
-  schema,
-  validate
-}
+module.exports = schema

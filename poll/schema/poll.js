@@ -86,14 +86,14 @@ const schema = {
         type: 'object',
         required: ['link'],
         properties: {
-          link: { $ref: '#/definitions/messageId'}
+          link: { $ref: '#/definitions/messageId' }
         }
       },
       feed: {
         type: 'object',
         required: ['link', 'name'],
         properties: {
-          link: { $ref: '#/definitions/feedId'},
+          link: { $ref: '#/definitions/feedId' },
           name: { type: 'string' }
         }
       },
@@ -101,7 +101,7 @@ const schema = {
         type: 'object',
         required: ['link', 'name'],
         properties: {
-          link: { $ref: '#/definitions/blobId'},
+          link: { $ref: '#/definitions/blobId' },
           name: { type: 'string' }
         }
       }

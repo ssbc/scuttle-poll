@@ -3,6 +3,10 @@ const ChooseOne = require('../../../position/sync/chooseOne')
 const isPosition = require('../../../isPosition')
 
 test('Position - ChooseOne', function (t) {
+  var invalidPosition = ChooseOne({
+  })
+  t.false(isPosition(invalidPosition), 'missing a choice')
+
   var validPosition = ChooseOne({
     choice: 0
   })

@@ -3,6 +3,10 @@ const ChooseOne = require('../../../poll/sync/chooseOne')
 const isPoll = require('../../../isPoll')
 
 test('Position - ChooseOne', function (t) {
+  var invalidPoll = ChooseOne({
+  })
+  t.false(isPoll(invalidPoll), 'invalid')
+
   var validPoll = ChooseOne({
     choices: [1, 2, 'three'],
     title: 'how many food',
