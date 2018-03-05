@@ -1,20 +1,5 @@
-const Validate = require('is-my-json-valid')
-
-const typeString = 'chooseOne'
-const typeStringPattern = `^${typeString}$`
-const typeStringRegex = new RegExp(typeStringPattern)
-
-function isValidTypeString (string) {
-  return typeStringRegex.test(string)
-}
-
-function create ({choice, reason}) {
-  return {
-    choice,
-    type: typeString,
-    reason
-  }
-}
+const { chooseOnePositionType } = require('../../../types')
+const typeStringPattern = `^${chooseOnePositionType}$`
 
 var schema = {
   type: 'object',
@@ -31,11 +16,4 @@ var schema = {
   }
 }
 
-const validate = Validate(schema, { verbose: true })
-
-module.exports = {
-  isValidTypeString,
-  schema,
-  validate,
-  create
-}
+module.exports = schema
