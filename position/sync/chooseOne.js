@@ -1,13 +1,14 @@
 const Postion = require('./position')
 const { chooseOnePositionType } = require('../../types')
 
-function ChooseOne ({ choice, body, channel, recps, mentions }) {
+function ChooseOne ({ poll, choice, reason, channel, recps, mentions }) {
   return Postion({
+    poll,
     positionDetails: {
-      choice,
-      type: chooseOnePositionType
+      type: chooseOnePositionType,
+      choice
     },
-    body,
+    reason,
     channel,
     recps,
     mentions
