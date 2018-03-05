@@ -31,48 +31,18 @@ const schema = {
     title: { type: 'string' },
     closesAt: { type: 'integer' },
     body: { type: 'string' },
-    mentions: {
-      oneOf: [
-        { type: 'null' },
-        {
-          type: 'array',
-          items: {
-            oneOf: [
-              { $ref: '#/definitions/mentions/message' },
-              { $ref: '#/definitions/mentions/feed' },
-              { $ref: '#/definitions/mentions/blob' }
-            ]
-          }
-        }
-      ]
-    },
-    recps: {
-      oneOf: [
-        { type: 'null' },
-        {
-          type: 'array',
-          items: {
-            oneOf: [
-              { $ref: '#/definitions/feedId' },
-              { $ref: '#/definitions/mentions/feed' }
-            ]
-          }
-        }
-      ]
-    }
+    mentions: { $ref: '#/definitions/mentions/any' },
+    recps: { $ref: '#/definitions/recps' }
   },
-  definitions: Object.assign({},
-    ssbSchemaDefintions,
-    {
-      pollDetails: {
-        type: 'object',
-        dot: dotDetails,
-        proposal: proposalDetails,
-        score: scoreDetails,
-        chooseOne: chooseOneDetails
-      }
+  definitions: Object.assign({}, ssbSchemaDefintions, {
+    pollDetails: {
+      type: 'object',
+      dot: dotDetails,
+      proposal: proposalDetails,
+      score: scoreDetails,
+      chooseOne: chooseOneDetails
     }
-  )
+  })
 }
 
 module.exports = schema

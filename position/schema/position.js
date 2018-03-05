@@ -28,45 +28,15 @@ const schema = {
         // { $ref: '#/definitions/positionDetails/meeting'},
       ]
     },
-    mentions: {
-      oneOf: [
-        { type: 'null' },
-        {
-          type: 'array',
-          items: {
-            oneOf: [
-              { $ref: '#/definitions/mentions/message' },
-              { $ref: '#/definitions/mentions/feed' },
-              { $ref: '#/definitions/mentions/blob' }
-            ]
-          }
-        }
-      ]
-    },
-    recps: {
-      oneOf: [
-        { type: 'null' },
-        {
-          type: 'array',
-          items: {
-            oneOf: [
-              { $ref: '#/definitions/feedId' },
-              { $ref: '#/definitions/mentions/feed' }
-            ]
-          }
-        }
-      ]
-    }
+    mentions: { $ref: '#/definitions/mentions/any' },
+    recps: { $ref: '#/definitions/recps' }
   },
-  definitions: Object.assign({},
-    ssbSchemaDefintions,
-    {
-      positionDetails: {
-        type: 'object',
-        chooseOne: chooseOneDetails
-      }
+  definitions: Object.assign({}, ssbSchemaDefintions, {
+    positionDetails: {
+      type: 'object',
+      chooseOne: chooseOneDetails
     }
-  )
+  })
 }
 
 module.exports = schema
