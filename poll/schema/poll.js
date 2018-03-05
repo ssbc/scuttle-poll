@@ -1,9 +1,9 @@
-const { msgIdRegex, feedIdRegex, blobIdRegex } = require('ssb-ref')
-
 const dotDetails = require('./details/dot.js')
 const proposalDetails = require('./details/proposal.js')
 const scoreDetails = require('./details/score.js')
 const chooseOneDetails = require('./details/chooseOne.js')
+
+const ssbSchemaDefintions = require('../../lib/ssbSchemaDefintions')
 
 const schema = {
   $schema: 'http://json-schema.org/schema#',
@@ -31,82 +31,18 @@ const schema = {
     title: { type: 'string' },
     closesAt: { type: 'integer' },
     body: { type: 'string' },
-    mentions: {
-      oneOf: [
-        { type: 'null' },
-        {
-          type: 'array',
-          items: {
-            oneOf: [
-              { $ref: '#/definitions/mentions/message' },
-              { $ref: '#/definitions/mentions/feed' },
-              { $ref: '#/definitions/mentions/blob' }
-            ]
-          }
-        }
-      ]
-    },
-    recps: {
-      oneOf: [
-        { type: 'null' },
-        {
-          type: 'array',
-          items: {
-            oneOf: [
-              { $ref: '#/definitions/feedId' },
-              { $ref: '#/definitions/mentions/feed' }
-            ]
-          }
-        }
-      ]
-    }
+    mentions: { $ref: '#/definitions/mentions/any' },
+    recps: { $ref: '#/definitions/recps' }
   },
-  definitions: {
-    messageId: {
-      type: 'string',
-      pattern: msgIdRegex
-    },
-    feedId: {
-      type: 'string',
-      pattern: feedIdRegex
-    },
-    blobId: {
-      type: 'string',
-      pattern: blobIdRegex
-    },
+  definitions: Object.assign({}, ssbSchemaDefintions, {
     pollDetails: {
       type: 'object',
       dot: dotDetails,
       proposal: proposalDetails,
       score: scoreDetails,
       chooseOne: chooseOneDetails
-    },
-    mentions: {
-      message: {
-        type: 'object',
-        required: ['link'],
-        properties: {
-          link: { $ref: '#/definitions/messageId' }
-        }
-      },
-      feed: {
-        type: 'object',
-        required: ['link', 'name'],
-        properties: {
-          link: { $ref: '#/definitions/feedId' },
-          name: { type: 'string' }
-        }
-      },
-      blob: {
-        type: 'object',
-        required: ['link', 'name'],
-        properties: {
-          link: { $ref: '#/definitions/blobId' },
-          name: { type: 'string' }
-        }
-      }
     }
-  }
+  })
 }
 
 module.exports = schema
