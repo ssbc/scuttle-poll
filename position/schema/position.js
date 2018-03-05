@@ -5,7 +5,7 @@ const chooseOneDetails = require('./details/chooseOne')
 const schema = {
   $schema: 'http://json-schema.org/schema#',
   type: 'object',
-  required: ['type', 'positionDetails'],
+  required: ['type', 'poll', 'positionDetails'],
   properties: {
     version: {
       type: 'string',
@@ -14,6 +14,9 @@ const schema = {
     type: {
       type: 'string',
       pattern: '^position$'
+    },
+    poll: {
+      $ref: '#/definitions/messageId'
     },
     text: { type: 'string' },
     reason: { type: 'string' },

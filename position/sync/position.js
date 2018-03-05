@@ -1,9 +1,7 @@
 // var { link } = require('ssb-msg-schemas/util')
 
-function Position ({ positionDetails, reason, body, channel, recps, mentions }) {
-  var content = { type: 'position', positionDetails, reason }
-
-  if (body) content.body = body
+function Position ({ poll, positionDetails, reason, channel, recps, mentions }) {
+  var content = { type: 'position', poll, positionDetails, reason }
 
   // if (root) {
   //   root = link(root)
