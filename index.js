@@ -1,23 +1,12 @@
-const verboseMethods = {
-  poll: {
-    async: {
-      // publishPoll: require('./async/publishPoll')
-    },
-    sync: {
-      isPoll: require('./sync/isPoll')
-      // Poll: // this is not exported - doesn't follow the inject pattern atm
-    }
-  },
-  position: {
+const raw = require('./methods')
 
-  }
+const niceMappings = {
+  isPoll: raw.poll.sync.isPoll
 }
-
-const easyMethods = {
-  isPoll: require('./sync/isPoll')
-}
+// by following this pattern you can write your own API
 
 module.exports = function (server, opts) {
-  const methods = Object.assign({}, verboseMethods, easyMethods)
+  const methods = Object.assign({}, raw, niceMappings)
+
   return require('./lib/inject')(server, methods)
 }
