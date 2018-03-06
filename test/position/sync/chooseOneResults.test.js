@@ -19,7 +19,7 @@ const validPoll = ChooseOnePoll({
   closesAt: Date.now()
 })
 
-test('Position - ChooseOneResults', function (t) {
+test('ChooseOneResults - ChooseOneResults', function (t) {
   const positions = [
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId } },
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: mixId } },
@@ -36,7 +36,7 @@ test('Position - ChooseOneResults', function (t) {
   t.end()
 })
 
-test('Position - a position stated for an invalid choice index is not counted', function(t) {
+test('ChooseOneResults - a position stated for an invalid choice index is not counted', function(t) {
 
   const positions = [
     { value: { content: Position(ChooseOne({choice: 3, poll})), author: pietId } }
@@ -47,7 +47,7 @@ test('Position - a position stated for an invalid choice index is not counted', 
   t.end()
 })
 
-test('Position - a position stated for an invalid choice index is included in the errors object', function(t) {
+test('ChooseOneResults - a position stated for an invalid choice index is included in the errors object', function(t) {
   const positions = [
     { value: { content: Position(ChooseOne({choice: 3, poll})), author: pietId } }
   ]
@@ -57,7 +57,7 @@ test('Position - a position stated for an invalid choice index is included in th
   t.end()
 })
 
-test.skip('Position - A position stated after the closing time of the poll is not counted', function(t) {
+test.skip('ChooseOneResults - A position stated after the closing time of the poll is not counted', function(t) {
 
   t.end()
 })
