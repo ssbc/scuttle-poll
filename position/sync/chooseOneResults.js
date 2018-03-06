@@ -2,9 +2,11 @@ var isArray = require('isarray')
 var isPosition = require('../../isPosition')
 var Position = require('../../position/sync/position')
 
+//Expects a po
+
 module.exports = function ({positions, poll}) { //postions must be of the correct type ie checked by the caller.
   return positions.reduce(function (results, position) {
-    var { choice } = Position(position).positionDetails
+    var { positionDetails: {choice} } = Position(position)
 
     if (choice >= poll.pollDetails.choices.length || position.value.timestamp > poll.closesAt) {
       results.errors.invalidPositions.push(position)
