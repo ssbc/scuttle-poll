@@ -1,16 +1,16 @@
 var isArray = require('isarray')
 var Position = require('../../position/sync/position')
 
-//Expects `poll` and `position` objects passed in to be of shape: 
-//{
+// Expects `poll` and `position` objects passed in to be of shape:
+// {
 //  value: {
 //    content: {...},
 //    timestamp: ...
 //    author: ...
 //  }
-//}
+// }
 //
-//postions must be of the correct type ie: type checked by the caller.
+// postions must be of the correct type ie: type checked by the caller.
 module.exports = function ({positions, poll}) {
   return positions.reduce(function (results, position) {
     var { positionDetails: {choice} } = Position(position)
