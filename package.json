@@ -30,7 +30,7 @@
   "dependencies": {
     "is-my-json-valid": "^2.17.1",
     "libnested": "^1.2.1",
-    "lodash.merge": "^4.6.1",
+    "lodash.clonedeep": "^4.5.0",
     "ssb-msg-schemas": "^6.3.0",
     "ssb-ref": "^2.9.0"
   }
