@@ -6,6 +6,11 @@ module.exports = function ({positions, poll}) { //postions must be of the correc
   return positions.reduce(function (results, position) {
     var { choice } = Position(position).positionDetails
 
+    if (choice >= poll.pollDetails.choices.length) {
+      results.errors.invalidPositions.push(position)
+      return results
+    }
+
     if (!isArray(results[choice])) {
       results[choice] = []
     }
