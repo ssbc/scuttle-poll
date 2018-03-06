@@ -23,7 +23,9 @@ test('Position - ChooseOneResults', function (t) {
   ]
 
   const actual = chooseOneResults({positions})
-  t.deepEqual(actual[0], [pietId, mixId, mikeyId])
+  t.deepEqual(actual[0], [pietId, mixId, mikeyId], 'correct voters for choice 0')
+  t.deepEqual(actual[1], [timmyId, tommyId], 'correct voters for choice 1')
+  t.deepEqual(actual[2], [sallyId], 'correct voters for choice 2')
   t.end()
 })
 
