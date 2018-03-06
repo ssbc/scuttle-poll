@@ -29,6 +29,16 @@ test('Position - ChooseOneResults', function (t) {
   t.end()
 })
 
+test.skip('Position - a position stated for an invalid choice index is not counted', function(t) {
+
+  t.end()
+})
+
+test.skip('Position - a position stated for an invalid choice index is included in the errors object', function(t) {
+
+  t.end()
+})
+
 test.skip('Position - A position stated after the closing time of the poll is not counted', function(t) {
 
   t.end()
