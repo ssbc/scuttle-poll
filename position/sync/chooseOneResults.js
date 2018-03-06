@@ -6,7 +6,7 @@ module.exports = function ({positions, poll}) { //postions must be of the correc
   return positions.reduce(function (results, position) {
     var { choice } = Position(position).positionDetails
 
-    if (choice >= poll.pollDetails.choices.length) {
+    if (choice >= poll.pollDetails.choices.length || position.value.timestamp > poll.closesAt) {
       results.errors.invalidPositions.push(position)
       return results
     }

@@ -13,10 +13,12 @@ const sallyId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/5=.ed25519'
 
 const poll = '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256'
 
+const now = Number(new Date())
+
 const validPoll = ChooseOnePoll({
   choices: [1, 2, 'three'],
   title: 'how many food',
-  closesAt: Date.now()
+  closesAt: now
 })
 
 test('ChooseOneResults - ChooseOneResults', function (t) {
@@ -57,7 +59,32 @@ test('ChooseOneResults - a position stated for an invalid choice index is includ
   t.end()
 })
 
-test.skip('ChooseOneResults - A position stated after the closing time of the poll is not counted', function(t) {
+test('ChooseOneResults - A position stated before the closing time of the poll is counted', function(t) {
+  const positions = [
+    { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId, timestamp: now - 1} }
+  ]
 
+  const actual = chooseOneResults({positions, poll: validPoll})
+  t.true(actual[0], 'valid vote is counted')
+  t.end()
+})
+
+test('ChooseOneResults - A position stated after the closing time of the poll is not counted', function(t) {
+  const positions = [
+    { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId, timestamp: now + 1} }
+  ]
+
+  const actual = chooseOneResults({positions, poll: validPoll})
+  t.false(actual[0], 'invalid vote is not counted')
+  t.end()
+})
+
+test('ChooseOneResults - A position stated after the closing time of the poll is included in the error object', function(t) {
+  const positions = [
+    { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId, timestamp: now + 1} }
+  ]
+
+  const actual = chooseOneResults({positions, poll: validPoll})
+  t.deepEqual(actual.errors.invalidPositions[0], positions[0], 'invalid vote is on error object')
   t.end()
 })
