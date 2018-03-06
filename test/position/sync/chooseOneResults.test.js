@@ -29,8 +29,19 @@ test('Position - ChooseOneResults', function (t) {
   t.end()
 })
 
-test.skip('Position - a position stated for an invalid choice index is not counted', function(t) {
+test('Position - a position stated for an invalid choice index is not counted', function(t) {
+  var validPoll = ChooseOne({
+    choices: [1, 2, 'three'],
+    title: 'how many food',
+    closesAt: Date.now()
+  })
 
+  const positions = [
+    { value: { content: Position(ChooseOne({choice: 3, poll})), author: pietId } }
+  ]
+
+  const actual = chooseOneResults({positions, poll: validPoll})
+  t.false(actual[3], 'invalid vote is not counted')
   t.end()
 })
 
