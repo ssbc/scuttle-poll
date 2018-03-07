@@ -1,5 +1,5 @@
-var isArray = require('isarray')
-var Position = require('../../position/sync/position')
+const isArray = require('isarray')
+const Position = require('../../position/sync/position')
 
 // Expects `poll` and `position` objects passed in to be of shape:
 // {
@@ -13,7 +13,8 @@ var Position = require('../../position/sync/position')
 // postions must be of the correct type ie: type checked by the caller.
 module.exports = function ({positions, poll}) {
   return positions.reduce(function (results, position) {
-    var { positionDetails: {choice} } = Position(position)
+    const { value: {author}} = position
+    const { positionDetails: {choice} } = Position(position)
 
     if (isInvalidChoice({position, poll}) || isPositionAfterClose({position, poll})) {
       results.errors.invalidPositions.push(position)
@@ -23,14 +24,14 @@ module.exports = function ({positions, poll}) {
     if (!isArray(results[choice])) {
       results[choice] = []
     }
-    results[choice].push(position.value.author)
+    results[choice].push(author)
 
     return results
   }, {errors: {invalidPositions: []}})
 }
 
 function isInvalidChoice ({position, poll}) {
-  var { positionDetails: {choice} } = Position(position)
+  const { positionDetails: {choice} } = Position(position)
   return choice >= poll.pollDetails.choices.length
 }
 
