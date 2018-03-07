@@ -1,8 +1,8 @@
-const Postion = require('./position')
+const Position = require('./position')
 const { CHOOSE_ONE } = require('../../types')
 
-function ChooseOne ({ poll, choice, reason, channel, recps, mentions }) {
-  return Postion({
+function ChooseOne ({ poll, choice, reason, channel, mentions }) {
+  return Position({
     poll,
     positionDetails: {
       type: CHOOSE_ONE,
@@ -10,7 +10,6 @@ function ChooseOne ({ poll, choice, reason, channel, recps, mentions }) {
     },
     reason,
     channel,
-    recps,
     mentions
   })
 }

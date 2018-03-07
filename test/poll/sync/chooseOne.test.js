@@ -8,8 +8,8 @@ test('Position - ChooseOne', function (t) {
   t.false(isPoll(invalidPoll), 'invalid')
 
   var validPoll = ChooseOne({
-    choices: [1, 2, 'three'],
     title: 'how many food',
+    choices: [1, 2, 'three'],
     closesAt: Date.now()
   })
   t.true(isPoll(validPoll), 'simple (passes isPoll)')

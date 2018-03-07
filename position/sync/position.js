@@ -1,24 +1,18 @@
+const { isMsg: isMsgRef } = require('ssb-ref')
 // var { link } = require('ssb-msg-schemas/util')
-const getMsgContent = require('../../lib/getMsgContent')
 
-function Position (msg) {
-  const { poll, positionDetails, reason, channel, recps, mentions } = getMsgContent(msg)
-  const root = typeof poll === 'string' ? poll : poll.key
+function Position ({ poll = {}, positionDetails, reason, channel, mentions }) {
+  const content = {
+    type: 'position',
+    root: typeof poll === 'string' ? poll : poll.key,
+    positionDetails
+  }
 
-  const content = { type: 'position', root, positionDetails, reason }
+  if (reason) content.reason = reason
 
-  // if (root) {
-  //   root = link(root)
-  //   if (!root) { throw new Error('root is not a valid link') }
-  //   content.root = root
-  // }
-  // if (branch) {
-  //   if (!root) { throw new Error('root is not a valid link') }
-  //   branch = Array.isArray(branch) ? branch.map(link) : link(branch)
-  //   if (!branch) { throw new Error('branch is not a valid link') }
-  //   content.branch = branch
-  // }
-  //
+  // TODO branch should be calculated
+  // ... this needs to be async... unless all messages are passed in
+
   // // NOTE mentions can be derived from text,
   // // or we could leave it so you can manually notify people without having to at-mention spam the text
   // if (mentions && (!Array.isArray(mentions) || mentions.length)) {
@@ -26,6 +20,8 @@ function Position (msg) {
   //   if (!mentions || !mentions.length) { throw new Error('mentions are not valid links') }
   //   content.mentions = mentions
   // }
+
+  // // NOTE recps should be derived from the poll I think
   // if (recps && (!Array.isArray(recps) || recps.length)) {
   //   recps = links(recps)
   //   if (!recps || !recps.length) { throw new Error('recps are not valid links') }

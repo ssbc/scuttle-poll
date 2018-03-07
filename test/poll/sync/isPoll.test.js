@@ -48,7 +48,6 @@ test('Poll - common requirements', function (t) {
     closesAt: Date.now()
   }
   t.true(isPoll(fullyFeatured), 'fully featured')
-  if (isPoll.errors) console.log(isPoll.errors)
 
   t.end()
 })

@@ -6,7 +6,7 @@ const ssbSchemaDefintions = require('../../lib/ssbSchemaDefintions')
 const schema = {
   $schema: 'http://json-schema.org/schema#',
   type: 'object',
-  required: ['type', 'poll', 'positionDetails'],
+  required: ['type', 'root', 'positionDetails'],
   properties: {
     version: {
       type: 'string',
@@ -16,7 +16,7 @@ const schema = {
       type: 'string',
       pattern: '^position$'
     },
-    poll: {
+    root: {
       $ref: '#/definitions/messageId'
     },
     text: { type: 'string' },

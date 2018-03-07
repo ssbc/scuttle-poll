@@ -1,7 +1,6 @@
 const test = require('tape')
 const ChooseOne = require('../../../position/sync/chooseOne')
 const ChooseOnePoll = require('../../../poll/sync/chooseOne')
-const Position = require('../../../position/sync/position')
 const chooseOneResults = require('../../../position/sync/chooseOneResults')
 const {ERROR_POSITION_CHOICE, ERROR_POSITION_TYPE, ERROR_POSITION_LATE} = require('../../../types')
 
@@ -16,20 +15,25 @@ const poll = '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256'
 
 const now = Number(new Date())
 
-const validPoll = ChooseOnePoll({
-  choices: [1, 2, 'three'],
-  title: 'how many food',
-  closesAt: now
-})
+const validPoll = {
+  key: '%schwoop',
+  value: {
+    content: ChooseOnePoll({
+      choices: [1, 2, 'three'],
+      title: 'how many food',
+      closesAt: now
+    })
+  }
+}
 
 test('ChooseOneResults - ChooseOneResults', function (t) {
   const positions = [
-    { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId } },
-    { value: { content: Position(ChooseOne({choice: 0, poll})), author: mixId } },
-    { value: { content: Position(ChooseOne({choice: 0, poll})), author: mikeyId } },
-    { value: { content: Position(ChooseOne({choice: 1, poll})), author: timmyId } },
-    { value: { content: Position(ChooseOne({choice: 1, poll})), author: tommyId } },
-    { value: { content: Position(ChooseOne({choice: 2, poll})), author: sallyId } }
+    { value: { content: ChooseOne({choice: 0, poll}), author: pietId } },
+    { value: { content: ChooseOne({choice: 0, poll}), author: mixId } },
+    { value: { content: ChooseOne({choice: 0, poll}), author: mikeyId } },
+    { value: { content: ChooseOne({choice: 1, poll}), author: timmyId } },
+    { value: { content: ChooseOne({choice: 1, poll}), author: tommyId } },
+    { value: { content: ChooseOne({choice: 2, poll}), author: sallyId } }
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
@@ -41,7 +45,7 @@ test('ChooseOneResults - ChooseOneResults', function (t) {
 
 test('ChooseOneResults - a position stated for an invalid choice index is not counted', function (t) {
   const positions = [
-    { value: { content: Position(ChooseOne({choice: 3, poll})), author: pietId } }
+    { value: { content: ChooseOne({choice: 3, poll}), author: pietId } }
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
@@ -51,7 +55,7 @@ test('ChooseOneResults - a position stated for an invalid choice index is not co
 
 test('ChooseOneResults - a position stated for an invalid choice index is included in the errors object', function (t) {
   const positions = [
-    { value: { content: Position(ChooseOne({choice: 3, poll})), author: pietId } }
+    { value: { content: ChooseOne({choice: 3, poll}), author: pietId } }
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
@@ -61,7 +65,7 @@ test('ChooseOneResults - a position stated for an invalid choice index is includ
 
 test('ChooseOneResults - A position stated before the closing time of the poll is counted', function (t) {
   const positions = [
-    { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId, timestamp: now - 1} }
+    { value: { content: ChooseOne({choice: 0, poll}), author: pietId, timestamp: now - 1 } }
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
@@ -71,7 +75,7 @@ test('ChooseOneResults - A position stated before the closing time of the poll i
 
 test('ChooseOneResults - A position stated after the closing time of the poll is not counted', function (t) {
   const positions = [
-    { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId, timestamp: now + 1} }
+    { value: { content: ChooseOne({choice: 0, poll}), author: pietId, timestamp: now + 1 } }
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
@@ -81,7 +85,7 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
 
 test('ChooseOneResults - A position stated after the closing time of the poll is included in the error object', function (t) {
   const positions = [
-    { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId, timestamp: now + 1} }
+    { value: { content: ChooseOne({choice: 0, poll}), author: pietId, timestamp: now + 1 } }
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})

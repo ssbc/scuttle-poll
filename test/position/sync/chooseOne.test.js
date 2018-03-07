@@ -24,7 +24,6 @@ test('Position - ChooseOne', function (t) {
     choice: 0
   })
   t.true(isPosition(validPosition), 'simple')
-  if (isPosition.errors) console.log(isPosition.errors)
 
   var fullPositionMsg = {
     key: '%somekey',

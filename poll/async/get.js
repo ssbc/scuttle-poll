@@ -18,7 +18,6 @@ module.exports = function (server) {
         pull.collect((err, msgs) => {
           if (err) return cb(err)
 
-          console.log('got the msgs!!')
           cb(null, decoratedPoll(poll, msgs))
         })
       )
@@ -40,9 +39,10 @@ module.exports = function (server) {
 }
 
 function decoratedPoll (rawPoll, msgs = []) {
-  const { title, body } = rawPoll.value.content
+  const { author, content: { title, body } } = rawPoll.value
 
   const poll = Object.assign({}, rawPoll, {
+    author,
     title,
     body,
 
@@ -58,23 +58,25 @@ function decoratedPoll (rawPoll, msgs = []) {
 
   // filter position message into 'positions' and 'errors'
   const type = poll.value.content.pollDetails.type
-  msgs.forEach(msg => {
-    if (isPosition[type](msg)) {
-      // TODO validator checks right position shape, but needs to add e.g. acceptible position ranges based on poll
-      poll.positions.push(msg)
-      return
-    }
+  msgs
+    .filter(msg => msg.value.content.root === poll.key)
+    .forEach(position => {
+      if (isPosition[type](position)) {
+        // TODO validator checks right position shape, but needs to add e.g. acceptible position ranges based on poll
+        poll.positions.push(position)
+        return
+      }
 
-    if (isPosition(msg)) {
-      poll.errors.push({
-        type: ERROR_POSITION_TYPE,
-        message: `Position responses need to be off the ${type} type for this poll`,
-        position: msg
-      })
-    }
-  })
+      if (isPosition(position)) {
+        poll.errors.push({
+          type: ERROR_POSITION_TYPE,
+          message: `Position responses need to be off the ${type} type for this poll`,
+          position
+        })
+      }
+    })
 
-  poll.results = results(poll.positions)
+  poll.results = results({ poll, positions: poll.positions })
 
   return poll
 }
