@@ -1,5 +1,5 @@
 const errorSchema = require('./error')
-const cloneDeep = require('lodash.cedeep')
+const cloneDeep = require('lodash.clonedeep')
 
 const schema = cloneDeep(errorSchema)
 
