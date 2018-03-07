@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "is-my-json-valid": "^2.17.1",
+    "isarray": "^2.0.4",
     "libnested": "^1.2.1",
     "lodash.clonedeep": "^4.5.0",
     "ssb-msg-schemas": "^6.3.0",
