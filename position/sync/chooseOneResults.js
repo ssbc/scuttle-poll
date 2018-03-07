@@ -15,7 +15,7 @@ module.exports = function ({positions, poll}) {
   return positions.reduce(function (results, position) {
     var { positionDetails: {choice} } = Position(position)
 
-    if (choice >= poll.pollDetails.choices.length || position.value.timestamp > poll.closesAt) {
+    if (isInvalidChoice({position, poll}) || isPositionAfterClose({position, poll})) {
       results.errors.invalidPositions.push(position)
       return results
     }
@@ -27,4 +27,13 @@ module.exports = function ({positions, poll}) {
 
     return results
   }, {errors: {invalidPositions: []}})
+}
+
+function isInvalidChoice ({position, poll}) {
+  var { positionDetails: {choice} } = Position(position)
+  return choice >= poll.pollDetails.choices.length
+}
+
+function isPositionAfterClose ({position, poll}) {
+  return position.value.timestamp > poll.closesAt
 }
