@@ -3,6 +3,7 @@ const ChooseOne = require('../../../position/sync/chooseOne')
 const ChooseOnePoll = require('../../../poll/sync/chooseOne')
 const Position = require('../../../position/sync/position')
 const chooseOneResults = require('../../../position/sync/chooseOneResults')
+const {ERROR_POSITION_CHOICE, ERROR_POSITION_TYPE, ERROR_POSITION_LATE} = require('../../../types')
 
 const pietId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/0=.ed25519'
 const mixId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/1=.ed25519'
@@ -54,7 +55,7 @@ test('ChooseOneResults - a position stated for an invalid choice index is includ
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
-  t.deepEqual(actual.errors.invalidPositions[0], positions[0], 'invalid vote is on error object')
+  t.deepEqual(actual.errors[0].type, ERROR_POSITION_CHOICE, 'invalid vote is on error object')
   t.end()
 })
 
@@ -84,6 +85,6 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
-  t.deepEqual(actual.errors.invalidPositions[0], positions[0], 'invalid vote is on error object')
+  t.deepEqual(actual.errors[0].type, ERROR_POSITION_LATE, 'invalid vote is on error object')
   t.end()
 })

@@ -1,5 +1,6 @@
 const isArray = require('isarray')
 const Position = require('../../position/sync/position')
+const {ERROR_POSITION_CHOICE, ERROR_POSITION_TYPE, ERROR_POSITION_LATE} = require('../../types')
 
 // Expects `poll` and `position` objects passed in to be of shape:
 // {
@@ -16,8 +17,13 @@ module.exports = function chooseOneResults ({positions, poll}) {
     const { value: {author} } = position
     const { positionDetails: {choice} } = Position(position)
 
-    if (isInvalidChoice({position, poll}) || isPositionAfterClose({position, poll})) {
-      results.errors.invalidPositions.push(position)
+    if (isInvalidChoice({position, poll})) {
+      results.errors.push({type: ERROR_POSITION_CHOICE, position})
+      return results
+    }
+
+    if (isPositionLate({position, poll})) {
+      results.errors.push({type: ERROR_POSITION_LATE, position})
       return results
     }
 
@@ -27,7 +33,7 @@ module.exports = function chooseOneResults ({positions, poll}) {
     results[choice].push(author)
 
     return results
-  }, {errors: {invalidPositions: []}})
+  }, {errors: []})
 }
 
 function isInvalidChoice ({position, poll}) {
@@ -35,6 +41,6 @@ function isInvalidChoice ({position, poll}) {
   return choice >= poll.pollDetails.choices.length
 }
 
-function isPositionAfterClose ({position, poll}) {
+function isPositionLate ({position, poll}) {
   return position.value.timestamp > poll.closesAt
 }
