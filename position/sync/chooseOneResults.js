@@ -11,7 +11,7 @@ const Position = require('../../position/sync/position')
 // }
 //
 // postions must be of the correct type ie: type checked by the caller.
-module.exports = function ({positions, poll}) {
+module.exports = function chooseOneResults ({positions, poll}) {
   return positions.reduce(function (results, position) {
     const { value: {author} } = position
     const { positionDetails: {choice} } = Position(position)
