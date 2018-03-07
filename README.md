@@ -160,9 +160,20 @@ Score PollDetails
 
 ### Position
 
-chooseOne position:
+```js
+{
+  type:           'position',
+  root:            MessageKey,
+  positionDetails: Object
+}
 ```
 
+chooseOne positionDetails:
+```js
+{
+  choice:
+
+}
 ```
 
 ## Acknowledgments

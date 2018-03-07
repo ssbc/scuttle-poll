@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/ssbc/scuttle-poll#readme",
   "devDependencies": {
+    "scuttle-testbot": "^1.1.4",
+    "ssb-backlinks": "^0.6.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.8.0"
   },
@@ -32,6 +34,7 @@
     "isarray": "^2.0.4",
     "libnested": "^1.2.1",
     "lodash.clonedeep": "^4.5.0",
+    "pull-stream": "^3.6.2",
     "ssb-msg-schemas": "^6.3.0",
     "ssb-ref": "^2.9.0"
   }
