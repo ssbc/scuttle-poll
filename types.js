@@ -1,5 +1,8 @@
 module.exports = {
-  CHOOSE_ONE: 'chooseOne'
+  CHOOSE_ONE: 'chooseOne',
+  ERROR_POSITION_TYPE: 'ERROR_POSITION_TYPE',
+  ERROR_POSITION_LATE: 'ERROR_POSITION_LATE',
+  ERROR_POSTITION_CHOICE: 'ERROR_POSTITION_CHOICE'
 }
 
 // Question: do these need to be different, could we just have 'chooseOne',
