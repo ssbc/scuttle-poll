@@ -69,12 +69,13 @@ fetches all the messages associated with a particular poll, and returns a deligh
 {
   key:       MessageKey,
   value:     MessageValue,
+
   author:    FeedId,
   title:     String,
   body:      (String|Null),
 
   positions: Array,
-  results:   Object,
+  results:   Array,
   errors:    Object
 }
 ```

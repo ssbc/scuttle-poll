@@ -4,26 +4,16 @@ const isPoll = require('../../isPoll')
 
 module.exports = function (server) {
   return function get (key, cb) {
-    server.get(key, (err, poll) => {
+    server.get(key, (err, value) => {
       if (err) return cb(err)
+
+      var poll = { key, value }
       if (!isPoll(poll)) return cb(new Error('scuttle-poll could not fetch, key provided was not a valid poll key'))
 
       pull(
         createBacklinkStream(key),
         pull.collect(msgs => {
-          msgs = sort(msgs)
-          // TODO add missingContext warnings
-
-          Object.assign({}, poll, {
-            key,
-            value: poll,
-            title: poll.content.title,
-            body: poll.content.body,
-
-            // positions: msgs.filter,
-            results: {}, // TODO add reduction of positions
-            errors: {}
-          })
+          cb(null, decoratedPoll(poll, msgs))
         })
       )
     })
@@ -41,4 +31,23 @@ module.exports = function (server) {
       index: 'DTA' // use asserted timestamps
     })
   }
+}
+
+function decoratedPoll (poll, msgs) {
+  msgs = sort(msgs)
+  // TODO add missingContext warnings
+
+  const pollType = poll.pollDetails.type
+  // const pollType = poll.details.type
+
+  const positions = msgs.filter(isPoll[pollType])
+
+  return Object.assign({}, poll, {
+    title: poll.content.title,
+    body: poll.content.body,
+
+    // positions: msgs.filter,
+    results: {}, // TODO add reduction of positions
+    errors: {}
+  })
 }
