@@ -1,5 +1,6 @@
 const isArray = require('isarray')
-const {ERROR_POSITION_CHOICE, ERROR_POSITION_TYPE, ERROR_POSITION_LATE} = require('../../types')
+const positionChoiceError = require('../../errors/sync/positionChoiceError')
+const positionLateError = require('../../errors/sync/positionLateError')
 
 // Expects `poll` and `position` objects passed in to be of shape:
 // {
@@ -18,14 +19,12 @@ module.exports = function chooseOneResults ({positions, poll}) {
     const { choice } = content.positionDetails
 
     if (isInvalidChoice({position, poll})) {
-      // TODO change this to push errors into poll.errors
-      results.errors.push({type: ERROR_POSITION_CHOICE, position})
+      results.errors.push(positionChoiceError({position}))
       return results
     }
 
     if (isPositionLate({position, poll})) {
-      // TODO change this to push errors into poll.errors
-      results.errors.push({type: ERROR_POSITION_LATE, position})
+      results.errors.push(positionLateError({position}))
       return results
     }
 
