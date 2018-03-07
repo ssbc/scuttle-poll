@@ -5,8 +5,8 @@ const isPositionLateError = require('../../../errors/sync/isPositionLateError')(
 const isPositionTypeError = require('../../../errors/sync/isPositionTypeError')()
 
 const positionTypeError = require('../../../errors/sync/positionTypeError')
-const positionLateError = require('../../../errors/sync/positionLateError')
-const positionChoiceError = require('../../../errors/sync/positionChoiceError')
+const PositionLateError = require('../../../errors/sync/positionLateError')
+const PositionChoiceError = require('../../../errors/sync/positionChoiceError')
 
 const ChooseOne = require('../../../position/sync/chooseOne')
 
@@ -28,10 +28,10 @@ test('positionLateError', function (t) {
     poll: '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256',
     choice: 0
   })
-  var invalidError = positionLateError({})
+  var invalidError = PositionLateError({})
   t.false(isPositionTypeError(invalidError), 'catches invalid error')
 
-  var validError = positionLateError({position: validPosition})
+  var validError = PositionLateError({position: validPosition})
   t.true(isPositionLateError(validError), 'validates valid error')
   t.end()
 })
@@ -41,10 +41,10 @@ test('positionChoiceError', function (t) {
     poll: '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256',
     choice: 0
   })
-  var invalidError = positionChoiceError({})
+  var invalidError = PositionChoiceError({})
   t.false(isPositionChoiceError(invalidError), 'catches invalid error')
 
-  var validError = positionChoiceError({position: validPosition})
+  var validError = PositionChoiceError({position: validPosition})
   t.true(isPositionChoiceError(validError), 'validates valid error')
   t.end()
 })
