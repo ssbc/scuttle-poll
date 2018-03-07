@@ -1,5 +1,5 @@
-const { chooseOnePositionType } = require('../../../types')
-const typeStringPattern = `^${chooseOnePositionType}$`
+const { CHOOSE_ONE } = require('../../../types')
+const typeStringPattern = `^${CHOOSE_ONE}$`
 
 var schema = {
   type: 'object',

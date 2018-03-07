@@ -1,6 +1,9 @@
 const pull = require('pull-stream')
 const sort = require('ssb-sort')
 const isPoll = require('../../isPoll')
+const isPosition = require('../../isPosition')
+const { ERROR_POSITION_TYPE } = require('../../types')
+const results = require('../../position/sync/chooseOneResults')
 
 module.exports = function (server) {
   return function get (key, cb) {
@@ -33,21 +36,39 @@ module.exports = function (server) {
   }
 }
 
-function decoratedPoll (poll, msgs) {
-  msgs = sort(msgs)
-  // TODO add missingContext warnings
+function decoratedPoll (rawPoll, msgs) {
+  const { title, body } = rawPoll.value.content
 
-  const pollType = poll.pollDetails.type
-  // const pollType = poll.details.type
+  const poll = Object.assign({}, rawPoll, {
+    title,
+    body,
 
-  const positions = msgs.filter(isPoll[pollType])
-
-  return Object.assign({}, poll, {
-    title: poll.content.title,
-    body: poll.content.body,
-
-    // positions: msgs.filter,
-    results: {}, // TODO add reduction of positions
-    errors: {}
+    positions: [],
+    results: {},
+    errors: []
   })
+
+  // filter position message into 'positions' and 'errors'
+  // TODO schema checks right position shape, but needs to add e.g. acceptible position ranges based on poll
+  // TODO add missingContext warnings
+  msgs = sort(msgs)
+  const type = poll.value.content.pollDetails.type
+  msgs.forEach(msg => {
+    if (isPosition[type](msg)) {
+      poll.positions.push(msg)
+      return
+    }
+
+    if (isPosition(msg)) {
+      poll.errors.push({
+        type: ERROR_POSITION_TYPE,
+        message: `Position responses need to be off the ${type} type for this poll`,
+        position: msg
+      })
+    }
+  })
+
+  poll.results = results(poll.positions)
+
+  return poll
 }

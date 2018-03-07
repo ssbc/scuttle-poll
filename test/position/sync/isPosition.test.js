@@ -1,5 +1,6 @@
 const test = require('tape')
 const isPosition = require('../../../isPosition')
+const { CHOOSE_ONE } = require('../../../types')
 
 // this is for testing the attributes that are required for all polls
 test('position - common requirements', function (t) {
@@ -14,7 +15,7 @@ test('position - common requirements', function (t) {
   var missingPoll = {
     type: 'position',
     positionDetails: {
-      type: 'chooseOnePosition',
+      type: CHOOSE_ONE,
       choice: 0
     }
   }

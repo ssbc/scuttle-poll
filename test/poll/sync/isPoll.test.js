@@ -1,6 +1,7 @@
 const test = require('tape')
 const ChooseOne = require('../../../poll/sync/chooseOne')
 const isPoll = require('../../../isPoll')
+const { CHOOSE_ONE } = require('../../../types')
 
 // this is for testing the attributes that are required for all polls
 
@@ -29,7 +30,7 @@ test('Poll - common requirements', function (t) {
   var fullyFeatured = {
     type: 'poll',
     pollDetails: {
-      type: 'chooseOnePoll', // TODO change to chooseOne?
+      type: CHOOSE_ONE,
       title: 'how many dogs?',
       choices: [1, 2, 3]
     },

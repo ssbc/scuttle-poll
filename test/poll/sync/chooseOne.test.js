@@ -12,7 +12,8 @@ test('Position - ChooseOne', function (t) {
     title: 'how many food',
     closesAt: Date.now()
   })
-  t.true(isPoll(validPoll), 'simple')
+  t.true(isPoll(validPoll), 'simple (passes isPoll)')
+  t.true(isPoll.chooseOne(validPoll), 'simple (passes isPoll.chooseOne)')
 
   var fullPollMsg = {
     key: '%somekey',

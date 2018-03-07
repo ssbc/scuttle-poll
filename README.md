@@ -58,8 +58,14 @@ var scuttle = Scuttle(server)
 
 #### `scuttle.poll.sync.isPoll(msg) => Boolean`
 
-takes a msg or the contents of a msg
+Takes a msg or the contents of a msg
 
+You can also check for subtypes of poll e.g.
+
+```js
+isPoll.chooseOne(msg)
+// => Boolean
+```
 
 ### `scuttle.poll.async.get(key, cb)`
 
