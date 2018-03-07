@@ -1,6 +1,5 @@
 const test = require('tape')
 
-const isError = require('../../../errors/sync/isError')
 const isPositionChoiceError = require('../../../errors/sync/isPositionChoiceError')()
 const isPositionLateError = require('../../../errors/sync/isPositionLateError')()
 const isPositionTypeError = require('../../../errors/sync/isPositionTypeError')()
