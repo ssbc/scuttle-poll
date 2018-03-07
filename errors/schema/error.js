@@ -5,22 +5,10 @@ var schema = {
   required: ['type', 'position', 'message'],
   properties: {
     type: {
-      type: 'string',
       oneOf: [
-        {
-          type: 'string',
-          pattern: `^${ERROR_POSITION_CHOICE}$`
-
-        },
-        {
-
-        },
-        {
-
-        },
-        ERROR_POSITION_CHOICE,
-        ERROR_POSITION_TYPE,
-        ERROR_POSITION_LATE
+        { $ref: '#/definitions/errorTypes/errorChoice' },
+        { $ref: '#/definitions/errorTypes/errorTypes' },
+        { $ref: '#/definitions/errorTypes/errorLate' }
       ]
     },
     position: {
@@ -30,8 +18,19 @@ var schema = {
       type: 'string'
     },
     definitions: {
-      errorTypePatterns: {
-
+      errorTypes: {
+        errorChoice: {
+          type: 'string',
+          pattern: `^${ERROR_POSITION_CHOICE}$`
+        },
+        errorType: {
+          type: 'string',
+          pattern: `^${ERROR_POSITION_TYPE}$`
+        },
+        errorLate: {
+          type: 'string',
+          pattern: `^${ERROR_POSITION_LATE}$`
+        }
       }
     }
   }
