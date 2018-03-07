@@ -38,8 +38,7 @@ test('ChooseOneResults - ChooseOneResults', function (t) {
   t.end()
 })
 
-test('ChooseOneResults - a position stated for an invalid choice index is not counted', function(t) {
-
+test('ChooseOneResults - a position stated for an invalid choice index is not counted', function (t) {
   const positions = [
     { value: { content: Position(ChooseOne({choice: 3, poll})), author: pietId } }
   ]
@@ -49,7 +48,7 @@ test('ChooseOneResults - a position stated for an invalid choice index is not co
   t.end()
 })
 
-test('ChooseOneResults - a position stated for an invalid choice index is included in the errors object', function(t) {
+test('ChooseOneResults - a position stated for an invalid choice index is included in the errors object', function (t) {
   const positions = [
     { value: { content: Position(ChooseOne({choice: 3, poll})), author: pietId } }
   ]
@@ -59,7 +58,7 @@ test('ChooseOneResults - a position stated for an invalid choice index is includ
   t.end()
 })
 
-test('ChooseOneResults - A position stated before the closing time of the poll is counted', function(t) {
+test('ChooseOneResults - A position stated before the closing time of the poll is counted', function (t) {
   const positions = [
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId, timestamp: now - 1} }
   ]
@@ -69,7 +68,7 @@ test('ChooseOneResults - A position stated before the closing time of the poll i
   t.end()
 })
 
-test('ChooseOneResults - A position stated after the closing time of the poll is not counted', function(t) {
+test('ChooseOneResults - A position stated after the closing time of the poll is not counted', function (t) {
   const positions = [
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId, timestamp: now + 1} }
   ]
@@ -79,7 +78,7 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
   t.end()
 })
 
-test('ChooseOneResults - A position stated after the closing time of the poll is included in the error object', function(t) {
+test('ChooseOneResults - A position stated after the closing time of the poll is included in the error object', function (t) {
   const positions = [
     { value: { content: Position(ChooseOne({choice: 0, poll})), author: pietId, timestamp: now + 1} }
   ]
