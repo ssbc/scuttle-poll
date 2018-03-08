@@ -58,21 +58,19 @@ function decoratedPoll (rawPoll, msgs = []) {
 
   // filter position message into 'positions' and 'errors'
   const type = poll.value.content.pollDetails.type
-  msgs
-    .filter(msg => msg.value.content.root === poll.key)
-    .forEach(position => {
-      if (isPosition[type](position)) {
-        // TODO validator checks right position shape, but needs to add e.g. acceptible position ranges based on poll
-        poll.positions.push(position)
-        return
-      }
 
-      if (isPosition(position)) {
-        poll.errors.push({
-          type: ERROR_POSITION_TYPE,
-          message: `Position responses need to be off the ${type} type for this poll`,
-          position
-        })
+  poll.positions = msgs
+    .filter(msg => msg.value.content.root === poll.key)
+    .filter(isPosition[type])
+
+  poll.errors = msgs
+    .filter(msg => msg.value.content.root === poll.key)
+    .filter(msg => isPosition(msg) && !isPosition[type](msg))
+    .map(position => {
+      return {
+        type: ERROR_POSITION_TYPE,
+        message: `Position responses need to be off the ${type} type for this poll`,
+        position
       }
     })
 

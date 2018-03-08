@@ -40,7 +40,7 @@ test('pull.async.get', t => {
       getPoll(server)(poll.key, (err, data) => {
         if (err) throw err
 
-        // print(data)
+        print(data)
         t.equal(data.key, poll.key, 'has key')
         t.deepEqual(data.value, poll.value, 'has value')
 
