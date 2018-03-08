@@ -1,4 +1,4 @@
-const errorSchema = require('./error')
+const errorSchema = require('./positionError')
 const cloneDeep = require('lodash.clonedeep')
 
 const schema = cloneDeep(errorSchema)
