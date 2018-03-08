@@ -68,6 +68,7 @@ function print (obj) {
 
 function nDaysTime (n) {
   var d = new Date()
-  return d.setDate(d.getDate() + n)
-  // returns integer!
+  d.setDate(d.getDate() + n)
+
+  return d.toISOString()
 }
