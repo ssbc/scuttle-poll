@@ -40,7 +40,7 @@ test('pull.async.get', t => {
       getPoll(server)(poll.key, (err, data) => {
         if (err) throw err
 
-        print(data)
+        // print(data)
         t.equal(data.key, poll.key, 'has key')
         t.deepEqual(data.value, poll.value, 'has value')
 
@@ -50,9 +50,9 @@ test('pull.async.get', t => {
         t.equal(data.positions.length, 2, 'has positions')
 
         t.deepEqual(data.results, {
-          1: [katie.id],  // TODO update this data structure
+          1: [katie.id], // TODO update this data structure
           2: [piet.id],
-          errors: []  // TODO prune this later
+          errors: [] // TODO prune this later
         }, 'has results!')
 
         server.close()
