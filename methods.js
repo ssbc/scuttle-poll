@@ -3,7 +3,8 @@
 module.exports = {
   poll: {
     async: {
-      // publishPoll: require('./async/publishPoll')
+      chooseOne: require('./poll/async/chooseOne'),
+      get: require('./poll/async/get')
     },
     sync: {
       isPoll: require('./poll/sync/isPoll')

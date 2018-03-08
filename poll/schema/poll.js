@@ -29,7 +29,7 @@ const schema = {
       ]
     },
     title: { type: 'string' },
-    closesAt: { type: 'integer' },
+    closesAt: { type: 'string', format: 'date-time' },
     body: { type: 'string' },
     mentions: { $ref: '#/definitions/mentions/any' },
     recps: { $ref: '#/definitions/recps' }

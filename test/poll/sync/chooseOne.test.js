@@ -10,7 +10,7 @@ test('Position - ChooseOne', function (t) {
   var validPoll = ChooseOne({
     title: 'how many food',
     choices: [1, 2, 'three'],
-    closesAt: Date.now()
+    closesAt: new Date().toISOString()
   })
   t.true(isPoll(validPoll), 'simple (passes isPoll)')
   t.true(isPoll.chooseOne(validPoll), 'simple (passes isPoll.chooseOne)')

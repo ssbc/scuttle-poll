@@ -2,7 +2,10 @@ const raw = require('./methods')
 const PLUGIN_DEPS = ['backlinks']
 
 const niceMappings = {
-  isPoll: raw.poll.sync.isPoll
+  isPoll: raw.poll.sync.isPoll,
+  // publish: {
+  //   chooseOne: raw.poll.async.chooseOne
+  // }
 }
 // by following this pattern you can write your own API
 

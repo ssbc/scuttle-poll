@@ -8,7 +8,7 @@ const { CHOOSE_ONE } = require('../../../types')
 test('Poll - common requirements', function (t) {
   var missingTitle = ChooseOne({
     choices: [1, 2, 'three'],
-    closesAt: Date.now()
+    closesAt: new Date().toISOString()
   })
   t.false(isPoll(missingTitle), 'needs title')
 
@@ -18,11 +18,18 @@ test('Poll - common requirements', function (t) {
   })
   t.false(isPoll(missingClosesAt), 'needs closes at')
 
+  var malformedClosesAt = ChooseOne({
+    choices: [1, 2, 'three'],
+    title: 'how many food',
+    closesAt: 'tomorrow'
+  })
+  t.false(isPoll(missingClosesAt), 'needs ISOString closes at')
+
   var missingDetails = {
     type: 'poll',
     pollDetails: undefined,
     title: 'how many food',
-    closesAt: Date.now()
+    closesAt: new Date().toISOString()
   }
   t.false(isPoll(missingDetails), 'needs details')
   t.true(isPoll.errors, 'failing validations have errors')
@@ -45,7 +52,7 @@ test('Poll - common requirements', function (t) {
       '@ye+QM09iPcDJD6YvQYjoQc7sLF/IFhmNbEqgdzQo3lQ=.ed25519',
       {name: 'mix', link: '@ye+QM09iPcDJD6YvQYjoQc7sLF/IFhmNbEqgdzQo3lQ=.ed25519'}
     ],
-    closesAt: Date.now()
+    closesAt: new Date().toISOString()
   }
   t.true(isPoll(fullyFeatured), 'fully featured')
 
