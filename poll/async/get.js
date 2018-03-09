@@ -45,7 +45,7 @@ function decoratedPoll (rawPoll, msgs = []) {
     content: {
       title,
       body,
-      pollDetails: { type }
+      details: { type }
     }
   } = rawPoll.value
 
