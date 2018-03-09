@@ -1,4 +1,5 @@
-const isArray = require('isarray')
+var getMsgContent = require('../../lib/getMsgContent')
+var ChooseOne = require('../../poll/sync/chooseOne')
 const PositionChoiceError = require('../../errors/sync/positionChoiceError')
 const PositionLateError = require('../../errors/sync/positionLateError')
 
@@ -14,37 +15,34 @@ const PositionLateError = require('../../errors/sync/positionLateError')
 //
 // postions must be of the correct type ie: type checked by the caller.
 module.exports = function chooseOneResults ({positions, poll}) {
-  return positions.reduce(function (results, position) {
+  var results = getMsgContent(poll)
+    .pollDetails
+    .choices
+    .map(choice => {
+      return {
+        choice,
+        voters: {}
+      }
+    })
+
+  return positions.reduce(function (acc, position) {
     const { author, content } = position.value
     const { choice } = content.positionDetails
 
     if (isInvalidChoice({position, poll})) {
-      results.errors.push(PositionChoiceError({position}))
-      return results
+      acc.errors.push(PositionChoiceError({position}))
+      return acc
     }
 
     if (isPositionLate({position, poll})) {
-      results.errors.push(PositionLateError({position}))
-      return results
+      acc.errors.push(PositionLateError({position}))
+      return acc
     }
 
-    // TODO convert from Array to Object
-    // {
-    //   'kea': {
-    //     @piet: 'because things'
-    //   },
-    //   'hermit crab': {
-    //     @katie: 'scuttz..',
-    //     @mix: 'what she said'
-    //   } ]
-    // }
-    if (!isArray(results[choice])) {
-      results[choice] = []
-    }
-    results[choice].push(author)
+    acc.results[choice].voters[author] = position
 
-    return results
-  }, {errors: []})
+    return acc
+  }, {errors: [], results})
 }
 
 function isInvalidChoice ({position, poll}) {

@@ -2,7 +2,7 @@ const test = require('tape')
 const ChooseOne = require('../../../position/sync/chooseOne')
 const ChooseOnePoll = require('../../../poll/sync/chooseOne')
 const chooseOneResults = require('../../../position/sync/chooseOneResults')
-const {ERROR_POSITION_CHOICE, ERROR_POSITION_TYPE, ERROR_POSITION_LATE} = require('../../../types')
+const {ERROR_POSITION_CHOICE, ERROR_POSITION_LATE} = require('../../../types')
 
 const pietId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/0=.ed25519'
 const mixId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/1=.ed25519'
@@ -39,7 +39,7 @@ test('ChooseOneResults - ChooseOneResults', function (t) {
   const expected = {
     results: [
       {
-        choice: '1',
+        choice: 1,
         voters: {
           [pietId]: positions[0],
           [mixId]: positions[1],
@@ -47,7 +47,7 @@ test('ChooseOneResults - ChooseOneResults', function (t) {
         }
       },
       {
-        choice: '2',
+        choice: 2,
         voters: {
           [timmyId]: positions[3],
           [tommyId]: positions[4]
@@ -74,7 +74,7 @@ test('ChooseOneResults - a position stated for an invalid choice index is not co
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
-  t.false(actual[3], 'invalid vote is not counted')
+  t.false(actual.results[3], 'invalid vote is not counted')
   t.end()
 })
 
@@ -94,7 +94,7 @@ test('ChooseOneResults - A position stated before the closing time of the poll i
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
-  t.true(actual[0], 'valid vote is counted')
+  t.true(actual.results[0], 'valid vote is counted')
   t.end()
 })
 
@@ -104,7 +104,7 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
-  t.false(actual[0], 'invalid vote is not counted')
+  t.deepEqual(actual.results[0].voters, {}, 'invalid vote is not counted')
   t.end()
 })
 
