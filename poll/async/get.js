@@ -2,7 +2,6 @@ const pull = require('pull-stream')
 const sort = require('ssb-sort')
 const isPoll = require('../../isPoll')
 const isPosition = require('../../isPosition')
-const isChooseOnePoll = require('../../poll/sync/isChooseOnePoll')
 const { ERROR_POSITION_TYPE } = require('../../types')
 const getResults = require('../../position/sync/chooseOneResults')
 const getMsgContent = require('../../lib/getMsgContent')
@@ -41,9 +40,17 @@ module.exports = function (server) {
 }
 
 function decoratedPoll (rawPoll, msgs = []) {
-  const { author, content: { title, body } } = rawPoll.value
+  const {
+    author,
+    content: {
+      title,
+      body,
+      pollDetails: { type }
+    }
+  } = rawPoll.value
 
   const poll = Object.assign({}, rawPoll, {
+    type,
     author,
     title,
     body,
@@ -57,9 +64,6 @@ function decoratedPoll (rawPoll, msgs = []) {
 
   // TODO add missingContext warnings to each msg
   msgs = sort(msgs)
-
-  // filter position message into 'positions' and 'errors'
-  const type = poll.value.content.details.type
 
   poll.positions = msgs
     .filter(msg => msg.value.content.root === poll.key)
@@ -90,9 +94,10 @@ function decoratePosition ({position: rawPosition, poll: rawPoll}) {
   var position = getMsgContent(rawPosition)
   var poll = getMsgContent(rawPoll)
 
+  // NOTE this isn't deep enough to be a safe clone
   var newPosition = Object.assign({}, rawPosition)
 
-  if (isChooseOnePoll(poll)) {
+  if (isPoll.chooseOne(poll)) {
     var choiceIndex = position.details.choice
     newPosition.choice = poll.details.choices[choiceIndex]
   }
