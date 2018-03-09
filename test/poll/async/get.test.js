@@ -49,6 +49,10 @@ test('pull.async.get', t => {
 
         t.equal(data.positions.length, 2, 'has positions')
 
+        var positions = data.positions
+
+        t.equal(positions[0].choice, pollContent.pollDetails.choices[1], 'choice is the value from the poll, not the index.')
+
         t.ok(data.results[1].voters[katie.id])
         t.ok(data.results[2].voters[piet.id])
 
