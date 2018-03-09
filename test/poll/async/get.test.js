@@ -49,8 +49,8 @@ test('pull.async.get', t => {
 
         t.equal(data.positions.length, 2, 'has positions')
 
-        t.ok(data.results.results[1].voters[katie.id])
-        t.ok(data.results.results[2].voters[piet.id])
+        t.ok(data.results[1].voters[katie.id])
+        t.ok(data.results[2].voters[piet.id])
 
         server.close()
         t.end()
