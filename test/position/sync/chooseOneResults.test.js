@@ -117,3 +117,15 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
   t.deepEqual(actual.errors[0].type, ERROR_POSITION_LATE, 'invalid vote is on error object')
   t.end()
 })
+
+test('ChooseOneResults - ChooseOneResults only counts latest vote by an author', function (t) {
+  const positions = [
+    { value: { content: ChooseOne({choice: 2, poll}), author: pietId } },
+    { value: { content: ChooseOne({choice: 0, poll}), author: pietId } }
+  ]
+
+  const actual = chooseOneResults({positions, poll: validPoll})
+  t.false(actual.results[2].voters[pietId], 'old vote is deleted')
+  t.true(actual.results[0].voters[pietId], 'new vote is counted')
+  t.end()
+})

@@ -39,10 +39,21 @@ module.exports = function chooseOneResults ({positions, poll}) {
       return acc
     }
 
+    deleteExistingVotesByAuthor({results: acc.results, author})
     acc.results[choice].voters[author] = position
 
     return acc
   }, {errors: [], results})
+}
+
+// !!! assumes these are already sorted by time.
+// modifies results passed in
+function deleteExistingVotesByAuthor ({author, results}) {
+  results.forEach(result => {
+    if (result.voters[author]) {
+      delete result.voters[author]
+    }
+  })
 }
 
 function isInvalidChoice ({position, poll}) {
