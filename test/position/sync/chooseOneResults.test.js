@@ -94,7 +94,7 @@ test('ChooseOneResults - A position stated before the closing time of the poll i
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
-  t.true(actual.results[0], 'valid vote is counted')
+  t.ok(actual.results[0].voters[pietId], 'valid vote is counted')
   t.end()
 })
 
