@@ -16,7 +16,7 @@ const PositionLateError = require('../../errors/sync/positionLateError')
 // postions must be of the correct type ie: type checked by the caller.
 module.exports = function chooseOneResults ({positions, poll}) {
   var results = getMsgContent(poll)
-    .pollDetails
+    .details
     .choices
     .map(choice => {
       return {
@@ -27,7 +27,7 @@ module.exports = function chooseOneResults ({positions, poll}) {
 
   return positions.reduce(function (acc, position) {
     const { author, content } = position.value
-    const { choice } = content.positionDetails
+    const { choice } = content.details
 
     if (isInvalidChoice({position, poll})) {
       acc.errors.push(PositionChoiceError({position}))
@@ -46,8 +46,8 @@ module.exports = function chooseOneResults ({positions, poll}) {
 }
 
 function isInvalidChoice ({position, poll}) {
-  const { choice } = position.value.content.positionDetails
-  return choice >= poll.value.content.pollDetails.choices.length
+  const { choice } = position.value.content.details
+  return choice >= poll.value.content.details.choices.length
 }
 
 function isPositionLate ({position, poll}) {

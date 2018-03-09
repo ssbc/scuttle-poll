@@ -59,7 +59,7 @@ function decoratedPoll (rawPoll, msgs = []) {
   msgs = sort(msgs)
 
   // filter position message into 'positions' and 'errors'
-  const type = poll.value.content.pollDetails.type
+  const type = poll.value.content.details.type
 
   poll.positions = msgs
     .filter(msg => msg.value.content.root === poll.key)
@@ -93,8 +93,8 @@ function decoratePosition ({position: rawPosition, poll: rawPoll}) {
   var newPosition = Object.assign({}, rawPosition)
 
   if (isChooseOnePoll(poll)) {
-    var choiceIndex = position.positionDetails.choice
-    newPosition.choice = poll.pollDetails.choices[choiceIndex]
+    var choiceIndex = position.details.choice
+    newPosition.choice = poll.details.choices[choiceIndex]
   }
   return newPosition
 }

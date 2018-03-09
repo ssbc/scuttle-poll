@@ -6,7 +6,7 @@ const ssbSchemaDefintions = require('../../lib/ssbSchemaDefintions')
 const schema = {
   $schema: 'http://json-schema.org/schema#',
   type: 'object',
-  required: ['type', 'root', 'positionDetails'],
+  required: ['type', 'root', 'details'],
   properties: {
     version: {
       type: 'string',
@@ -21,21 +21,21 @@ const schema = {
     },
     text: { type: 'string' },
     reason: { type: 'string' },
-    positionDetails: {
+    details: {
       oneOf: [
-        // { $ref: '#/definitions/positionDetails/dot'},
-        // { $ref: '#/definitions/positionDetails/proposal'},
-        // { $ref: '#/definitions/positionDetails/score'},
-        { $ref: '#/definitions/positionDetails/chooseOne' }
-        // { $ref: '#/definitions/positionDetails/rsvp'},
-        // { $ref: '#/definitions/positionDetails/meeting'},
+        // { $ref: '#/definitions/details/dot'},
+        // { $ref: '#/definitions/details/proposal'},
+        // { $ref: '#/definitions/details/score'},
+        { $ref: '#/definitions/details/chooseOne' }
+        // { $ref: '#/definitions/details/rsvp'},
+        // { $ref: '#/definitions/details/meeting'},
       ]
     },
     mentions: { $ref: '#/definitions/mentions/any' },
     recps: { $ref: '#/definitions/recps' }
   },
   definitions: Object.assign({}, ssbSchemaDefintions, {
-    positionDetails: {
+    details: {
       type: 'object',
       chooseOne: chooseOneDetails
     }

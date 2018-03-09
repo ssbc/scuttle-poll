@@ -27,7 +27,7 @@ test('Poll - common requirements', function (t) {
 
   var missingDetails = {
     type: 'poll',
-    pollDetails: undefined,
+    details: undefined,
     title: 'how many food',
     closesAt: new Date().toISOString()
   }
@@ -36,7 +36,7 @@ test('Poll - common requirements', function (t) {
 
   var fullyFeatured = {
     type: 'poll',
-    pollDetails: {
+    details: {
       type: CHOOSE_ONE,
       title: 'how many dogs?',
       choices: [1, 2, 3]

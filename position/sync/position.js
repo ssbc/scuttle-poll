@@ -1,11 +1,11 @@
 const { isMsg: isMsgRef } = require('ssb-ref')
 // var { link } = require('ssb-msg-schemas/util')
 
-function Position ({ poll = {}, positionDetails, reason, channel, mentions }) {
+function Position ({ poll = {}, details, reason, channel, mentions }) {
   const content = {
     type: 'position',
     root: typeof poll === 'string' ? poll : poll.key,
-    positionDetails
+    details
   }
 
   if (reason) content.reason = reason

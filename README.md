@@ -118,7 +118,7 @@ Poll message content
 ```js
 {
   type:       'poll',          // required
-  pollDetails: PollDetails     // required
+  details: PollDetails     // required
   title:       String,         // required
   closesAt:    Integer         // required
   body:        String,
@@ -164,11 +164,11 @@ Score PollDetails
 {
   type:           'position',
   root:            MessageKey,
-  positionDetails: Object
+  details: Object
 }
 ```
 
-chooseOne positionDetails:
+chooseOne details:
 ```js
 {
   choice:

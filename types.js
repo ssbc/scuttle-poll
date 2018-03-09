@@ -7,8 +7,8 @@ module.exports = {
 
 // Question: do these need to be different, could we just have 'chooseOne',
 // because we already have:
-// { type: 'poll', pollDetails: { type: 'chooseOne' } }
-// { type: 'position', positionDetails: { type: 'chooseOne' } }
+// { type: 'poll', details: { type: 'chooseOne' } }
+// { type: 'position', details: { type: 'chooseOne' } }
 //
 //
 // to that end, perhaps we could prune these down to

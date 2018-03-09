@@ -8,7 +8,7 @@ const ssbSchemaDefintions = require('../../lib/ssbSchemaDefintions')
 const schema = {
   $schema: 'http://json-schema.org/schema#',
   type: 'object',
-  required: ['type', 'pollDetails', 'title', 'closesAt'],
+  required: ['type', 'details', 'title', 'closesAt'],
   properties: {
     version: {
       type: 'string',
@@ -18,14 +18,14 @@ const schema = {
       type: 'string',
       pattern: '^poll$'
     },
-    pollDetails: {
+    details: {
       oneOf: [
-        // { $ref: '#/definitions/pollDetails/dot'},
-        // { $ref: '#/definitions/pollDetails/proposal'},
-        // { $ref: '#/definitions/pollDetails/score'},
-        { $ref: '#/definitions/pollDetails/chooseOne' }
-        // { $ref: '#/definitions/pollDetails/rsvp'},
-        // { $ref: '#/definitions/pollDetails/meeting'},
+        // { $ref: '#/definitions/details/dot'},
+        // { $ref: '#/definitions/details/proposal'},
+        // { $ref: '#/definitions/details/score'},
+        { $ref: '#/definitions/details/chooseOne' }
+        // { $ref: '#/definitions/details/rsvp'},
+        // { $ref: '#/definitions/details/meeting'},
       ]
     },
     title: { type: 'string' },
@@ -35,7 +35,7 @@ const schema = {
     recps: { $ref: '#/definitions/recps' }
   },
   definitions: Object.assign({}, ssbSchemaDefintions, {
-    pollDetails: {
+    details: {
       type: 'object',
       dot: dotDetails,
       proposal: proposalDetails,

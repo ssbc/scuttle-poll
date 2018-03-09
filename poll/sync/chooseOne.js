@@ -3,7 +3,7 @@ const { CHOOSE_ONE } = require('../../types')
 
 function ChooseOne ({ choices, title, closesAt, body, channel, recps, mentions }) {
   return Poll({
-    pollDetails: {
+    details: {
       choices,
       type: CHOOSE_ONE
     },
