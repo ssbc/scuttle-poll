@@ -2,7 +2,7 @@ const test = require('tape')
 const ChooseOne = require('../../../position/sync/chooseOne')
 const ChooseOnePoll = require('../../../poll/sync/chooseOne')
 const chooseOneResults = require('../../../position/sync/chooseOneResults')
-const {ERROR_POSITION_CHOICE, ERROR_POSITION_TYPE, ERROR_POSITION_LATE} = require('../../../types')
+const {ERROR_POSITION_CHOICE, ERROR_POSITION_LATE} = require('../../../types')
 
 const pietId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/0=.ed25519'
 const mixId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/1=.ed25519'
@@ -36,10 +36,35 @@ test('ChooseOneResults - ChooseOneResults', function (t) {
     { value: { content: ChooseOne({choice: 2, poll}), author: sallyId } }
   ]
 
+  const expected = {
+    results: [
+      {
+        choice: 1,
+        voters: {
+          [pietId]: positions[0],
+          [mixId]: positions[1],
+          [mikeyId]: positions[2]
+        }
+      },
+      {
+        choice: 2,
+        voters: {
+          [timmyId]: positions[3],
+          [tommyId]: positions[4]
+        }
+      },
+      {
+        choice: 'three',
+        voters: {
+          [sallyId]: positions[5]
+        }
+      }
+    ],
+    errors: {}
+  }
+
   const actual = chooseOneResults({positions, poll: validPoll})
-  t.deepEqual(actual[0], [pietId, mixId, mikeyId], 'correct voters for choice 0')
-  t.deepEqual(actual[1], [timmyId, tommyId], 'correct voters for choice 1')
-  t.deepEqual(actual[2], [sallyId], 'correct voters for choice 2')
+  t.deepEqual(actual, expected, 'results are correct')
   t.end()
 })
 
@@ -49,7 +74,7 @@ test('ChooseOneResults - a position stated for an invalid choice index is not co
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
-  t.false(actual[3], 'invalid vote is not counted')
+  t.false(actual.results[3], 'invalid vote is not counted')
   t.end()
 })
 
@@ -69,7 +94,7 @@ test('ChooseOneResults - A position stated before the closing time of the poll i
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
-  t.true(actual[0], 'valid vote is counted')
+  t.ok(actual.results[0].voters[pietId], 'valid vote is counted')
   t.end()
 })
 
@@ -79,7 +104,7 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
   ]
 
   const actual = chooseOneResults({positions, poll: validPoll})
-  t.false(actual[0], 'invalid vote is not counted')
+  t.deepEqual(actual.results[0].voters, {}, 'invalid vote is not counted')
   t.end()
 })
 

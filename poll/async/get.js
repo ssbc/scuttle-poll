@@ -3,7 +3,7 @@ const sort = require('ssb-sort')
 const isPoll = require('../../isPoll')
 const isPosition = require('../../isPosition')
 const { ERROR_POSITION_TYPE } = require('../../types')
-const results = require('../../position/sync/chooseOneResults')
+const getResults = require('../../position/sync/chooseOneResults')
 
 module.exports = function (server) {
   return function get (key, cb) {
@@ -74,7 +74,9 @@ function decoratedPoll (rawPoll, msgs = []) {
       }
     })
 
-  poll.results = results({ poll, positions: poll.positions })
+  const {results, errors} = getResults({ poll, positions: poll.positions })
+  poll.results = results
+  poll.errors = poll.errors.concat(errors)
 
   return poll
 }
