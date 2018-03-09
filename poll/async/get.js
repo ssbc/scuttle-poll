@@ -2,8 +2,10 @@ const pull = require('pull-stream')
 const sort = require('ssb-sort')
 const isPoll = require('../../isPoll')
 const isPosition = require('../../isPosition')
+const isChooseOnePoll = require('../../poll/sync/isChooseOnePoll')
 const { ERROR_POSITION_TYPE } = require('../../types')
 const getResults = require('../../position/sync/chooseOneResults')
+const getMsgContent = require('../../lib/getMsgContent')
 
 module.exports = function (server) {
   return function get (key, cb) {
@@ -62,6 +64,9 @@ function decoratedPoll (rawPoll, msgs = []) {
   poll.positions = msgs
     .filter(msg => msg.value.content.root === poll.key)
     .filter(isPosition[type])
+    .map(position => {
+      return decoratePosition({position, poll})
+    })
 
   poll.errors = msgs
     .filter(msg => msg.value.content.root === poll.key)
@@ -79,4 +84,17 @@ function decoratedPoll (rawPoll, msgs = []) {
   poll.errors = poll.errors.concat(errors)
 
   return poll
+}
+
+function decoratePosition ({position: rawPosition, poll: rawPoll}) {
+  var position = getMsgContent(rawPosition)
+  var poll = getMsgContent(rawPoll)
+
+  var newPosition = Object.assign({}, rawPosition)
+
+  if (isChooseOnePoll(poll)) {
+    var choiceIndex = position.positionDetails.choice
+    newPosition.choice = poll.pollDetails.choices[choiceIndex]
+  }
+  return newPosition
 }
