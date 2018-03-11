@@ -1,7 +1,7 @@
 const { isMsg: isMsgRef } = require('ssb-ref')
 // var { link } = require('ssb-msg-schemas/util')
 
-function Position ({ poll = {}, details, reason, channel, mentions }) {
+function Position ({ poll = {}, details, reason, channel, mentions }, cb) {
   const content = {
     type: 'position',
     root: typeof poll === 'string' ? poll : poll.key,
@@ -32,7 +32,7 @@ function Position ({ poll = {}, details, reason, channel, mentions }) {
     content.channel = channel
   }
 
-  return content
+  cb(null, content)
 }
 
 module.exports = Position
