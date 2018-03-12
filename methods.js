@@ -12,6 +12,10 @@ module.exports = {
     }
   },
   position: {
+    async: {
+      chooseOne: require('./position/async/chooseOne'),
+      position: require('./position/async/position')
+    },
     sync: {
       isPosition: require('./position/sync/isPosition')
     }
