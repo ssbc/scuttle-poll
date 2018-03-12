@@ -7,7 +7,8 @@ module.exports = {
       get: require('./poll/async/get')
     },
     sync: {
-      isPoll: require('./poll/sync/isPoll')
+      isPoll: require('./poll/sync/isPoll'),
+      isChooseOnePoll: require('./poll/sync/isChooseOnePoll')
       // Poll: // this is not exported - doesn't follow the inject pattern atm
     }
   },

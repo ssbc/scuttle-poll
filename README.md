@@ -10,29 +10,15 @@ repos:
 
 ## Usage
 
+### Init
 ```js
-var isPoll = require('scuttle-poll/isPoll')
-
-isPoll(msg)
-// => Boolean
-```
-
-```js
-var scuttle = require('scuttle-poll')(server)
-
-var opts = {
-  title: 'where shall we have our community meeting?'
-  choices: [
-    'in person',
-    'talky.io',
-    'mumble',
-  ]
-}
-scuttle.poll.async.publishChooseOne(opts, (err, poll) => {
-  if (err) throw err
-
-  var myPosition 
-  scuttle.position.async.publishPosition(myPosition, cb)
+var Sbot = require('ssb-client')
+Sbot((err, server) => {
+  if (err) {
+    return console.log(err)
+  }
+  var ScuttlePoll = require('scuttle-poll')
+  var scuttlePoll = ScuttlePoll(server)
 })
 ```
 where `server` is a scuttlebot instance (or a remote connection provided by `ssb-client`)
@@ -40,6 +26,34 @@ where `server` is a scuttlebot instance (or a remote connection provided by `ssb
 Note - `server` can also be an observeable which resolves to a scuttlebot instance
 (this is more experimental, it will turn your sync functions into obs functions)
 
+This returns an object with methods defined in `methods.js` that looks like:
+
+```js
+{
+  poll: {
+    async: {
+      chooseOne:  
+      get:
+    },
+    sync: {
+      isPoll:
+      isChooseOnePoll:
+    } 
+  },
+  position: {
+    async: {
+      chooseOne:
+      position:
+    
+    },
+    sync: {
+      isPosition:
+      chooseOneResults:
+    } 
+  }
+}
+
+```
 
 ## Dependencies
 
@@ -50,8 +64,8 @@ Requires a scuttlebutt server with the following plugins installed:
 ## API
 
 ```js
-var Scuttle = require('scuttle-poll')
-var scuttle = Scuttle(server)
+var ScuttlePoll = require('scuttle-poll')
+var scuttlePoll = ScuttlePoll(server)
 ```
 
 ### Methods
