@@ -57,7 +57,8 @@ test('pull.async.get', t => {
         t.equal(data.positions.length, 2, 'has positions')
 
         var positions = data.positions
-        t.equal(positions[1].value.content.branch[0], positions[0].key, 'postions publish branch info')
+        t.deepEqual(positions[0].value.content.branch, [], 'first published postion has no branch')
+        t.equal(positions[1].value.content.branch[0], positions[0].key, 'second published branch has first position as branch')
 
         t.equal(positions[0].choice, pollContent.details.choices[1], 'choice is the value from the poll, not the index.')
 
