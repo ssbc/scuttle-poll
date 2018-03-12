@@ -28,7 +28,6 @@ module.exports = function (server) {
           getPoll(content.root, cb)
         }),
         pull.drain(({positions}) => {
-          console.log(positions)
           content.branch = sort.heads(positions)
           cb(null, content)
         })

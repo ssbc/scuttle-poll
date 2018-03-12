@@ -3,13 +3,14 @@ var Server = require('scuttle-testbot')
 var pull = require('pull-stream')
 
 var ChooseOnePoll = require('../../../poll/sync/chooseOne')
-var ChooseOne = require('../../../position/async/chooseOne')()
 var getPoll = require('../../../poll/async/get')
 
 Server
   .use(require('ssb-backlinks'))
 
 var server = Server({name: 'testBotName'})
+
+var ChooseOne = require('../../../position/async/chooseOne')(server)
 
 var katie = server.createFeed()
 var piet = server.createFeed()
@@ -56,6 +57,7 @@ test('pull.async.get', t => {
         t.equal(data.positions.length, 2, 'has positions')
 
         var positions = data.positions
+        t.equal(positions[1].value.content.branch[0], positions[0].key, 'postions publish branch info')
 
         t.equal(positions[0].choice, pollContent.details.choices[1], 'choice is the value from the poll, not the index.')
 
