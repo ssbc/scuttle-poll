@@ -23,15 +23,10 @@ module.exports = function (server) {
     }
 
     if (content.root && server) {
-      pull(
-        pullAsync(cb => {
-          getPoll(content.root, cb)
-        }),
-        pull.drain(({positions}) => {
-          content.branch = sort.heads(positions)
-          cb(null, content)
-        })
-      )
+      getPoll(content.root, (err, {positions}) => {
+        content.branch = sort.heads(positions)
+        cb(err, content)
+      })
     } else {
       cb(null, content)
     }
