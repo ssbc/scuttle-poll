@@ -29,7 +29,6 @@ Note - `server` can also be an observeable which resolves to a scuttlebot instan
 This returns an object with methods defined in `methods.js` that looks like:
 
 ```js
-
 {
   poll: {
     async: {
