@@ -1,7 +1,6 @@
 const test = require('tape')
 const pull = require('pull-stream')
-const pullAsync = require('pull-async')
-const ChooseOne = require('../../../position/async/chooseOne')
+const ChooseOne = require('../../../position/async/chooseOne')()
 const ChooseOnePoll = require('../../../poll/sync/chooseOne')
 const chooseOneResults = require('../../../position/sync/chooseOneResults')
 const {ERROR_POSITION_CHOICE, ERROR_POSITION_LATE} = require('../../../types')

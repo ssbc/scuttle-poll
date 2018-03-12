@@ -3,7 +3,7 @@ var Server = require('scuttle-testbot')
 var pull = require('pull-stream')
 
 var ChooseOnePoll = require('../../../poll/sync/chooseOne')
-var ChooseOne = require('../../../position/async/chooseOne')
+var ChooseOne = require('../../../position/async/chooseOne')()
 var getPoll = require('../../../poll/async/get')
 
 Server

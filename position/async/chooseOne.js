@@ -1,17 +1,18 @@
-const Position = require('./position')
+const createPosition = require('./position')
 const { CHOOSE_ONE } = require('../../types')
 
-function ChooseOne ({ poll, choice, reason, channel, mentions }, cb) {
-  Position({
-    poll,
-    details: {
-      type: CHOOSE_ONE,
-      choice
-    },
-    reason,
-    channel,
-    mentions
-  }, cb)
+module.exports = function (server) {
+  const Position = createPosition(server)
+  return function ChooseOne ({ poll, choice, reason, channel, mentions }, cb) {
+    Position({
+      poll,
+      details: {
+        type: CHOOSE_ONE,
+        choice
+      },
+      reason,
+      channel,
+      mentions
+    }, cb)
+  }
 }
-
-module.exports = ChooseOne

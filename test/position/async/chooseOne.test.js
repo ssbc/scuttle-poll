@@ -1,7 +1,7 @@
 const test = require('tape')
-var pull = require('pull-stream')
-var pullAsync = require('pull-async')
-const ChooseOne = require('../../../position/async/chooseOne')
+const pull = require('pull-stream')
+const pullAsync = require('pull-async')
+const ChooseOne = require('../../../position/async/chooseOne')()
 const isPosition = require('../../../isPosition')
 
 test('Position - ChooseOne', function (t) {
