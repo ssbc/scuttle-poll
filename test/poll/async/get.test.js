@@ -1,16 +1,13 @@
 var test = require('tape')
-var Server = require('scuttle-testbot')
+const Server = require('../../../lib/testServer')
 var pull = require('pull-stream')
 
 var ChooseOnePoll = require('../../../poll/sync/chooseOne')
 var getPoll = require('../../../poll/async/get')
 
-Server
-  .use(require('ssb-backlinks'))
+var server = Server()
 
-var server = Server({name: 'testBotName'})
-
-var ChooseOne = require('../../../position/async/chooseOne')(server)
+var ChooseOne = require('../../../position/async/chooseOne')
 
 var katie = server.createFeed()
 var piet = server.createFeed()
@@ -31,8 +28,8 @@ test('pull.async.get', t => {
         { author: piet, position: { poll, choice: 2, reason: 'scuttles 4life' } }
       ]),
       pull.asyncMap((t, cb) => {
-        ChooseOne(t.position, (err, position) => {
-          t.position = position
+        ChooseOne(t.author)(t.position, (err, position) => {
+          // t.position = position
           cb(err, t)
         })
       }),
@@ -44,7 +41,7 @@ test('pull.async.get', t => {
     )
 
     function onDone () {
-      getPoll(server)(poll.key, (err, data) => {
+      getPoll(piet)(poll.key, (err, data) => {
         if (err) throw err
 
         // print(data)
@@ -57,8 +54,9 @@ test('pull.async.get', t => {
         t.equal(data.positions.length, 2, 'has positions')
 
         var positions = data.positions
+        console.log(positions)
         t.deepEqual(positions[0].value.content.branch, [], 'first published postion has no branch')
-        t.equal(positions[1].value.content.branch[0], positions[0].key, 'second published branch has first position as branch')
+        t.deepEqual(positions[1].value.content.branch, [positions[0].key], 'second published branch has first position as branch')
 
         t.equal(positions[0].choice, pollContent.details.choices[1], 'choice is the value from the poll, not the index.')
 

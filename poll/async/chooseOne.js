@@ -4,8 +4,6 @@ const isPoll = require('../../isPoll')
 module.exports = function (server) {
   return function publishChooseOne (opts, cb) {
     const poll = ChooseOne(opts)
-    console.log('poll', poll)
-    console.log('isChooseOnePoll', require('../../isPoll'))
     if (!isPoll.chooseOne(poll)) return cb(isPoll.chooseOne.errors)
 
     server.publish(poll, cb)

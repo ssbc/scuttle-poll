@@ -1,9 +1,9 @@
 const createPosition = require('./position')
 const { CHOOSE_ONE } = require('../../types')
 
-module.exports = function (server) {
+module.exports = function buildChooseOne (server) {
   const Position = createPosition(server)
-  return function ChooseOne ({ poll, choice, reason, channel, mentions }, cb) {
+  return function ChooseOne ({ poll, choice, reason, mentions }, cb) {
     Position({
       poll,
       details: {
@@ -11,7 +11,6 @@ module.exports = function (server) {
         choice
       },
       reason,
-      channel,
       mentions
     }, cb)
   }

@@ -2,8 +2,9 @@ const pull = require('pull-stream')
 const sort = require('ssb-sort')
 const isPoll = require('../../isPoll')
 const isPosition = require('../../isPosition')
-const { ERROR_POSITION_TYPE } = require('../../types')
+const { CHOOSE_ONE, ERROR_POSITION_TYPE } = require('../../types')
 const getResults = require('../../position/sync/chooseOneResults')
+const publishChooseOnePosition = require('../../position/async/chooseOne')
 const getMsgContent = require('../../lib/getMsgContent')
 
 module.exports = function (server) {
@@ -12,7 +13,7 @@ module.exports = function (server) {
       if (err) return cb(err)
 
       var poll = { key, value }
-      if (!isPoll(poll)) return cb(new Error('scuttle-poll could not fetch, key provided was not a valid poll key'))
+      if (!isPoll(poll)) return cb(new Error('scuttle-poll could not get poll, key provided was not a valid poll key'))
 
       pull(
         createBacklinkStream(key),
@@ -45,6 +46,7 @@ function decoratedPoll (rawPoll, msgs = []) {
     content: {
       title,
       body,
+      channel,
       details: { type }
     }
   } = rawPoll.value
@@ -54,13 +56,26 @@ function decoratedPoll (rawPoll, msgs = []) {
     author,
     title,
     body,
+    channel,
 
+    actions: {
+      publishPosition
+    },
     positions: [],
     results: {},
-    errors: []
-
-    // publishPosition:  TODO ? add pre-filled helper functions to the poll?
+    errors: [],
+    decorated: true
   })
+
+  function publishPosition (opts, cb) {
+    if (poll.type === CHOOSE_ONE) {
+      publishChooseOnePosition({
+        poll,
+        choice: opts.choice,
+        reason: opts.reason
+      }, cb)
+    }
+  }
 
   // TODO add missingContext warnings to each msg
   msgs = sort(msgs)

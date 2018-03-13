@@ -1,34 +1,42 @@
+const sort = require('ssb-sort')
 const pull = require('pull-stream')
 const pullAsync = require('pull-async')
-const GetPoll = require('../../poll/async/get')
-const sort = require('ssb-sort')
 // var { link } = require('ssb-msg-schemas/util')
-//
+
+const isPosition = require('../../isPosition')
+// const GetPoll = require('../../poll/async/get') // ??!!! DOESN't WORK
 
 module.exports = function (server) {
-  const getPoll = GetPoll(server)
+  // const getPoll = GetPoll(server) // ??!!! DOESN't WORK
 
-  return function Position ({ poll = {}, details, reason, channel, mentions }, cb) {
+  return function Position ({ poll = {}, details, reason, mentions }, cb) {
+    // const getPoll = GetPoll(server) // ??!!! DOESN't WORK
+    const getPoll = require('../../poll/async/get')(server) // WORKS?!!!  T_T
+
     const content = {
       type: 'position',
       root: typeof poll === 'string' ? poll : poll.key,
       details
     }
 
-    if (reason) content.reason = reason
+    pull(
+      pullAsync(cb => {
+        if (poll.decorated) cb(null, poll)
+        else getPoll(content.root, cb)
+      }),
+      pull.map(autoFillContent),
+      pull.drain(content => {
+        if (!isPosition(content)) return cb(new Error('not a valid position'))
 
-    if (channel) {
-      if (typeof channel !== 'string') { throw new Error('channel must be a string') }
-      content.channel = channel
-    }
-
-    if (content.root && server) {
-      getPoll(content.root, (err, {positions}) => {
-        content.branch = sort.heads(positions)
-        cb(err, content)
+        server.publish(content, cb)
       })
-    } else {
-      cb(null, content)
+    )
+
+    function autoFillContent (poll) {
+      content.branch = sort.heads(poll.positions)
+      if (reason) content.reason = reason
+      if (poll.channel) content.channel = poll.channel
+      return content
     }
 
     // // NOTE mentions can be derived from text,
