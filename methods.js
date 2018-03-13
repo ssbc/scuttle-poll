@@ -4,7 +4,7 @@ const {isPoll, isChooseOnePoll, isPosition} = require('ssb-poll-schema')
 module.exports = {
   poll: {
     async: {
-      chooseOne: require('./poll/async/chooseOne'),
+      publishChooseOne: require('./poll/async/publishChooseOne'),
       get: require('./poll/async/get')
     },
     sync: {
@@ -15,8 +15,10 @@ module.exports = {
   },
   position: {
     async: {
-      chooseOne: require('./position/async/chooseOne'),
-      position: require('./position/async/position')
+      buildChooseOne: require('./position/async/buildChooseOne'),
+      publishChooseOne: require('./position/async/publishChooseOne'),
+      buildPosition: require('./position/async/buildPosition'),
+      publishPosition: require('./position/async/publishPosition')
     },
     sync: {
       isPosition: () => isPosition

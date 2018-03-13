@@ -1,8 +1,12 @@
 const test = require('tape')
 const pull = require('pull-stream')
 const pullAsync = require('pull-async')
-const ChooseOne = require('../../../position/async/buildChooseOne')()
 const {isPosition} = require('ssb-poll-schema')
+const Server = require('../../../lib/testServer')
+
+var server = Server()
+
+const ChooseOne = require('../../../position/async/buildChooseOne')(server)
 
 test('Position - ChooseOne', function (t) {
   pull(

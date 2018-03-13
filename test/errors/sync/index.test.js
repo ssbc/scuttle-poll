@@ -1,6 +1,7 @@
 const test = require('tape')
 const pull = require('pull-stream')
 const pullAsync = require('pull-async')
+const Server = require('../../../lib/testServer')
 
 const isPositionChoiceError = require('../../../errors/sync/isPositionChoiceError')
 const isPositionLateError = require('../../../errors/sync/isPositionLateError')
@@ -10,13 +11,23 @@ const PositionTypeError = require('../../../errors/sync/positionTypeError')
 const PositionLateError = require('../../../errors/sync/positionLateError')
 const PositionChoiceError = require('../../../errors/sync/positionChoiceError')
 
-const ChooseOne = require('../../../position/async/buildChooseOne')()
+const pollOpts = {
+  title: 'want to join my coop?',
+  choices: [
+    'yeah',
+    'nah'
+  ],
+  closesAt: new Date().toISOString()
+}
 
 test('positionTypeError', function (t) {
+  var server = Server()
+  const scuttlePoll = require('../../../index')(server)
   pull(
-    pullAsync(cb => {
-      ChooseOne({
-        poll: '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256',
+    pullAsync(cb => scuttlePoll.poll.async.publishChooseOne(pollOpts, cb)),
+    pull.asyncMap((poll, cb) => {
+      scuttlePoll.position.async.publishChooseOne({
+        poll,
         choice: 0
       }, cb)
     }),
@@ -26,17 +37,20 @@ test('positionTypeError', function (t) {
 
       var validError = PositionTypeError({position: validPosition})
       t.true(isPositionTypeError(validError), 'validates valid error')
+      server.close()
       t.end()
     })
-
   )
 })
 
 test('positionLateError', function (t) {
+  var server = Server()
+  const scuttlePoll = require('../../../index')(server)
   pull(
-    pullAsync(cb => {
-      ChooseOne({
-        poll: '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256',
+    pullAsync(cb => scuttlePoll.poll.async.publishChooseOne(pollOpts, cb)),
+    pull.asyncMap((poll, cb) => {
+      scuttlePoll.position.async.publishChooseOne({
+        poll,
         choice: 0
       }, cb)
     }),
@@ -46,16 +60,20 @@ test('positionLateError', function (t) {
 
       var validError = PositionLateError({position: validPosition})
       t.true(isPositionLateError(validError), 'validates valid error')
+      server.close()
       t.end()
     })
   )
 })
 
 test('positionChoiceError', function (t) {
+  var server = Server()
+  const scuttlePoll = require('../../../index')(server)
   pull(
-    pullAsync(cb => {
-      ChooseOne({
-        poll: '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256',
+    pullAsync(cb => scuttlePoll.poll.async.publishChooseOne(pollOpts, cb)),
+    pull.asyncMap((poll, cb) => {
+      scuttlePoll.position.async.publishChooseOne({
+        poll,
         choice: 0
       }, cb)
     }),
@@ -65,6 +83,7 @@ test('positionChoiceError', function (t) {
 
       var validError = PositionChoiceError({position: validPosition})
       t.true(isPositionChoiceError(validError), 'validates valid error')
+      server.close()
       t.end()
     })
   )

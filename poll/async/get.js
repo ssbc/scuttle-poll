@@ -1,11 +1,12 @@
 const pull = require('pull-stream')
 const sort = require('ssb-sort')
+const getContent = require('ssb-msg-content')
 const { isPoll, isPosition, isChooseOnePoll, isChooseOnePosition } = require('ssb-poll-schema')
 isPoll.chooseOne = isChooseOnePoll
 isPosition.chooseOne = isChooseOnePosition
-const { ERROR_POSITION_TYPE } = require('../../types')
-const getResults = require('../../results/sync/buildResults')
-const getMsgContent = require('../../lib/getMsgContent')
+const buildResults = require('../../results/sync/buildResults')
+const { CHOOSE_ONE, ERROR_POSITION_TYPE } = require('../../types')
+const publishChooseOnePosition = require('../../position/async/buildChooseOne')
 
 module.exports = function (server) {
   return function get (key, cb) {
@@ -13,14 +14,14 @@ module.exports = function (server) {
       if (err) return cb(err)
 
       var poll = { key, value }
-      if (!isPoll(poll)) return cb(new Error('scuttle-poll could not fetch, key provided was not a valid poll key'))
+      if (!isPoll(poll)) return cb(new Error('scuttle-poll could not get poll, key provided was not a valid poll key'))
 
       pull(
         createBacklinkStream(key),
         pull.collect((err, msgs) => {
           if (err) return cb(err)
 
-          cb(null, decoratedPoll(poll, msgs))
+          cb(null, decoratePoll(poll, msgs))
         })
       )
     })
@@ -40,14 +41,17 @@ module.exports = function (server) {
   }
 }
 
-function decoratedPoll (rawPoll, msgs = []) {
+function decoratePoll (rawPoll, msgs = []) {
   const {
     author,
     content: {
       title,
       body,
+      channel,
       details: { type }
-    }
+    },
+    recps,
+    mentions
   } = rawPoll.value
 
   const poll = Object.assign({}, rawPoll, {
@@ -55,13 +59,28 @@ function decoratedPoll (rawPoll, msgs = []) {
     author,
     title,
     body,
+    channel,
+    recps,
+    mentions,
 
+    actions: {
+      publishPosition
+    },
     positions: [],
     results: {},
-    errors: []
-
-    // publishPosition:  TODO ? add pre-filled helper functions to the poll?
+    errors: [],
+    decorated: true
   })
+
+  function publishPosition (opts, cb) {
+    if (poll.type === CHOOSE_ONE) {
+      publishChooseOnePosition({
+        poll,
+        choice: opts.choice,
+        reason: opts.reason
+      }, cb)
+    }
+  }
 
   // TODO add missingContext warnings to each msg
   msgs = sort(msgs)
@@ -84,7 +103,7 @@ function decoratedPoll (rawPoll, msgs = []) {
       }
     })
 
-  const {results, errors} = getResults({ poll, positions: poll.positions })
+  const {results, errors} = buildResults({ poll, positions: poll.positions })
   poll.results = results
   poll.errors = poll.errors.concat(errors)
 
@@ -92,8 +111,8 @@ function decoratedPoll (rawPoll, msgs = []) {
 }
 
 function decoratePosition ({position: rawPosition, poll: rawPoll}) {
-  var position = getMsgContent(rawPosition)
-  var poll = getMsgContent(rawPoll)
+  var position = getContent(rawPosition)
+  var poll = getContent(rawPoll)
 
   // NOTE this isn't deep enough to be a safe clone
   var newPosition = Object.assign({}, rawPosition)
