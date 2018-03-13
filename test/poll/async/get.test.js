@@ -1,16 +1,12 @@
 var test = require('tape')
-var Server = require('scuttle-testbot')
+const Server = require('../../../lib/testServer')
 var pull = require('pull-stream')
 
 var ChooseOnePoll = require('../../../poll/sync/buildChooseOne')
+var ChooseOnePosition = require('../../../position/async/buildChooseOne')
 var getPoll = require('../../../poll/async/get')
 
-Server
-  .use(require('ssb-backlinks'))
-
-var server = Server({name: 'testBotName'})
-
-var ChooseOne = require('../../../position/async/buildChooseOne')(server)
+var server = Server()
 
 var katie = server.createFeed()
 var piet = server.createFeed()
@@ -27,13 +23,15 @@ test('pull.async.get', t => {
 
     pull(
       pull.values([
-        { author: katie, position: { poll, choice: 1, reason: 'they are sick!' } },
-        { author: piet, position: { poll, choice: 2, reason: 'scuttles 4life' } }
+        { author: katie, opts: { poll, choice: 1, reason: 'they are sick!' } },
+        { author: piet, opts: { poll, choice: 2, reason: 'scuttles 4life' } }
       ]),
       pull.asyncMap((t, cb) => {
-        ChooseOne(t.position, (err, position) => {
+        // NOTE: piet.get does not exist, so have to build using the master server
+        ChooseOnePosition(server)(t.opts, (err, position) => {
+          if (err) return cb(err)
           t.position = position
-          cb(err, t)
+          cb(null, t)
         })
       }),
       pull.asyncMap((t, cb) => t.author.publish(t.position, cb)),
@@ -57,8 +55,9 @@ test('pull.async.get', t => {
         t.equal(data.positions.length, 2, 'has positions')
 
         var positions = data.positions
-        t.deepEqual(positions[0].value.content.branch, [], 'first published postion has no branch')
-        t.equal(positions[1].value.content.branch[0], positions[0].key, 'second published branch has first position as branch')
+        // console.log(positions)
+        t.deepEqual(positions[0].value.content.branch, [], 'first published position has no branch')
+        t.deepEqual(positions[1].value.content.branch, [positions[0].key], 'second published branch has first position as branch')
 
         t.equal(positions[0].choice, pollContent.details.choices[1], 'choice is the value from the poll, not the index.')
 

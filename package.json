@@ -36,6 +36,7 @@
     "lodash.clonedeep": "^4.5.0",
     "mutant": "^3.22.1",
     "pull-stream": "^3.6.2",
+    "ssb-msg-content": "^1.0.0",
     "ssb-msg-schemas": "^6.3.0",
     "ssb-poll-schema": "^1.1.0",
     "ssb-ref": "^2.9.0"
