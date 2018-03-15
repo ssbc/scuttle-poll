@@ -1,5 +1,3 @@
-const pull = require('pull-stream')
-const pullAsync = require('pull-async')
 const GetPoll = require('../../poll/async/get')
 const sort = require('ssb-sort')
 // var { link } = require('ssb-msg-schemas/util')

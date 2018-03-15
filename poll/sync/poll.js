@@ -1,7 +1,7 @@
 // var { link } = require('ssb-msg-schemas/util')
 
 function Poll ({ details, title, closesAt, body, channel, recps, mentions }) {
-  var content = { type: 'poll', details, title, closesAt }
+  var content = { type: 'poll', details, title, closesAt, version: 'v1' }
 
   if (body) content.body = body
 

@@ -1,6 +1,6 @@
 const test = require('tape')
 const ChooseOne = require('../../../poll/sync/chooseOne')
-const isPoll = require('../../../isPoll')
+const {isPoll, isChooseOnePoll} = require('ssb-poll-schema')
 
 test('Position - ChooseOne', function (t) {
   var invalidPoll = ChooseOne({
@@ -13,7 +13,7 @@ test('Position - ChooseOne', function (t) {
     closesAt: new Date().toISOString()
   })
   t.true(isPoll(validPoll), 'simple (passes isPoll)')
-  t.true(isPoll.chooseOne(validPoll), 'simple (passes isPoll.chooseOne)')
+  t.true(isChooseOnePoll(validPoll), 'simple (passes isChooseOnePoll)')
 
   var fullPollMsg = {
     key: '%somekey',
