@@ -1,6 +1,8 @@
 const pull = require('pull-stream')
 const sort = require('ssb-sort')
-const { isPoll, isPosition } = require('ssb-poll-schema')
+const { isPoll, isPosition, isChooseOnePoll, isChooseOnePosition } = require('ssb-poll-schema')
+isPoll.chooseOne = isChooseOnePoll
+isPosition.chooseOne = isChooseOnePosition
 const { ERROR_POSITION_TYPE } = require('../../types')
 const getResults = require('../../position/sync/chooseOneResults')
 const getMsgContent = require('../../lib/getMsgContent')

@@ -9,6 +9,7 @@ module.exports = function (server) {
   return function Position ({ poll = {}, details, reason, channel, mentions }, cb) {
     const content = {
       type: 'position',
+      version: 'v1',
       root: typeof poll === 'string' ? poll : poll.key,
       details
     }
