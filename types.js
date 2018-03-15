@@ -2,7 +2,8 @@ module.exports = {
   CHOOSE_ONE: 'chooseOne',
   ERROR_POSITION_TYPE: 'ERROR_POSITION_TYPE',
   ERROR_POSITION_LATE: 'ERROR_POSITION_LATE',
-  ERROR_POSITION_CHOICE: 'ERROR_POSITION_CHOICE'
+  ERROR_POSITION_CHOICE: 'ERROR_POSITION_CHOICE',
+  SCHEMA_VERSION: 'v1'
 }
 
 // Question: do these need to be different, could we just have 'chooseOne',

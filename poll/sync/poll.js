@@ -1,7 +1,8 @@
 // var { link } = require('ssb-msg-schemas/util')
+const {SCHEMA_VERSION} = require('../../types')
 
 function Poll ({ details, title, closesAt, body, channel, recps, mentions }) {
-  var content = { type: 'poll', details, title, closesAt, version: 'v1' }
+  var content = { type: 'poll', details, title, closesAt, version: SCHEMA_VERSION }
 
   if (body) content.body = body
 
