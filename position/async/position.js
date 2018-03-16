@@ -1,7 +1,7 @@
 const sort = require('ssb-sort')
 
 const GetPoll = require('../../poll/async/get')
-const {SCHEMA_VERSION} = require('../../types')
+const {versionStrings: {V1_SCHEMA_VERSION_STRING}} = require('ssb-poll-schema')
 // var { link } = require('ssb-msg-schemas/util')
 //
 
@@ -11,7 +11,7 @@ module.exports = function (server) {
   return function Position ({ poll = {}, details, reason, channel, mentions }, cb) {
     const content = {
       type: 'position',
-      version: SCHEMA_VERSION,
+      version: V1_SCHEMA_VERSION_STRING,
       root: typeof poll === 'string' ? poll : poll.key,
       details
     }
