@@ -1,5 +1,5 @@
 const test = require('tape')
-const ChooseOne = require('../../../poll/sync/chooseOne')
+const ChooseOne = require('../../../poll/sync/buildChooseOne')
 const {isPoll, isChooseOnePoll} = require('ssb-poll-schema')
 
 test('Position - ChooseOne', function (t) {

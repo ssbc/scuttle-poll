@@ -10,7 +10,7 @@ const PositionTypeError = require('../../../errors/sync/positionTypeError')
 const PositionLateError = require('../../../errors/sync/positionLateError')
 const PositionChoiceError = require('../../../errors/sync/positionChoiceError')
 
-const ChooseOne = require('../../../position/async/chooseOne')()
+const ChooseOne = require('../../../position/async/buildChooseOne')()
 
 test('positionTypeError', function (t) {
   pull(
