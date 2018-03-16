@@ -3,11 +3,11 @@ const schema = require('../schema/positionTypeError')
 const validator = Validator(schema, {verbose: true})
 
 // server is not used here. Closure pattern is just for consistency of use with other functions.
-module.exports = function isError (obj) {
+module.exports = function isPostitionTypeError (obj) {
   const result = validator(obj)
 
   // exposes error messages provided by is-my-json-valid
-  isError.errors = validator.errors
+  isPostitionTypeError.errors = validator.errors
 
   return result
 }
