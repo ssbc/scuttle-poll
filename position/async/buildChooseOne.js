@@ -1,4 +1,4 @@
-const createPosition = require('./position')
+const createPosition = require('./buildPosition')
 const { CHOOSE_ONE } = require('../../types')
 
 module.exports = function (server) {

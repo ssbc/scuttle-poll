@@ -4,7 +4,7 @@ const { isPoll, isPosition, isChooseOnePoll, isChooseOnePosition } = require('ss
 isPoll.chooseOne = isChooseOnePoll
 isPosition.chooseOne = isChooseOnePosition
 const { ERROR_POSITION_TYPE } = require('../../types')
-const getResults = require('../../position/sync/chooseOneResults')
+const getResults = require('../../position/sync/buildResults')
 const getMsgContent = require('../../lib/getMsgContent')
 
 module.exports = function (server) {

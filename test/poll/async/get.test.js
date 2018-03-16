@@ -2,7 +2,7 @@ var test = require('tape')
 var Server = require('scuttle-testbot')
 var pull = require('pull-stream')
 
-var ChooseOnePoll = require('../../../poll/sync/chooseOne')
+var ChooseOnePoll = require('../../../poll/sync/buildChooseOne')
 var getPoll = require('../../../poll/async/get')
 
 Server
@@ -10,7 +10,7 @@ Server
 
 var server = Server({name: 'testBotName'})
 
-var ChooseOne = require('../../../position/async/chooseOne')(server)
+var ChooseOne = require('../../../position/async/buildChooseOne')(server)
 
 var katie = server.createFeed()
 var piet = server.createFeed()

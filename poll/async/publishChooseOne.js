@@ -1,4 +1,4 @@
-const ChooseOne = require('../sync/chooseOne')
+const ChooseOne = require('../sync/buildChooseOne')
 const { isPoll } = require('ssb-poll-schema')
 
 module.exports = function (server) {

@@ -1,8 +1,9 @@
 const test = require('tape')
 const pull = require('pull-stream')
-const ChooseOne = require('../../../position/async/chooseOne')()
-const ChooseOnePoll = require('../../../poll/sync/chooseOne')
-const chooseOneResults = require('../../../position/sync/chooseOneResults')
+const ChooseOne = require('../../../position/async/buildChooseOne')()
+const ChooseOnePoll = require('../../../poll/sync/buildChooseOne')
+const chooseOneResults = require('../../../position/sync/buildResults')
+const {isPosition, isPoll} = require('ssb-poll-schema')
 const {ERROR_POSITION_CHOICE, ERROR_POSITION_LATE} = require('../../../types')
 
 const pietId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/0=.ed25519'
@@ -14,10 +15,10 @@ const sallyId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/5=.ed25519'
 
 const poll = '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256'
 
-const now = Number(new Date())
+const now = new Date().toISOString()
 
 const validPoll = {
-  key: '%schwoop',
+  key: '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256',
   value: {
     content: ChooseOnePoll({
       choices: [1, 2, 'three'],

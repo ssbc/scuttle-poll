@@ -1,7 +1,7 @@
 const getMsgContent = require('../../lib/getMsgContent')
-const ChooseOne = require('../../poll/sync/chooseOne')
 const PositionChoiceError = require('../../errors/sync/positionChoiceError')
 const PositionLateError = require('../../errors/sync/positionLateError')
+const { isChooseOnePoll } = require('ssb-poll-schema')
 
 // Expects `poll` and `position` objects passed in to be of shape:
 // {
@@ -14,7 +14,13 @@ const PositionLateError = require('../../errors/sync/positionLateError')
 // }
 //
 // postions must be of the correct type ie: type checked by the caller.
-module.exports = function chooseOneResults ({positions, poll}) {
+module.exports = function ({positions, poll}) {
+  if (isChooseOnePoll(poll)) {
+    return chooseOneResults({positions, poll})
+  }
+}
+
+function chooseOneResults ({positions, poll}) {
   var results = getMsgContent(poll)
     .details
     .choices
