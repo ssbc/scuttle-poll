@@ -1,5 +1,5 @@
-var getMsgContent = require('../../lib/getMsgContent')
-var ChooseOne = require('../../poll/sync/chooseOne')
+const getMsgContent = require('../../lib/getMsgContent')
+const ChooseOne = require('../../poll/sync/chooseOne')
 const PositionChoiceError = require('../../errors/sync/positionChoiceError')
 const PositionLateError = require('../../errors/sync/positionLateError')
 

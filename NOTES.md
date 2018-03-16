@@ -22,7 +22,7 @@ These are a short-hand for what we think have been good patterns in this project
 - Opinionated folder structure. Human readable API.
 - Testing
 - Linting with ale
-- Give your test files *.test.js filenames. It helps with readability when there are errors.
+- Give your test files `*.test.js` filenames. It helps with readability when there are errors.
 - the inject pattern
 - prefer passing a single object rather than ordered args
 - don't modify data passed into a function

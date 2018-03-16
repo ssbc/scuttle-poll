@@ -2,7 +2,7 @@ const test = require('tape')
 const pull = require('pull-stream')
 const pullAsync = require('pull-async')
 const ChooseOne = require('../../../position/async/chooseOne')()
-const isPosition = require('../../../isPosition')
+const {isPosition} = require('ssb-poll-schema')
 
 test('Position - ChooseOne', function (t) {
   pull(

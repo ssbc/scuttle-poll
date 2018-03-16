@@ -2,9 +2,9 @@ const test = require('tape')
 const pull = require('pull-stream')
 const pullAsync = require('pull-async')
 
-const isPositionChoiceError = require('../../../errors/sync/isPositionChoiceError')()
-const isPositionLateError = require('../../../errors/sync/isPositionLateError')()
-const isPositionTypeError = require('../../../errors/sync/isPositionTypeError')()
+const isPositionChoiceError = require('../../../errors/sync/isPositionChoiceError')
+const isPositionLateError = require('../../../errors/sync/isPositionLateError')
+const isPositionTypeError = require('../../../errors/sync/isPositionTypeError')
 
 const PositionTypeError = require('../../../errors/sync/positionTypeError')
 const PositionLateError = require('../../../errors/sync/positionLateError')

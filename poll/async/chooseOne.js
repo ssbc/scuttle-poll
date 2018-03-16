@@ -1,5 +1,5 @@
 const ChooseOne = require('../sync/chooseOne')
-const isPoll = require('../../isPoll')
+const { isPoll } = require('ssb-poll-schema')
 
 module.exports = function (server) {
   return function publishChooseOne (opts, cb) {
