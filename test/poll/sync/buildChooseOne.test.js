@@ -2,7 +2,7 @@ const test = require('tape')
 const ChooseOne = require('../../../poll/sync/buildChooseOne')
 const {isPoll, isChooseOnePoll} = require('ssb-poll-schema')
 
-test('Position - ChooseOne', function (t) {
+test('poll.sync.buildeChooseOne', function (t) {
   var invalidPoll = ChooseOne({
   })
   t.false(isPoll(invalidPoll), 'invalid')

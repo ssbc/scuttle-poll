@@ -1,10 +1,13 @@
 const pull = require('pull-stream')
 const pullAsync = require('pull-async')
 const { heads } = require('ssb-sort')
-const { isPosition, versionStrings: {V1_SCHEMA_VERSION_STRING} } = require('ssb-poll-schema')
+const { isMsg } = require('ssb-ref')
+const { isPoll, isPosition, versionStrings: {V1_SCHEMA_VERSION_STRING} } = require('ssb-poll-schema')
 
 module.exports = function (server) {
   return function Position ({ poll, details, reason, mentions }, cb) {
+    if (!isPoll(poll) && !isMsg(poll)) return cb(new Error('Position factory expects a valid poll'))
+
     // NOTE - getPoll has to be required here to avoid circular deps
     const getPoll = require('../../poll/async/get')(server)
 
@@ -30,8 +33,7 @@ module.exports = function (server) {
         details
       }
 
-      const branch = heads(poll.positions)
-      if (branch && branch.length) content.branch = branch
+      content.branch = heads(poll.positions || [])
 
       if (reason) content.reason = reason
       if (poll.channel) content.channel = poll.channel
