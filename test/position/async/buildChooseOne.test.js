@@ -9,6 +9,8 @@ var server = Server()
 const publishChooseOne = require('../../../poll/async/publishChooseOne')(server)
 const ChooseOne = require('../../../position/async/buildChooseOne')(server)
 
+test.onFinish(() => server.close())
+
 test('position.async.buildChooseOne', function (t) {
   t.plan(5)
 
