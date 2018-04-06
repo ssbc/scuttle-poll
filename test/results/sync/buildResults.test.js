@@ -1,8 +1,12 @@
 const test = require('tape')
 const pull = require('pull-stream')
-const ChooseOne = require('../../../position/async/buildChooseOne')()
+const pullAsync = require('pull-async')
+const Server = require('../../../lib/testServer')
+const server = Server()
+const ChooseOne = require('../../../position/async/buildChooseOne')(server)
 const ChooseOnePoll = require('../../../poll/sync/buildChooseOne')
 const chooseOneResults = require('../../../results/sync/buildResults')
+const PublishChooseOnePoll = require('../../../poll/async/publishChooseOne')(server)
 const {isPosition, isPoll} = require('ssb-poll-schema')
 const {ERROR_POSITION_CHOICE, ERROR_POSITION_LATE} = require('../../../types')
 
@@ -18,67 +22,67 @@ const poll = '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256'
 const now = new Date().toISOString()
 
 const validPoll = {
-  key: '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256',
-  value: {
-    content: ChooseOnePoll({
-      choices: [1, 2, 'three'],
-      title: 'how many food',
-      closesAt: now
-    })
-  }
+  choices: [1, 2, 'three'],
+  title: 'how many food',
+  closesAt: now
 }
 
 test('ChooseOneResults - ChooseOneResults', function (t) {
-  const positions = [
-    { value: { content: {choice: 0, poll}, author: pietId } },
-    { value: { content: {choice: 0, poll}, author: mixId } },
-    { value: { content: {choice: 0, poll}, author: mikeyId } },
-    { value: { content: {choice: 1, poll}, author: timmyId } },
-    { value: { content: {choice: 1, poll}, author: tommyId } },
-    { value: { content: {choice: 2, poll}, author: sallyId } }
-  ]
+  PublishChooseOnePoll(validPoll, function (err, poll) {
+    t.error(err)
 
-  const expected = {
-    results: [
-      {
-        choice: 1,
-        voters: {
-          [pietId]: positions[0],
-          [mixId]: positions[1],
-          [mikeyId]: positions[2]
-        }
-      },
-      {
-        choice: 2,
-        voters: {
-          [timmyId]: positions[3],
-          [tommyId]: positions[4]
-        }
-      },
-      {
-        choice: 'three',
-        voters: {
-          [sallyId]: positions[5]
-        }
-      }
-    ],
-    errors: {}
-  }
+    const positions = [
+      { value: { content: {choice: 0, poll}, author: pietId }, key: '%dfkjd0' },
+      { value: { content: {choice: 0, poll}, author: mixId }, key: '%dfkjd1' },
+      { value: { content: {choice: 0, poll}, author: mikeyId }, key: '%dfkjd2' },
+      { value: { content: {choice: 1, poll}, author: timmyId }, key: '%dfkjd3' },
+      { value: { content: {choice: 1, poll}, author: tommyId }, key: '%dfkjd4' },
+      { value: { content: {choice: 2, poll}, author: sallyId }, key: '%dfkjd5' }
+    ]
 
-  pull(
-    pull.values(positions),
-    pull.asyncMap((fullPosition, cb) => {
-      ChooseOne(fullPosition.value.content, (err, position) => {
-        fullPosition.value.content = position
-        cb(err, fullPosition)
+    const expected = {
+      results: [
+        {
+          choice: 1,
+          voters: {
+            [pietId]: positions[0],
+            [mixId]: positions[1],
+            [mikeyId]: positions[2]
+          }
+        },
+        {
+          choice: 2,
+          voters: {
+            [timmyId]: positions[3],
+            [tommyId]: positions[4]
+          }
+        },
+        {
+          choice: 'three',
+          voters: {
+            [sallyId]: positions[5]
+          }
+        }
+      ],
+      errors: {}
+    }
+
+    pull(
+      pull.values(positions),
+      pull.asyncMap((fullPosition, cb) => {
+        var positionAndPoll = Object.assign({}, fullPosition.value.content, { poll })
+        ChooseOne(positionAndPoll, (err, position) => {
+          fullPosition.value.content = position
+          cb(err, fullPosition)
+        })
+      }),
+      pull.collect(postions => {
+        const actual = chooseOneResults({positions, poll})
+        t.deepEqual(actual, expected, 'results are correct')
+        t.end()
       })
-    }),
-    pull.collect(postions => {
-      const actual = chooseOneResults({positions, poll: validPoll})
-      t.deepEqual(actual, expected, 'results are correct')
-      t.end()
-    })
-  )
+    )
+  })
 })
 
 test('ChooseOneResults - a position stated for an invalid choice index is not counted', function (t) {

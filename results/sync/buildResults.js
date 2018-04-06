@@ -34,10 +34,8 @@ function chooseOneResults ({positions, poll}) {
     })
 
   return positions.reduce(function (acc, position) {
-    console.log(position)
     const { author } = position.value
     const { choice } = getContent(position).details
-    console.log(author, choice)
 
     if (isInvalidChoice({position, poll})) {
       acc.errors.push(PositionChoiceError({position}))
