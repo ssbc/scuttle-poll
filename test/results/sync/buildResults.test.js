@@ -3,10 +3,8 @@ const pull = require('pull-stream')
 const Server = require('../../../lib/testServer')
 const server = Server()
 const ChooseOne = require('../../../position/async/buildChooseOne')(server)
-const ChooseOnePoll = require('../../../poll/sync/buildChooseOne')
 const chooseOneResults = require('../../../results/sync/buildResults')
 const PublishChooseOnePoll = require('../../../poll/async/publishChooseOne')(server)
-const {isPosition, isPoll} = require('ssb-poll-schema')
 const {ERROR_POSITION_CHOICE, ERROR_POSITION_LATE} = require('../../../types')
 
 const pietId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/0=.ed25519'
@@ -15,8 +13,6 @@ const mikeyId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/2=.ed25519'
 const timmyId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/3=.ed25519'
 const tommyId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/4=.ed25519'
 const sallyId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/5=.ed25519'
-
-const poll = '%t+PhrNxxXkw/jMo6mnwUWfFjJapoPWxzsQoe0Np+nYw=.sha256'
 
 const now = new Date().toISOString()
 
