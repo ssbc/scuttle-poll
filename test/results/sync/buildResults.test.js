@@ -1,6 +1,5 @@
 const test = require('tape')
 const pull = require('pull-stream')
-const pullAsync = require('pull-async')
 const Server = require('../../../lib/testServer')
 const server = Server()
 const ChooseOne = require('../../../position/async/buildChooseOne')(server)
@@ -26,6 +25,8 @@ const validPoll = {
   title: 'how many food',
   closesAt: now
 }
+
+test.onFinish(() => server.close())
 
 test('ChooseOneResults - ChooseOneResults', function (t) {
   PublishChooseOnePoll(validPoll, function (err, poll) {
@@ -86,129 +87,157 @@ test('ChooseOneResults - ChooseOneResults', function (t) {
 })
 
 test('ChooseOneResults - a position stated for an invalid choice index is not counted', function (t) {
-  const positions = [
-    { value: { content: {choice: 3, poll}, author: pietId } }
-  ]
+  PublishChooseOnePoll(validPoll, function (err, poll) {
+    t.error(err)
+    const positions = [
+      { value: { content: {choice: 2, poll}, author: pietId }, key: '%dfkjdf' }
+    ]
 
-  pull(
-    pull.values(positions),
-    pull.asyncMap((fullPosition, cb) => {
-      ChooseOne(fullPosition.value.content, (err, position) => {
-        fullPosition.value.content = position
-        cb(err, fullPosition)
+    pull(
+      pull.values(positions),
+      pull.asyncMap((fullPosition, cb) => {
+        var positionAndPoll = Object.assign({}, fullPosition.value.content, { poll })
+        ChooseOne(positionAndPoll, (err, position) => {
+          t.error(err)
+          position.details.choice = 3
+          fullPosition.value.content = position
+          cb(err, fullPosition)
+        })
+      }),
+      pull.collect(postions => {
+        const actual = chooseOneResults({positions, poll})
+        t.false(actual.results[3], 'invalid vote is not counted')
+        t.end()
       })
-    }),
-    pull.collect(postions => {
-      const actual = chooseOneResults({positions, poll: validPoll})
-      t.false(actual.results[3], 'invalid vote is not counted')
-      t.end()
-    })
-  )
+    )
+  })
 })
 
 test('ChooseOneResults - a position stated for an invalid choice index is included in the errors object', function (t) {
-  const positions = [
-    { value: { content: {choice: 3, poll}, author: pietId } }
-  ]
+  PublishChooseOnePoll(validPoll, function (err, poll) {
+    t.error(err)
+    const positions = [
+      { value: { content: {choice: 2, poll}, author: pietId }, key: '%fdfslkjdf' }
+    ]
 
-  pull(
-    pull.values(positions),
-    pull.asyncMap((fullPosition, cb) => {
-      ChooseOne(fullPosition.value.content, (err, position) => {
-        fullPosition.value.content = position
-        cb(err, fullPosition)
+    pull(
+      pull.values(positions),
+      pull.asyncMap((fullPosition, cb) => {
+        var positionAndPoll = Object.assign({}, fullPosition.value.content, { poll })
+        ChooseOne(positionAndPoll, (err, position) => {
+          t.error(err)
+          position.details.choice = 3
+          fullPosition.value.content = position
+          cb(err, fullPosition)
+        })
+      }),
+      pull.collect(postions => {
+        const actual = chooseOneResults({positions, poll})
+        t.deepEqual(actual.errors[0].type, ERROR_POSITION_CHOICE, 'invalid vote is on error object')
+        t.end()
       })
-    }),
-    pull.collect(postions => {
-      const actual = chooseOneResults({positions, poll: validPoll})
-      t.deepEqual(actual.errors[0].type, ERROR_POSITION_CHOICE, 'invalid vote is on error object')
-      t.end()
-    })
-  )
+    )
+  })
 })
 
 test('ChooseOneResults - A position stated before the closing time of the poll is counted', function (t) {
-  const positions = [
-    { value: { content: {choice: 0, poll}, author: pietId, timestamp: now - 1 } }
-  ]
+  PublishChooseOnePoll(validPoll, function (err, poll) {
+    t.error(err)
+    const positions = [
+      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now - 1 }, key: '%dfkjsdlkjf'}
+    ]
 
-  pull(
-    pull.values(positions),
-    pull.asyncMap((fullPosition, cb) => {
-      ChooseOne(fullPosition.value.content, (err, position) => {
-        fullPosition.value.content = position
-        cb(err, fullPosition)
+    pull(
+      pull.values(positions),
+      pull.asyncMap((fullPosition, cb) => {
+        var positionAndPoll = Object.assign({}, fullPosition.value.content, { poll })
+        ChooseOne(positionAndPoll, (err, position) => {
+          fullPosition.value.content = position
+          cb(err, fullPosition)
+        })
+      }),
+      pull.collect(postions => {
+        const actual = chooseOneResults({positions, poll})
+        t.ok(actual.results[0].voters[pietId], 'valid vote is counted')
+        t.end()
       })
-    }),
-    pull.collect(postions => {
-      const actual = chooseOneResults({positions, poll: validPoll})
-      t.ok(actual.results[0].voters[pietId], 'valid vote is counted')
-      t.end()
-    })
-  )
+    )
+  })
 })
 
 test('ChooseOneResults - A position stated after the closing time of the poll is not counted', function (t) {
-  const positions = [
-    { value: { content: {choice: 0, poll}, author: pietId, timestamp: now + 1 } }
-  ]
+  PublishChooseOnePoll(validPoll, function (err, poll) {
+    t.error(err)
+    const positions = [
+      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now + 1 }, key: '%dfljsdkdj'}
+    ]
 
-  pull(
-    pull.values(positions),
-    pull.asyncMap((fullPosition, cb) => {
-      ChooseOne(fullPosition.value.content, (err, position) => {
-        fullPosition.value.content = position
-        cb(err, fullPosition)
+    pull(
+      pull.values(positions),
+      pull.asyncMap((fullPosition, cb) => {
+        var positionAndPoll = Object.assign({}, fullPosition.value.content, { poll })
+        ChooseOne(positionAndPoll, (err, position) => {
+          fullPosition.value.content = position
+          cb(err, fullPosition)
+        })
+      }),
+      pull.collect(postions => {
+        const actual = chooseOneResults({positions, poll})
+        t.deepEqual(actual.results[0].voters, {}, 'invalid vote is not counted')
+        t.end()
       })
-    }),
-    pull.collect(postions => {
-      const actual = chooseOneResults({positions, poll: validPoll})
-      t.deepEqual(actual.results[0].voters, {}, 'invalid vote is not counted')
-      t.end()
-    })
-  )
+    )
+  })
 })
 
 test('ChooseOneResults - A position stated after the closing time of the poll is included in the error object', function (t) {
-  const positions = [
-    { value: { content: {choice: 0, poll}, author: pietId, timestamp: now + 1 } }
-  ]
+  PublishChooseOnePoll(validPoll, function (err, poll) {
+    t.error(err)
+    const positions = [
+      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now + 1 }, key: '%dfrdkjfd' }
+    ]
 
-  pull(
-    pull.values(positions),
-    pull.asyncMap((fullPosition, cb) => {
-      ChooseOne(fullPosition.value.content, (err, position) => {
-        fullPosition.value.content = position
-        cb(err, fullPosition)
+    pull(
+      pull.values(positions),
+      pull.asyncMap((fullPosition, cb) => {
+        var positionAndPoll = Object.assign({}, fullPosition.value.content, { poll })
+        ChooseOne(positionAndPoll, (err, position) => {
+          fullPosition.value.content = position
+          cb(err, fullPosition)
+        })
+      }),
+      pull.collect(postions => {
+        const actual = chooseOneResults({positions, poll})
+        t.deepEqual(actual.errors[0].type, ERROR_POSITION_LATE, 'invalid vote is on error object')
+        t.end()
       })
-    }),
-    pull.collect(postions => {
-      const actual = chooseOneResults({positions, poll: validPoll})
-      t.deepEqual(actual.errors[0].type, ERROR_POSITION_LATE, 'invalid vote is on error object')
-      t.end()
-    })
-  )
+    )
+  })
 })
 
 test('ChooseOneResults - ChooseOneResults only counts latest vote by an author', function (t) {
-  const positions = [
-    { value: { content: {choice: 2, poll}, author: pietId } },
-    { value: { content: {choice: 0, poll}, author: pietId } }
-  ]
+  PublishChooseOnePoll(validPoll, function (err, poll) {
+    t.error(err)
+    const positions = [
+      { value: { content: {choice: 2, poll}, author: pietId }, key: '%dfrdkjfd' },
+      { value: { content: {choice: 0, poll}, author: pietId }, key: '%dfrdkjf3' }
+    ]
 
-  pull(
-    pull.values(positions),
-    pull.asyncMap((fullPosition, cb) => {
-      ChooseOne(fullPosition.value.content, (err, position) => {
-        fullPosition.value.content = position
-        cb(err, fullPosition)
+    pull(
+      pull.values(positions),
+      pull.asyncMap((fullPosition, cb) => {
+        var positionAndPoll = Object.assign({}, fullPosition.value.content, { poll })
+        ChooseOne(positionAndPoll, (err, position) => {
+          fullPosition.value.content = position
+          cb(err, fullPosition)
+        })
+      }),
+      pull.collect(postions => {
+        const actual = chooseOneResults({positions, poll})
+        t.false(actual.results[2].voters[pietId], 'old vote is deleted')
+        t.true(actual.results[0].voters[pietId], 'new vote is counted')
+        t.end()
       })
-    }),
-    pull.collect(postions => {
-      const actual = chooseOneResults({positions, poll: validPoll})
-      t.false(actual.results[2].voters[pietId], 'old vote is deleted')
-      t.true(actual.results[0].voters[pietId], 'new vote is counted')
-      t.end()
-    })
-  )
+    )
+  })
 })
