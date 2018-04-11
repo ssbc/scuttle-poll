@@ -4,7 +4,7 @@ const pullAsync = require('pull-async')
 const {isPosition} = require('ssb-poll-schema')
 const Server = require('../../../lib/testServer')
 
-var server = Server()
+const server = Server()
 
 const publishChooseOne = require('../../../poll/async/publishChooseOne')(server)
 const ChooseOne = require('../../../position/async/buildChooseOne')(server)
