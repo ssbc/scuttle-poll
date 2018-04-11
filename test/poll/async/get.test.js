@@ -1,17 +1,17 @@
-var test = require('tape')
+const test = require('tape')
 const Server = require('../../../lib/testServer')
-var pull = require('pull-stream')
+const pull = require('pull-stream')
 
-var ChooseOnePoll = require('../../../poll/sync/buildChooseOne')
-var ChooseOnePosition = require('../../../position/async/buildChooseOne')
-var getPoll = require('../../../poll/async/get')
+const ChooseOnePoll = require('../../../poll/sync/buildChooseOne')
+const ChooseOnePosition = require('../../../position/async/buildChooseOne')
+const getPoll = require('../../../poll/async/get')
 
-var server = Server()
+const server = Server()
 
-var katie = server.createFeed()
-var piet = server.createFeed()
+const katie = server.createFeed()
+const piet = server.createFeed()
 
-var pollContent = ChooseOnePoll({
+const pollContent = ChooseOnePoll({
   title: "what's our mascott team?",
   choices: ['prairie dog', 'kea', 'hermit crab'],
   closesAt: nDaysTime(2)
@@ -54,7 +54,7 @@ test('pull.async.get', t => {
 
         t.equal(data.positions.length, 2, 'has positions')
 
-        var positions = data.positions
+        const positions = data.positions
         // console.log(positions)
         t.deepEqual(positions[0].value.content.branch, [], 'first published position has no branch')
         t.deepEqual(positions[1].value.content.branch, [positions[0].key], 'second published branch has first position as branch')
@@ -76,7 +76,7 @@ function print (obj) {
 }
 
 function nDaysTime (n) {
-  var d = new Date()
+  const d = new Date()
   d.setDate(d.getDate() + n)
 
   return d.toISOString()
