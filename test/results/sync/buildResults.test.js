@@ -2,7 +2,7 @@ const test = require('tape')
 const pull = require('pull-stream')
 const ChooseOne = require('../../../position/async/buildChooseOne')()
 const ChooseOnePoll = require('../../../poll/sync/buildChooseOne')
-const chooseOneResults = require('../../../position/sync/buildResults')
+const chooseOneResults = require('../../../results/sync/buildResults')
 const {isPosition, isPoll} = require('ssb-poll-schema')
 const {ERROR_POSITION_CHOICE, ERROR_POSITION_LATE} = require('../../../types')
 
