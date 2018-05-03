@@ -13,8 +13,7 @@ module.exports = function (server) {
 
     pull(
       pullAsync(cb => {
-        if (poll.decorated) cb(null, poll)
-        else getPoll(typeof poll === 'string' ? poll : poll.key, cb)
+        getPoll(typeof poll === 'string' ? poll : poll.key, cb)
       }),
       pull.map(build),
       pull.drain(position => {
@@ -44,17 +43,17 @@ module.exports = function (server) {
   }
 }
 
-    // // NOTE mentions can be derived from text,
-    // // or we could leave it so you can manually notify people without having to at-mention spam the text
-    // if (mentions && (!Array.isArray(mentions) || mentions.length)) {
-    //   mentions = links(mentions)
-    //   if (!mentions || !mentions.length) { throw new Error('mentions are not valid links') }
-    //   content.mentions = mentions
-    // }
+// // NOTE mentions can be derived from text,
+// // or we could leave it so you can manually notify people without having to at-mention spam the text
+// if (mentions && (!Array.isArray(mentions) || mentions.length)) {
+//   mentions = links(mentions)
+//   if (!mentions || !mentions.length) { throw new Error('mentions are not valid links') }
+//   content.mentions = mentions
+// }
 
-    // // NOTE recps should be derived from the poll I think
-    // if (recps && (!Array.isArray(recps) || recps.length)) {
-    //   recps = links(recps)
-    //   if (!recps || !recps.length) { throw new Error('recps are not valid links') }
-    //   content.recps = recps
-    // }
+// // NOTE recps should be derived from the poll I think
+// if (recps && (!Array.isArray(recps) || recps.length)) {
+//   recps = links(recps)
+//   if (!recps || !recps.length) { throw new Error('recps are not valid links') }
+//   content.recps = recps
+// }

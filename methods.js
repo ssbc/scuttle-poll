@@ -1,5 +1,5 @@
 // verbose export of public methods
-const {isPoll, isChooseOnePoll, isPosition} = require('ssb-poll-schema')
+const {isPoll, isChooseOnePoll, isPosition, isChooseOnePosition} = require('ssb-poll-schema')
 
 module.exports = {
   poll: {
@@ -21,7 +21,7 @@ module.exports = {
       publishPosition: require('./position/async/publishPosition')
     },
     sync: {
-      isPosition: () => isPosition
+      isChooseOnePosition: () => isChooseOnePosition
     }
   }
 }
