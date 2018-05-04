@@ -116,6 +116,7 @@ function decoratePosition ({position: rawPosition, poll: rawPoll}) {
 
   // NOTE this isn't deep enough to be a safe clone
   var newPosition = Object.assign({}, rawPosition)
+  newPosition.reason = position.reason
 
   if (isPoll.chooseOne(poll)) {
     var choiceIndex = position.details.choice
