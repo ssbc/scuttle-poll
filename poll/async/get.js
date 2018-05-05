@@ -10,6 +10,8 @@ const publishChooseOnePosition = require('../../position/async/buildChooseOne')
 
 module.exports = function (server) {
   return function get (key, cb) {
+    const myKey = server.id
+
     server.get(key, (err, value) => {
       if (err) return cb(err)
 
@@ -21,7 +23,7 @@ module.exports = function (server) {
         pull.collect((err, msgs) => {
           if (err) return cb(err)
 
-          cb(null, decoratePoll(poll, msgs))
+          cb(null, decoratePoll(poll, msgs, myKey))
         })
       )
     })
@@ -41,7 +43,7 @@ module.exports = function (server) {
   }
 }
 
-function decoratePoll (rawPoll, msgs = []) {
+function decoratePoll (rawPoll, msgs = [], myKey) {
   const {
     author,
     content: {
@@ -91,6 +93,12 @@ function decoratePoll (rawPoll, msgs = []) {
     .map(position => {
       return decoratePosition({position, poll})
     })
+
+  poll.myPosition = poll.positions
+    .filter(p => p.value.author === myKey)
+    .sort((a, b) => {
+      return a.value.timestamp > b.value.timestamp ? -1 : +1
+    })[0]
 
   poll.errors = msgs
     .filter(msg => msg.value.content.root === poll.key)
