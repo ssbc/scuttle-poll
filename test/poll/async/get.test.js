@@ -18,13 +18,8 @@ const pollContent = ChooseOnePoll({
   closesAt: nDaysTime(2)
 })
 
-const date = new Date()
-
-date.setYear(1989)
-const agesAgo = date.toISOString()
-
-date.setYear(2020)
-const soSoon = date.toISOString()
+const agesAway = nDaysTime(100)
+const soSoon = nDaysTime(1)
 
 test('pull.async.get', t => {
   piet.publish(pollContent, (err, poll) => {
@@ -45,7 +40,7 @@ test('pull.async.get', t => {
       }),
       pull.asyncMap((t, cb) => t.author.publish(t.position, cb)),
       pull.asyncMap((m, cb) => UpdatedClosingTime(server)({poll, closesAt: soSoon}, cb)),
-      pull.asyncMap((m, cb) => UpdatedClosingTime(server)({poll, closesAt: agesAgo}, cb)),
+      pull.asyncMap((m, cb) => UpdatedClosingTime(server)({poll, closesAt: agesAway}, cb)),
       pull.asyncMap((t, cb) => piet.publish(t, cb)),
       pull.drain(
         m => {}, // console.log(m.value.content.type),
@@ -66,7 +61,7 @@ test('pull.async.get', t => {
 
         t.equal(data.positions.length, 2, 'has positions')
 
-        t.equal(data.closesAt, agesAgo, 'gets the most recently published updated closing time')
+        t.equal(data.closesAt, agesAway, 'gets the most recently published updated closing time')
 
         const positions = data.positions
         t.deepEqual(positions[0].value.content.branch, [], 'first published position has no branch')
