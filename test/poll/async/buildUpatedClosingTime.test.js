@@ -26,8 +26,8 @@ test('poll.async.buildUpdatedClosingTime', function (t) {
           poll
         }, cb)
       }),
-      pull.drain((missingChoice) => {
-        t.false(isPollUpdate(missingChoice), 'missing a closing time')
+      pull.drain((missingClosingTime) => {
+        t.false(isPollUpdate(missingClosingTime), 'missing a closing time')
       })
     )
 
