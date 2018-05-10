@@ -84,11 +84,15 @@ function decoratePoll (rawPoll, msgs = [], myKey) {
     }
   }
 
+  function doesMsgRefPoll (msg) {
+    return msg.value.content.root === poll.key
+  }
+
   // TODO add missingContext warnings to each msg
   msgs = sort(msgs)
 
   const latestClosingTime = msgs
-    .filter(msg => msg.value.content.root === poll.key)
+    .filter(doesMsgRefPoll)
     .filter(isPollUpdate)
     .map(msg => parsePollUpdate(msg).closesAt)
     .pop()
@@ -96,7 +100,7 @@ function decoratePoll (rawPoll, msgs = [], myKey) {
   if (latestClosingTime) poll.closesAt = latestClosingTime
 
   poll.positions = msgs
-    .filter(msg => msg.value.content.root === poll.key)
+    .filter(doesMsgRefPoll)
     .filter(isPosition[type])
     .map(position => {
       return decoratePosition({position, poll})
@@ -109,7 +113,7 @@ function decoratePoll (rawPoll, msgs = [], myKey) {
     })[0]
 
   poll.errors = msgs
-    .filter(msg => msg.value.content.root === poll.key)
+    .filter(doesMsgRefPoll)
     .filter(msg => isPosition(msg) && !isPosition[type](msg))
     .map(position => {
       return {
