@@ -4,6 +4,7 @@ const pull = require('pull-stream')
 
 const ChooseOnePoll = require('../../../poll/sync/buildChooseOne')
 const ChooseOnePosition = require('../../../position/async/buildChooseOne')
+const UpdatedClosingTime = require('../../../poll/async/buildUpdatedClosingTime')
 const getPoll = require('../../../poll/async/get')
 
 const server = Server()
@@ -16,6 +17,11 @@ const pollContent = ChooseOnePoll({
   choices: ['prairie dog', 'kea', 'hermit crab'],
   closesAt: nDaysTime(2)
 })
+
+const agesAgoDate = new Date()
+
+agesAgoDate.setYear(1989)
+const agesAgo = agesAgoDate.toISOString()
 
 test('pull.async.get', t => {
   piet.publish(pollContent, (err, poll) => {
@@ -35,6 +41,8 @@ test('pull.async.get', t => {
         })
       }),
       pull.asyncMap((t, cb) => t.author.publish(t.position, cb)),
+      pull.asyncMap((m, cb) => UpdatedClosingTime(server)({poll, closesAt: agesAgo}, cb)),
+      pull.asyncMap((t, cb) => piet.publish(t, cb)),
       pull.drain(
         m => {}, // console.log(m.value.content.type),
         onDone
@@ -54,8 +62,9 @@ test('pull.async.get', t => {
 
         t.equal(data.positions.length, 2, 'has positions')
 
+        t.equal(data.closesAt, agesAgo, 'gets the most recently published updated closing time')
+
         const positions = data.positions
-        // console.log(positions)
         t.deepEqual(positions[0].value.content.branch, [], 'first published position has no branch')
         t.deepEqual(positions[1].value.content.branch, [positions[0].key], 'second published branch has first position as branch')
 
