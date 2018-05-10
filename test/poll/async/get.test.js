@@ -18,10 +18,13 @@ const pollContent = ChooseOnePoll({
   closesAt: nDaysTime(2)
 })
 
-const agesAgoDate = new Date()
+const date = new Date()
 
-agesAgoDate.setYear(1989)
-const agesAgo = agesAgoDate.toISOString()
+date.setYear(1989)
+const agesAgo = date.toISOString()
+
+date.setYear(2020)
+const soSoon = date.toISOString()
 
 test('pull.async.get', t => {
   piet.publish(pollContent, (err, poll) => {
@@ -41,6 +44,7 @@ test('pull.async.get', t => {
         })
       }),
       pull.asyncMap((t, cb) => t.author.publish(t.position, cb)),
+      pull.asyncMap((m, cb) => UpdatedClosingTime(server)({poll, closesAt: soSoon}, cb)),
       pull.asyncMap((m, cb) => UpdatedClosingTime(server)({poll, closesAt: agesAgo}, cb)),
       pull.asyncMap((t, cb) => piet.publish(t, cb)),
       pull.drain(
