@@ -32,7 +32,7 @@ module.exports = function (server) {
         closesAt
       }
 
-      content.branch = heads(poll.positions || [])
+      content.branch = heads(poll.positions.concat(poll))
 
       if (recps) content.recps = recps
       if (mentions) content.mentions = mentions

@@ -21,7 +21,7 @@ const pollContent = ChooseOnePoll({
 const agesAway = nDaysTime(100)
 const soSoon = nDaysTime(1)
 
-test('pull.async.get', t => {
+test('poll.async.get', t => {
   piet.publish(pollContent, (err, poll) => {
     if (err) throw err
 
@@ -64,7 +64,7 @@ test('pull.async.get', t => {
         t.equal(data.closesAt, agesAway, 'gets the most recently published updated closing time')
 
         const positions = data.positions
-        t.deepEqual(positions[0].value.content.branch, [], 'first published position has no branch')
+        t.deepEqual(positions[0].value.content.branch, [poll.key], 'first published position has poll as branch')
         t.deepEqual(positions[1].value.content.branch, [positions[0].key], 'second published branch has first position as branch')
 
         t.equal(positions[0].choice, pollContent.details.choices[1], 'choice is the value from the poll, not the index.')

@@ -32,7 +32,7 @@ module.exports = function (server) {
         details
       }
 
-      content.branch = heads(poll.positions || [])
+      content.branch = heads(poll.positions.concat(poll))
 
       if (reason) content.reason = reason
       if (poll.channel) content.channel = poll.channel
