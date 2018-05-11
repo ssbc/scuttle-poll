@@ -2,11 +2,11 @@ const pull = require('pull-stream')
 const pullAsync = require('pull-async')
 const { heads } = require('ssb-sort')
 const { isMsg } = require('ssb-ref')
-const { isPoll, isPosition, versionStrings: {V1_SCHEMA_VERSION_STRING} } = require('ssb-poll-schema')
+const { isPoll, isPollUpdate, versionStrings: {V1_SCHEMA_VERSION_STRING} } = require('ssb-poll-schema')
 
 module.exports = function (server) {
-  return function Position ({ poll, details, reason, mentions }, cb) {
-    if (!isPoll(poll) && !isMsg(poll)) return cb(new Error('Position factory expects a valid poll'))
+  return function UpdatedClosingTime ({ poll, mentions, recps, closesAt }, cb) {
+    if (!isPoll(poll) && !isMsg(poll)) return cb(new Error('UpdatedClosingTime factory expects a valid poll'))
 
     // NOTE - getPoll has to be required here to avoid circular deps
     const getPoll = require('../../poll/async/get')(server)
@@ -16,25 +16,26 @@ module.exports = function (server) {
         getPoll(typeof poll === 'string' ? poll : poll.key, cb)
       }),
       pull.map(build),
-      pull.drain(position => {
-        if (!isPosition(position)) return cb(isPosition.errors)
+      pull.drain(update => {
+        if (!isPollUpdate(update)) return cb(isPollUpdate.errors)
 
-        cb(null, position)
+        cb(null, update)
       })
     )
 
     function build (poll) {
       // NOTE - poll here is a decorated poll
       const content = {
-        type: 'position',
+        type: 'poll-update',
         version: V1_SCHEMA_VERSION_STRING,
         root: poll.key,
-        details
+        closesAt
       }
 
       content.branch = heads(poll.positions.concat(poll))
 
-      if (reason) content.reason = reason
+      if (recps) content.recps = recps
+      if (mentions) content.mentions = mentions
       if (poll.channel) content.channel = poll.channel
       if (mentions) content.mentions = mentions
 

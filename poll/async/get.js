@@ -1,7 +1,7 @@
 const pull = require('pull-stream')
 const sort = require('ssb-sort')
 const getContent = require('ssb-msg-content')
-const { isPoll, isPosition, isChooseOnePoll, isChooseOnePosition } = require('ssb-poll-schema')
+const { isPoll, isPosition, isChooseOnePoll, isPollUpdate, isChooseOnePosition, parsePollUpdate } = require('ssb-poll-schema')
 isPoll.chooseOne = isChooseOnePoll
 isPosition.chooseOne = isChooseOnePosition
 const buildResults = require('../../results/sync/buildResults')
@@ -84,11 +84,23 @@ function decoratePoll (rawPoll, msgs = [], myKey) {
     }
   }
 
+  function doesMsgRefPoll (msg) {
+    return msg.value.content.root === poll.key
+  }
+
   // TODO add missingContext warnings to each msg
   msgs = sort(msgs)
 
+  const latestClosingTime = msgs
+    .filter(doesMsgRefPoll)
+    .filter(isPollUpdate)
+    .map(msg => parsePollUpdate(msg).closesAt)
+    .pop()
+
+  if (latestClosingTime) poll.closesAt = latestClosingTime
+
   poll.positions = msgs
-    .filter(msg => msg.value.content.root === poll.key)
+    .filter(doesMsgRefPoll)
     .filter(isPosition[type])
     .map(position => {
       return decoratePosition({position, poll})
@@ -101,7 +113,7 @@ function decoratePoll (rawPoll, msgs = [], myKey) {
     })[0]
 
   poll.errors = msgs
-    .filter(msg => msg.value.content.root === poll.key)
+    .filter(doesMsgRefPoll)
     .filter(msg => isPosition(msg) && !isPosition[type](msg))
     .map(position => {
       return {

@@ -4,6 +4,7 @@ const pull = require('pull-stream')
 
 const ChooseOnePoll = require('../../../poll/sync/buildChooseOne')
 const ChooseOnePosition = require('../../../position/async/buildChooseOne')
+const UpdatedClosingTime = require('../../../poll/async/buildUpdatedClosingTime')
 const getPoll = require('../../../poll/async/get')
 
 const server = Server()
@@ -17,7 +18,10 @@ const pollContent = ChooseOnePoll({
   closesAt: nDaysTime(2)
 })
 
-test('pull.async.get', t => {
+const agesAway = nDaysTime(100)
+const soSoon = nDaysTime(1)
+
+test('poll.async.get', t => {
   piet.publish(pollContent, (err, poll) => {
     if (err) throw err
 
@@ -35,6 +39,9 @@ test('pull.async.get', t => {
         })
       }),
       pull.asyncMap((t, cb) => t.author.publish(t.position, cb)),
+      pull.asyncMap((m, cb) => UpdatedClosingTime(server)({poll, closesAt: soSoon}, cb)),
+      pull.asyncMap((m, cb) => UpdatedClosingTime(server)({poll, closesAt: agesAway}, cb)),
+      pull.asyncMap((t, cb) => piet.publish(t, cb)),
       pull.drain(
         m => {}, // console.log(m.value.content.type),
         onDone
@@ -54,9 +61,10 @@ test('pull.async.get', t => {
 
         t.equal(data.positions.length, 2, 'has positions')
 
+        t.equal(data.closesAt, agesAway, 'gets the most recently published updated closing time')
+
         const positions = data.positions
-        // console.log(positions)
-        t.deepEqual(positions[0].value.content.branch, [], 'first published position has no branch')
+        t.deepEqual(positions[0].value.content.branch, [poll.key], 'first published position has poll as branch')
         t.deepEqual(positions[1].value.content.branch, [positions[0].key], 'second published branch has first position as branch')
 
         t.equal(positions[0].choice, pollContent.details.choices[1], 'choice is the value from the poll, not the index.')
