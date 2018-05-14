@@ -1,14 +1,13 @@
 const pull = require('pull-stream')
 const PullNotify = require('pull-notify')
 const sort = require('ssb-sort')
-const { Struct, Value, Array: MutantArray, when, computed, resolve } = require('mutant')
+const { Struct, Value, Array: MutantArray, computed, resolve } = require('mutant')
 const getContent = require('ssb-msg-content')
-const { isPoll, isPosition, isChooseOnePoll, isPollUpdate, isChooseOnePosition, parsePollUpdate } = require('ssb-poll-schema')
+const { isPoll, isPosition, isChooseOnePoll, isPollUpdate, isChooseOnePosition } = require('ssb-poll-schema')
 isPoll.chooseOne = isChooseOnePoll
 isPosition.chooseOne = isChooseOnePosition
 const buildResults = require('../../results/sync/buildResults')
-const { CHOOSE_ONE, ERROR_POSITION_TYPE } = require('../../types')
-const publishChooseOnePosition = require('../../position/async/buildChooseOne')
+const { CHOOSE_ONE } = require('../../types')
 
 // PollDoc is a mutant that initially only has the value sync false
 // Which things need to be observabel?
