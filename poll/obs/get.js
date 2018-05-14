@@ -91,6 +91,15 @@ module.exports = function (server) {
           pull.drain(refs)
         )
 
+        //don't sync obs until we got sync from the stream to save some renders.
+        pull(
+          refs.listen(),
+          pull.filter(ref => ref.sync),
+          pull.drain(() => {
+            pollDoc.sync.set(true)
+          })
+        )
+
         pull(
           refs.listen(),
           pull.filter(isPosition[CHOOSE_ONE]), // TODO: this shouldn't be hard coded
@@ -115,8 +124,6 @@ module.exports = function (server) {
           pull.filter(position => position.value.author === myKey),
           pull.drain(mine => myPositions.push(mine))
         )
-
-        pollDoc.sync.set(true)
       })
     })
     return pollDoc
