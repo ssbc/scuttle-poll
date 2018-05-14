@@ -76,12 +76,6 @@ module.exports = function (server) {
       myPosition
     }))
 
-    // sortedPositions(console.log)
-    // pollDoc.sync(console.log)
-    // pollDoc.results(console.log)
-    // pollDoc(console.log)
-    // pollDoc.myPosition(console.log)
-
     server.get(key, (err, value) => {
       if (err) return err
 
