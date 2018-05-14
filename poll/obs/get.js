@@ -65,7 +65,7 @@ module.exports = function (server) {
       return resultsErrors ? resultsErrors.errors : {}
     })
 
-    const pollDoc = Struct(PollDoc({
+    const pollDoc = Struct({
       sync: false,
       positions: sortedPositions,
       closesAt,
@@ -73,7 +73,7 @@ module.exports = function (server) {
       errors,
       poll,
       myPosition
-    }))
+    })
 
     server.get(key, (err, value) => {
       if (err) return err
@@ -161,20 +161,6 @@ function decoratePoll (rawPoll) {
   })
 
   return poll
-}
-
-function PollDoc (opts) {
-  return Object.assign({
-    author: '',
-    type: '',
-    title: '',
-    body: '',
-    channel: '',
-    recps: [],
-    mentions: []
-    // value?
-
-  }, opts)
 }
 
 function decoratePosition ({position: rawPosition, poll: rawPoll}) {
