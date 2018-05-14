@@ -30,7 +30,6 @@
     "mutant": "^3.22.1",
     "pull-async": "^1.0.0",
     "pull-notify": "^0.1.1",
-    "pull-scan": "^1.0.0",
     "pull-stream": "^3.6.2",
     "ssb-msg-content": "^1.0.1",
     "ssb-msg-schemas": "^6.3.0",
