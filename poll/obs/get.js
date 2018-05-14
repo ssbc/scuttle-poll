@@ -1,6 +1,5 @@
 const pull = require('pull-stream')
 const PullNotify = require('pull-notify')
-const Cat = require('pull-cat')
 const sort = require('ssb-sort')
 const { Struct, Value, Array: MutantArray, when, computed, resolve } = require('mutant')
 const getContent = require('ssb-msg-content')
@@ -110,12 +109,10 @@ module.exports = function (server) {
           })
         )
 
-        const updatedTimes = pull(
-          refs.listen(),
-          pull.filter(isPollUpdate)
-        )
+        closingTimes.push(poll)
         pull(
-          Cat([pull.once(poll), updatedTimes]),
+          refs.listen(),
+          pull.filter(isPollUpdate),
           pull.drain(at => closingTimes.push(at))
         )
 

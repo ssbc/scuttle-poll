@@ -88,10 +88,6 @@ test('poll.obs.get', t => {
   })
 })
 
-function print (obj) {
-  console.log(JSON.stringify(obj, null, 2))
-}
-
 function nDaysTime (n) {
   const d = new Date()
   d.setDate(d.getDate() + n)

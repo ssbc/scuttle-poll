@@ -29,7 +29,6 @@
     "lodash.clonedeep": "^4.5.0",
     "mutant": "^3.22.1",
     "pull-async": "^1.0.0",
-    "pull-cat": "^1.1.11",
     "pull-notify": "^0.1.1",
     "pull-scan": "^1.0.0",
     "pull-stream": "^3.6.2",
