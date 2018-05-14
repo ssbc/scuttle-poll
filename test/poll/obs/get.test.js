@@ -22,7 +22,7 @@ const agesAway = nDaysTime(100)
 const soSoon = nDaysTime(1)
 
 test('poll.obs.get', t => {
-  t.plan(12)
+  t.plan(16)
   piet.publish(pollContent, (err, poll) => {
     t.error(err)
     const pollDoc = getPoll(server)(poll.key)
@@ -31,7 +31,12 @@ test('poll.obs.get', t => {
 
     pollDoc.sync(function (sync) {
       t.ok(sync, 'sync gets set')
+      t.equal(pollDoc.poll().key, poll.key, 'has valid key once sync is true')
+      t.deepEqual(pollDoc.poll().value, poll.value, 'has value once sync is true')
+      t.equal(pollDoc.poll().author, poll.value.author, 'has author once sync is true')
+      t.equal(pollDoc.poll().title, poll.value.content.title, 'has title once sync is true')
     })
+
     pollDoc.poll(function (decoratedPoll) {
       t.equal(decoratedPoll.key, poll.key, 'has key')
       t.deepEqual(decoratedPoll.value, poll.value, 'has value')
@@ -47,6 +52,7 @@ test('poll.obs.get', t => {
         t.equal(positions[0].choice, pollContent.details.choices[1], 'choice is the value from the poll, not the index.')
       }
     })
+
     pollDoc.closesAt(function (closesAt) {
       if (closesAt === agesAway) {
         t.ok(true, 'closesAt is eventually set to agesAway')

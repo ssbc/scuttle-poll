@@ -81,6 +81,7 @@ module.exports = function (server) {
       var poll = { key, value }
       if (!isPoll(poll)) return new Error('scuttle-poll could not get poll, key provided was not a valid poll key')
 
+      // give subscribers a chance to start listening so they don't miss updates.
       setImmediate(function () {
         pollDoc.poll.set(decoratePoll(poll))
 
@@ -91,12 +92,13 @@ module.exports = function (server) {
           pull.drain(refs)
         )
 
-        //don't sync obs until we got sync from the stream to save some renders.
+        // don't sync obs until we got sync from the stream to save some renders.
         pull(
           refs.listen(),
           pull.filter(ref => ref.sync),
           pull.drain(() => {
-            pollDoc.sync.set(true)
+            // allow the other streams to update their observables before sync goes true
+            setImmediate(() => pollDoc.sync.set(true))
           })
         )
 
@@ -111,6 +113,7 @@ module.exports = function (server) {
           })
         )
 
+        // push in the closing time from the poll object and then update if there are updates published.
         closingTimes.push(poll)
         pull(
           refs.listen(),
