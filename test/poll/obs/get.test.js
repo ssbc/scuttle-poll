@@ -27,6 +27,8 @@ test('poll.obs.get', t => {
     t.error(err)
     const pollDoc = getPoll(server)(poll.key)
 
+    // TODO: test myPosition and errors
+
     pollDoc.sync(function (sync) {
       t.ok(sync, 'sync gets set')
     })
