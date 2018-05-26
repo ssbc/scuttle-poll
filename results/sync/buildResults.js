@@ -1,7 +1,8 @@
 const getContent = require('ssb-msg-content')
-const { isChooseOnePoll } = require('ssb-poll-schema')
+const { isChooseOnePoll, isPosition } = require('ssb-poll-schema')
 const PositionChoiceError = require('../../errors/sync/positionChoiceError')
 const PositionLateError = require('../../errors/sync/positionLateError')
+const PositionTypeError = require('../../errors/sync/positionTypeError')
 
 // Expects `poll` and `position` objects passed in to be of shape:
 // {
@@ -37,6 +38,12 @@ function chooseOneResults ({positions, poll}) {
     const { author } = position.value
     const { choice } = getContent(position).details
 
+    if (isInvalidType({position, poll})) {
+      console.log('got an aninvalid position type')
+      acc.errors.push(PositionTypeError({position}))
+      return acc
+    }
+
     if (isInvalidChoice({position, poll})) {
       acc.errors.push(PositionChoiceError({position}))
       return acc
@@ -64,11 +71,19 @@ function deleteExistingVotesByAuthor ({author, results}) {
   })
 }
 
+function isInvalidType ({position, poll}) {
+  // TODO:this is super fragile. We should be using a parsed or decorated poll
+  const pollType = poll.value.content.details.type
+  return !isPosition[pollType](position)
+}
+
 function isInvalidChoice ({position, poll}) {
   const { choice } = position.value.content.details
+  // TODO:this is super fragile. We should be using a parsed or decorated poll
   return choice >= poll.value.content.details.choices.length
 }
 
 function isPositionLate ({position, poll}) {
+  // TODO:this is super fragile. We should be using a parsed or decorated poll
   return position.value.timestamp > poll.value.content.closesAt
 }

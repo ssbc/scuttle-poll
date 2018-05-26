@@ -11,6 +11,7 @@ const server = Server()
 
 const katie = server.createFeed()
 const piet = server.createFeed()
+const me = server.whoami()
 
 const pollContent = ChooseOnePoll({
   title: "what's our mascott team?",
@@ -22,7 +23,7 @@ const agesAway = nDaysTime(100)
 const soSoon = nDaysTime(1)
 
 test('poll.obs.get', t => {
-  t.plan(16)
+  t.plan(17)
   piet.publish(pollContent, (err, poll) => {
     t.error(err)
     const pollDoc = getPoll(server)(poll.key)
@@ -61,19 +62,28 @@ test('poll.obs.get', t => {
 
     pollDoc.results(function (results) {
       if (results[1].voters[katie.id] && results[2].voters[piet.id]) {
+        // we hit this test twice. Not super nice but not worth fixing now.
         t.ok(true, 'results eventually are correct')
       }
+    })
+
+    pollDoc.errors(function (errors) {
+      console.log('got an error', errors)
     })
 
     pull(
       pull.values([
         { author: katie, opts: { poll, choice: 1, reason: 'they are sick!' } },
-        { author: piet, opts: { poll, choice: 2, reason: 'scuttles 4life' } }
+        { author: piet, opts: { poll, choice: 2, reason: 'scuttles 4life' } },
+        { author: piet, opts: { poll, choice: 2, reason: 'INVALID' } }
       ]),
       pull.asyncMap((t, cb) => {
         // NOTE: piet.get does not exist, so have to build using the master server
         ChooseOnePosition(server)(t.opts, (err, position) => {
           if (err) return cb(err)
+          if (position.reason === 'INVALID') {
+            position.details.choice = 1000
+          }
           t.position = position
           cb(null, t)
         })

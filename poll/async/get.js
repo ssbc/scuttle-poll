@@ -118,7 +118,7 @@ function decoratePoll (rawPoll, msgs = [], myKey) {
     .map(position => {
       return {
         type: ERROR_POSITION_TYPE,
-        message: `Position responses need to be off the ${type} type for this poll`,
+        message: `Position responses need to be of the ${type} type for this poll`,
         position
       }
     })

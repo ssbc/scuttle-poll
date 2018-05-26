@@ -1,5 +1,4 @@
 const pull = require('pull-stream')
-const PullNotify = require('pull-notify')
 const sort = require('ssb-sort')
 const { Struct, Value, Array: MutantArray, computed, resolve } = require('mutant')
 const getContent = require('ssb-msg-content')
@@ -8,50 +7,21 @@ isPoll.chooseOne = isChooseOnePoll
 isPosition.chooseOne = isChooseOnePosition
 const buildResults = require('../../results/sync/buildResults')
 const { CHOOSE_ONE } = require('../../types')
-
-// PollDoc is a mutant that initially only has the value sync false
-// Which things need to be observabel?
-//  - Positions
-//    - Errors (these are the position errors that are not valid positions that should still be displayed somehow)
-//  - ClosesAt
-//  - Results (but that's computed from positions & closing time.
-//
-// Things that are not observable and can all live in one Value which will get set just once.:
-//  - title, author, body, channel, mentions, recps, the original poll message.
-//  {
-//    sync: boolean, (initially false until the value gets set)
-//    poll: MutantValue({
-//      title: '',
-//      author: '',
-//      body: '',
-//      channel: '',
-//      mentions: '',
-//      recps: '',
-//      value: {...poll msg}
-//    }),
-//    closesAt: MutantValue('date string'),
-//    positions: MutantArray(), (sorted in causal order)
-//    results: MutantStruct(),A computed obs of positions
-//    errors
-//  }
-//  The shape of this object is different to the one returned by async.get. Ugh.
-
 module.exports = function (server) {
   return function get (key) {
     const myKey = server.id
 
     const positions = MutantArray([])
-    const myPositions = MutantArray([])
     const closingTimes = MutantArray([])
     const sortedClosingTimes = computed(closingTimes, sort)
     const sortedPositions = computed(positions, sort)
+    const myPosition = computed(sortedPositions, (positions) => {
+      const myPositions = positions.filter(position => position.value.author === myKey)
+      return myPositions.pop()
+    })
     const closesAt = computed(sortedClosingTimes, (times) => {
       const time = times.pop()
       return time ? time.value.content.closesAt : ''
-    })
-    const myPosition = computed(myPositions, (positions) => {
-      const sortedPositions = sort(positions)
-      return sortedPositions.pop()
     })
 
     const poll = Value({})
@@ -62,7 +32,8 @@ module.exports = function (server) {
 
     const errors = computed(sortedPositions, (positions) => {
       const resultsErrors = buildResults({ poll: resolve(poll), positions })
-      return resultsErrors ? resultsErrors.errors : {}
+      if (resultsErrors && resultsErrors.errors) { }
+      return resultsErrors ? resultsErrors.errors : []
     })
 
     const pollDoc = Struct({
@@ -85,65 +56,58 @@ module.exports = function (server) {
       setImmediate(function () {
         pollDoc.poll.set(decoratePoll(poll))
 
-        const refs = PullNotify()
-
         pull(
-          createBacklinkStream(key),
-          pull.drain(refs)
-        )
+          createBacklinkStream(key, {live: false, old: true}),
+          pull.collect((err, refs) => {
+            if (!err) {
+              const sorted = sort(refs)
+              const decoratedPosition = sorted
+                .filter(isPosition)
+                .map(DecoratePosition(poll))
 
-        // don't sync obs until we got sync from the stream to save some renders.
-        pull(
-          refs.listen(),
-          pull.filter(ref => ref.sync),
-          pull.drain(() => {
-            // allow the other streams to update their observables before sync goes true
-            setImmediate(() => pollDoc.sync.set(true))
+              positions.set(decoratedPosition)
+              // push in the closing time from the poll object and then update if there are updates published.
+              closingTimes.push(poll)
+
+              // don't sync obs until we got sync from the stream to save some renders.
+              setImmediate(() => pollDoc.sync.set(true))
+            }
           })
         )
 
         pull(
-          refs.listen(),
-          pull.filter(isPosition[CHOOSE_ONE]), // TODO: this shouldn't be hard coded
-          pull.map(position => {
-            return decoratePosition({position, poll})
-          }),
-          pull.drain((position) => {
-            positions.push(position)
-          })
+          createBacklinkStream(key, {old: false, live: true}),
+          pull.filter(isPosition),
+          pull.map(DecoratePosition(poll)),
+          pull.drain(positions.push)
         )
 
-        // push in the closing time from the poll object and then update if there are updates published.
-        closingTimes.push(poll)
         pull(
-          refs.listen(),
+          createBacklinkStream(key, {old: false, live: true}),
           pull.filter(isPollUpdate),
-          pull.drain(at => closingTimes.push(at))
-        )
-
-        pull(
-          refs.listen(),
-          pull.filter(isPosition[CHOOSE_ONE]),
-          pull.filter(position => position.value.author === myKey),
-          pull.drain(mine => myPositions.push(mine))
+          pull.drain(closingTimes.push)
         )
       })
     })
     return pollDoc
   }
 
-  function createBacklinkStream (key) {
+  function createBacklinkStream (key, opts) {
+    opts = opts || {
+      live: true,
+      old: true
+    }
+
     var filterQuery = {
       $filter: {
         dest: key
       }
     }
 
-    return server.backlinks.read({
+    return server.backlinks.read(Object.assign({
       query: [filterQuery],
-      live: true,
       index: 'DTA' // use asserted timestamps
-    })
+    }, opts))
   }
 }
 
@@ -171,6 +135,10 @@ function decoratePoll (rawPoll) {
   })
 
   return poll
+}
+
+function DecoratePosition (poll) {
+  return (position) => decoratePosition({position, poll})
 }
 
 function decoratePosition ({position: rawPosition, poll: rawPoll}) {
