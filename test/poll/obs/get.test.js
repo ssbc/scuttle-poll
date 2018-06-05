@@ -13,7 +13,6 @@ const server = Server()
 
 const katie = server.createFeed()
 const piet = server.createFeed()
-const me = server.whoami()
 
 const pollContent = ChooseOnePoll({
   title: "what's our mascott team?",
@@ -25,26 +24,17 @@ const agesAway = nDaysTime(100)
 const soSoon = nDaysTime(1)
 
 test('poll.obs.get', t => {
-  t.plan(19)
+  t.plan(15)
   piet.publish(pollContent, (err, poll) => {
     t.error(err)
     const pollDoc = getPoll(server)(poll.key)
 
-    // TODO: test myPosition and errors
-
     pollDoc.sync(function (sync) {
       t.ok(sync, 'sync gets set')
-      t.equal(pollDoc.poll().key, poll.key, 'has valid key once sync is true')
-      t.deepEqual(pollDoc.poll().value, poll.value, 'has value once sync is true')
-      t.equal(pollDoc.poll().author, poll.value.author, 'has author once sync is true')
-      t.equal(pollDoc.poll().title, poll.value.content.title, 'has title once sync is true')
-    })
-
-    pollDoc.poll(function (decoratedPoll) {
-      t.equal(decoratedPoll.key, poll.key, 'has key')
-      t.deepEqual(decoratedPoll.value, poll.value, 'has value')
-      t.equal(decoratedPoll.author, poll.value.author, 'has author')
-      t.equal(decoratedPoll.title, poll.value.content.title, 'has title')
+      t.equal(pollDoc.key(), poll.key, 'has valid key once sync is true')
+      t.deepEqual(pollDoc.value(), poll.value, 'has value once sync is true')
+      t.equal(pollDoc.author(), poll.value.author, 'has author once sync is true')
+      t.equal(pollDoc.title(), poll.value.content.title, 'has title once sync is true')
     })
 
     pollDoc.positions(function (positions) {
@@ -67,15 +57,15 @@ test('poll.obs.get', t => {
     })
 
     pollDoc.results(function (results) {
-      //I hate this but I need to keep going.
-      if (results[1].voters[katie.id] && results[2].voters[piet.id] && Object.keys(results[1].voters).length === 2) {
+      // I hate this but I need to keep going.
+      if (results.length && results[1].voters[katie.id] && results[2].voters[piet.id] && Object.keys(results[1].voters).length === 2) {
         t.ok(true, 'results eventually are correct')
       }
     })
 
     pollDoc.errors(function (errors) {
       if (errors.length > 0) {
-        t.equal(errors[0].type, ERROR_POSITION_CHOICE)
+        t.equal(errors[0].type, ERROR_POSITION_CHOICE, 'errors are eventually observed')
       }
     })
 

@@ -6,7 +6,7 @@ const { isPoll, isPosition, isChooseOnePoll, isPollUpdate, isChooseOnePosition }
 isPoll.chooseOne = isChooseOnePoll
 isPosition.chooseOne = isChooseOnePosition
 const buildResults = require('../../results/sync/buildResults')
-const { CHOOSE_ONE } = require('../../types')
+
 module.exports = function (server) {
   return function get (key) {
     const myKey = server.id
@@ -24,28 +24,49 @@ module.exports = function (server) {
       return time ? time.value.content.closesAt : ''
     })
 
-    const poll = Value({})
+    // TODO; what do here?
+    const pollObs = Value({})
+
     const results = computed(sortedPositions, (positions) => {
-      const resultsErrors = buildResults({ poll: resolve(poll), positions })
-      return resultsErrors ? resultsErrors.results : {}
+      const resultsErrors = buildResults({ poll: resolve(pollObs), positions })
+      return resultsErrors ? resultsErrors.results : []
     })
 
     const errors = computed(sortedPositions, (positions) => {
-      const resultsErrors = buildResults({ poll: resolve(poll), positions })
+      const resultsErrors = buildResults({ poll: resolve(pollObs), positions })
       if (resultsErrors && resultsErrors.errors) { }
       return resultsErrors ? resultsErrors.errors : []
     })
 
-    const pollDoc = Struct({
-      sync: false,
-      closesAt,
-      poll,
-      myPosition,
+    function PollDoc (poll) {
+      poll = poll || {
+        key: '',
+        value: {
+          author: '',
+          content: {
+            title: '',
+            body: '',
+            channel: '',
+            details: {
+              type: 'UNKNOWN'
+            }
+          },
+          recps: [],
+          mentions: []
+        }
+      }
 
-      positions: sortedPositions,
-      results,
-      errors
-    })
+      return Struct(Object.assign({}, decoratePoll(poll), {
+        sync: false,
+        closesAt,
+        myPosition,
+        positions: sortedPositions,
+        results,
+        errors
+      }))
+    }
+
+    const pollDoc = PollDoc()
 
     server.get(key, (err, value) => {
       if (err) return err
@@ -55,7 +76,12 @@ module.exports = function (server) {
 
       // give subscribers a chance to start listening so they don't miss updates.
       setImmediate(function () {
-        pollDoc.poll.set(decoratePoll(poll))
+        const decoratedPoll = decoratePoll(poll)
+        pollObs.set(decoratedPoll)
+
+        Object.keys(decoratedPoll).forEach(function (key) {
+          pollDoc[key].set(decoratedPoll[key])
+        })
 
         pull(
           createBacklinkStream(key, {live: false, old: true}),
