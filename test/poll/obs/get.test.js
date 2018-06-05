@@ -25,7 +25,7 @@ const agesAway = nDaysTime(100)
 const soSoon = nDaysTime(1)
 
 test('poll.obs.get', t => {
-  t.plan(18)
+  t.plan(19)
   piet.publish(pollContent, (err, poll) => {
     t.error(err)
     const pollDoc = getPoll(server)(poll.key)
@@ -62,9 +62,13 @@ test('poll.obs.get', t => {
       }
     })
 
+    pollDoc.myPosition(function (position) {
+      t.equal(position.value.content.reason, 'mine', 'my position is eventually observed')
+    })
+
     pollDoc.results(function (results) {
-      if (results[1].voters[katie.id] && results[2].voters[piet.id]) {
-        // we hit this test twice. Not super nice but not worth fixing now.
+      //I hate this but I need to keep going.
+      if (results[1].voters[katie.id] && results[2].voters[piet.id] && Object.keys(results[1].voters).length === 2) {
         t.ok(true, 'results eventually are correct')
       }
     })
@@ -79,7 +83,8 @@ test('poll.obs.get', t => {
       pull.values([
         { author: katie, opts: { poll, choice: 1, reason: 'they are sick!' } },
         { author: piet, opts: { poll, choice: 2, reason: 'scuttles 4life' } },
-        { author: piet, opts: { poll, choice: 2, reason: 'INVALID' } }
+        { author: piet, opts: { poll, choice: 2, reason: 'INVALID' } },
+        { author: server, opts: { poll, choice: 1, reason: 'mine' } }
       ]),
       pull.asyncMap((t, cb) => {
         // NOTE: piet.get does not exist, so have to build using the master server
