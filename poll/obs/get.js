@@ -38,12 +38,13 @@ module.exports = function (server) {
 
     const pollDoc = Struct({
       sync: false,
-      positions: sortedPositions,
       closesAt,
-      results,
-      errors,
       poll,
-      myPosition
+      myPosition,
+
+      positions: sortedPositions,
+      results,
+      errors
     })
 
     server.get(key, (err, value) => {
@@ -69,7 +70,6 @@ module.exports = function (server) {
               // push in the closing time from the poll object and then update if there are updates published.
               closingTimes.push(poll)
 
-              // don't sync obs until we got sync from the stream to save some renders.
               setImmediate(() => pollDoc.sync.set(true))
             }
           })
@@ -83,7 +83,7 @@ module.exports = function (server) {
         )
 
         pull(
-          createBacklinkStream(key, {old: false, live: true}),
+          createBacklinkStream(key, {old: true, live: true}),
           pull.filter(isPollUpdate),
           pull.drain(closingTimes.push)
         )

@@ -7,6 +7,8 @@ const ChooseOnePosition = require('../../../position/async/buildChooseOne')
 const UpdatedClosingTime = require('../../../poll/async/buildUpdatedClosingTime')
 const getPoll = require('../../../poll/obs/get')
 
+const {ERROR_POSITION_CHOICE} = require('../../../types.js')
+
 const server = Server()
 
 const katie = server.createFeed()
@@ -23,7 +25,7 @@ const agesAway = nDaysTime(100)
 const soSoon = nDaysTime(1)
 
 test('poll.obs.get', t => {
-  t.plan(17)
+  t.plan(18)
   piet.publish(pollContent, (err, poll) => {
     t.error(err)
     const pollDoc = getPoll(server)(poll.key)
@@ -68,7 +70,9 @@ test('poll.obs.get', t => {
     })
 
     pollDoc.errors(function (errors) {
-      console.log('got an error', errors)
+      if (errors.length > 0) {
+        t.equal(errors[0].type, ERROR_POSITION_CHOICE)
+      }
     })
 
     pull(
@@ -93,7 +97,7 @@ test('poll.obs.get', t => {
       pull.asyncMap((m, cb) => UpdatedClosingTime(server)({poll, closesAt: agesAway}, cb)),
       pull.asyncMap((t, cb) => piet.publish(t, cb)),
       pull.drain(
-        m => {}, // console.log(m.value.content.type),
+        m => {},
         onDone
       )
     )
