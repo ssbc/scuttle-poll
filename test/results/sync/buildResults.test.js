@@ -5,7 +5,7 @@ const server = Server()
 const ChooseOne = require('../../../position/async/buildChooseOne')(server)
 const chooseOneResults = require('../../../results/sync/buildResults')
 const PublishChooseOnePoll = require('../../../poll/async/publishChooseOne')(server)
-const {ERROR_POSITION_CHOICE, ERROR_POSITION_LATE} = require('../../../types')
+const {ERROR_POSITION_CHOICE, ERROR_POSITION_LATE, ERROR_POSITION_TYPE} = require('../../../types')
 
 const pietId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/0=.ed25519'
 const mixId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/1=.ed25519'
@@ -73,7 +73,8 @@ test('ChooseOneResults - ChooseOneResults', function (t) {
           cb(err, fullPosition)
         })
       }),
-      pull.collect(postions => {
+      pull.collect((err, positions) => {
+        t.error(err)
         const actual = chooseOneResults({positions, poll})
         t.deepEqual(actual, expected, 'results are correct')
         t.end()
@@ -100,9 +101,66 @@ test('ChooseOneResults - a position stated for an invalid choice index is not co
           cb(err, fullPosition)
         })
       }),
-      pull.collect(postions => {
+      pull.collect((err, positions) => {
+        t.error(err)
         const actual = chooseOneResults({positions, poll})
         t.false(actual.results[3], 'invalid vote is not counted')
+        t.end()
+      })
+    )
+  })
+})
+
+test('ChooseOneResults - a position of the wrong type  is not counted', function (t) {
+  PublishChooseOnePoll(validPoll, function (err, poll) {
+    t.error(err)
+    const positions = [
+      { value: { content: {choice: 2, poll}, author: pietId }, key: '%dfkjdf' }
+    ]
+
+    pull(
+      pull.values(positions),
+      pull.asyncMap((fullPosition, cb) => {
+        var positionAndPoll = Object.assign({}, fullPosition.value.content, { poll })
+        ChooseOne(positionAndPoll, (err, position) => {
+          t.error(err)
+          fullPosition.value.content = position
+          cb(err, fullPosition)
+        })
+      }),
+      pull.collect((err, positions) => {
+        t.error(err)
+        positions[0].value.content.details.type = 'INVALID'
+        const actual = chooseOneResults({positions, poll})
+        t.false(actual.results[3], 'invalid vote is not counted')
+        t.end()
+      })
+    )
+  })
+})
+
+test('ChooseOneResults - a position stated for an invalid positionType is included in the errors object', function (t) {
+  PublishChooseOnePoll(validPoll, function (err, poll) {
+    t.error(err)
+    const positions = [
+      { value: { content: {choice: 2, poll}, author: pietId }, key: '%fdfslkjdf' }
+    ]
+
+    pull(
+      pull.values(positions),
+      pull.asyncMap((fullPosition, cb) => {
+        var positionAndPoll = Object.assign({}, fullPosition.value.content, { poll })
+        ChooseOne(positionAndPoll, (err, position) => {
+          t.error(err)
+          fullPosition.value.content = position
+          cb(err, fullPosition)
+        })
+      }),
+      pull.collect((err, positions) => {
+        t.error(err)
+        positions[0].value.content.details.type = 'INVALID'
+        const actual = chooseOneResults({positions, poll})
+        t.deepEqual(actual.errors[0].type, ERROR_POSITION_TYPE, 'invalid vote is on error object')
         t.end()
       })
     )
@@ -127,7 +185,8 @@ test('ChooseOneResults - a position stated for an invalid choice index is includ
           cb(err, fullPosition)
         })
       }),
-      pull.collect(postions => {
+      pull.collect((err, positions) => {
+        t.error(err)
         const actual = chooseOneResults({positions, poll})
         t.deepEqual(actual.errors[0].type, ERROR_POSITION_CHOICE, 'invalid vote is on error object')
         t.end()
@@ -152,7 +211,8 @@ test('ChooseOneResults - A position stated before the closing time of the poll i
           cb(err, fullPosition)
         })
       }),
-      pull.collect(postions => {
+      pull.collect((err, positions) => {
+        t.error(err)
         const actual = chooseOneResults({positions, poll})
         t.ok(actual.results[0].voters[pietId], 'valid vote is counted')
         t.end()
@@ -177,7 +237,8 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
           cb(err, fullPosition)
         })
       }),
-      pull.collect(postions => {
+      pull.collect((err, positions) => {
+        t.error(err)
         const actual = chooseOneResults({positions, poll})
         t.deepEqual(actual.results[0].voters, {}, 'invalid vote is not counted')
         t.end()
@@ -202,7 +263,8 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
           cb(err, fullPosition)
         })
       }),
-      pull.collect(postions => {
+      pull.collect((err, positions) => {
+        t.error(err)
         const actual = chooseOneResults({positions, poll})
         t.deepEqual(actual.errors[0].type, ERROR_POSITION_LATE, 'invalid vote is on error object')
         t.end()
@@ -228,7 +290,8 @@ test('ChooseOneResults - ChooseOneResults only counts latest vote by an author',
           cb(err, fullPosition)
         })
       }),
-      pull.collect(postions => {
+      pull.collect((err, positions) => {
+        t.error(err)
         const actual = chooseOneResults({positions, poll})
         t.false(actual.results[2].voters[pietId], 'old vote is deleted')
         t.true(actual.results[0].voters[pietId], 'new vote is counted')
