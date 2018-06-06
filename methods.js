@@ -4,9 +4,14 @@ const {isPoll, isChooseOnePoll, isPosition, isChooseOnePosition} = require('ssb-
 module.exports = {
   poll: {
     async: {
+      get: require('./poll/async/get'),
       publishChooseOne: require('./poll/async/publishChooseOne'),
-      get: require('./poll/async/get')
+      publishUpdatedClosingTime: require('./poll/async/publishUpdatedClosingTime')
     },
+    // NOTE - we think this is a bad idea, planning to deprecate
+    // obs: {
+    //   get: require('./poll/obs/get')
+    // },
     sync: {
       isPoll: () => isPoll,
       isChooseOnePoll: () => isChooseOnePoll

@@ -19,6 +19,7 @@ These are a short-hand for what we think have been good patterns in this project
 - Vertical slice
 - Design for front end dev
 - Decorate
+  - could be painful to maintain / needs a clear spec
 - Opinionated folder structure. Human readable API.
 - Testing
 - Linting with ale
@@ -26,3 +27,14 @@ These are a short-hand for what we think have been good patterns in this project
 - the inject pattern
 - prefer passing a single object rather than ordered args
 - don't modify data passed into a function
+- Observables:
+  - making everying obs takes A LOT of time
+  - could just make async cb, then have a pull stream which announces updates. On update, re-run async cb, or whatever
+  - could write an async cb which takes a `refresh` function which gets run when there's a change.
+  - not everything really needs live updates
+    - not that important:
+      - body / title / choices (none of these can change) 
+    - important: 
+      - new positions / results
+      - closesAt
+      - when I post a new position (should update view)
