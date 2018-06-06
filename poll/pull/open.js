@@ -7,9 +7,10 @@ module.exports = function (server) {
       query: [{
         $filter: {
           value: {
-            timestamp: { $gt: 0 }, // this forces ssb query to stream in order of message published timestamp.
+            timestamp: { $gt: 0 },
             content: {
-              type: 'poll'
+              type: 'poll',
+              closesAt: { $gt: new Date().toISOString() }
             }
           }
         }

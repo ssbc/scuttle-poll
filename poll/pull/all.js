@@ -9,8 +9,7 @@ module.exports = function (server) {
           value: {
             timestamp: { $gt: 0 },
             content: {
-              type: 'poll',
-              closesAt: { $lt: new Date().toISOString() }
+              type: 'poll'
             }
           }
         }
