@@ -11,6 +11,11 @@ module.exports = {
       isPoll: () => isPoll,
       isChooseOnePoll: () => isChooseOnePoll
       // Poll: // this is not exported - doesn't follow the inject pattern atm
+    },
+    pull: {
+      closed: require('./poll/pull/closed'),
+      open: require('./poll/pull/open'),
+      all: require('./poll/pull/all')
     }
   },
   position: {
