@@ -24,7 +24,7 @@ module.exports = function (server) {
       return time ? time.value.content.closesAt : ''
     })
 
-    // TODO; what do here?
+    // This is ugly, would all be done by pollDoc. Refactor in the future.
     const pollObs = Value({})
 
     const results = computed(sortedPositions, (positions) => {
