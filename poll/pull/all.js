@@ -1,7 +1,7 @@
-var next = require('pull-next-query')
+const next = require('pull-next-query')
 
 module.exports = function (server) {
-  return function ClosedPollsStream (opts) {
+  return function AllPollsStream (opts) {
     const defaultOpts = {
       limit: 100,
       query: [{
