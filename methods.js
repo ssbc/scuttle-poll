@@ -20,7 +20,8 @@ module.exports = {
     pull: {
       closed: require('./poll/pull/closed'),
       open: require('./poll/pull/open'),
-      all: require('./poll/pull/all')
+      all: require('./poll/pull/all'),
+      mine: require('./poll/pull/mine')
     }
   },
   position: {

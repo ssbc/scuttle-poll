@@ -9,5 +9,5 @@ const niceMappings = {
 module.exports = function (server, opts) {
   const methods = Object.assign({}, raw, niceMappings)
 
-  return require('./lib/inject')(server, methods, PLUGIN_DEPS)
+  return require('scuttle-inject')(server, methods, PLUGIN_DEPS)
 }
