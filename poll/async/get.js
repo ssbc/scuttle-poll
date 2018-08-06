@@ -6,7 +6,7 @@ isPoll.chooseOne = isChooseOnePoll
 isPosition.chooseOne = isChooseOnePosition
 const buildResults = require('../../results/sync/buildResults')
 const { CHOOSE_ONE, ERROR_POSITION_TYPE } = require('../../types')
-const publishChooseOnePosition = require('../../position/async/buildChooseOne')
+const publishChooseOnePosition = require('../../position/async/publishChooseOne')
 
 module.exports = function (server) {
   return function get (key, cb) {
