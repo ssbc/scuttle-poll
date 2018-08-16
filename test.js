@@ -20,7 +20,7 @@ pull(
 )
 
 function asyncThing (n, cb) {
-  setTimeout(() => cb(null, n), 1000)  // simulate some slow lookup
+  setTimeout(() => cb(null, n), 1000) // simulate some slow lookup
 }
 
 function comparer (a, b) {

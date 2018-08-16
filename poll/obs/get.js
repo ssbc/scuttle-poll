@@ -3,7 +3,7 @@
 //   - we noticed that building a fully obs getter was painful
 //   - also from user side there are only some things which need to be live updated
 //   - seems a pull({live}) + asyncUpdate might be sufficient
-// 
+//
 
 const pull = require('pull-stream')
 const sort = require('ssb-sort')

@@ -79,9 +79,9 @@ test('poll.async.get', t => {
   })
 })
 
-function print (obj) {
-  console.log(JSON.stringify(obj, null, 2))
-}
+// function print (obj) {
+//   console.log(JSON.stringify(obj, null, 2))
+// }
 
 function nDaysTime (n) {
   const d = new Date()

@@ -1,8 +1,8 @@
 const buildMeetingTime = require('./buildMeetingTime')
 
 module.exports = function (server) {
-  return function publishChooseOne ({ poll, choice, reason, mentions }, cb) {
-    buildChooseOne(server)({ poll, choice, reason, mentions }, (err, position) => {
+  return function publishtMeetingTime ({ poll, choices, reason, mentions }, cb) {
+    buildMeetingTime(server)({ poll, choices, reason, mentions }, (err, position) => {
       if (err) return cb(err)
 
       server.publish(position, cb)

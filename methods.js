@@ -1,5 +1,5 @@
 // verbose export of public methods
-const {isPoll, isPosition } = require('ssb-poll-schema')
+const { isPoll, isPosition } = require('ssb-poll-schema')
 
 module.exports = {
   poll: {
@@ -13,7 +13,7 @@ module.exports = {
     //   get: require('./poll/obs/get')
     // },
     sync: {
-      isPoll: () => isPoll,
+      isPoll: () => isPoll
       // Poll: // this is not exported - doesn't follow the inject pattern atm
     },
     pull: {

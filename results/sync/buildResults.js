@@ -18,7 +18,6 @@ const PositionTypeError = require('../../errors/sync/positionTypeError')
 
 // TODO find a better home for this (it is not strongly in poll nor position domain)
 module.exports = function ({positions, poll}) {
-
   if (isPoll.chooseOne(poll)) {
     return chooseOneResults({positions, poll})
   }
@@ -112,7 +111,6 @@ function chooseOneResults ({positions, poll}) {
 
     return acc
   }, {errors: [], results})
-
 
   function isInvalidChoice ({position, poll}) {
     const { choice } = position.value.content.details

@@ -199,7 +199,7 @@ test('ChooseOneResults - A position stated before the closing time of the poll i
   PublishChooseOnePoll(validPoll, function (err, poll) {
     t.error(err)
     const positions = [
-      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now - 1e3 }, key: '%dfkjsdlkjf'}
+      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now - 1e3 }, key: '%dfkjsdlkjf' }
     ]
 
     pull(
@@ -225,7 +225,7 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
   PublishChooseOnePoll(validPoll, function (err, poll) {
     t.error(err)
     const positions = [
-      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now + 1e3 }, key: '%dfljsdkdj'}
+      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now + 1e3 }, key: '%dfljsdkdj' }
     ]
 
     pull(

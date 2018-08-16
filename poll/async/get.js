@@ -4,8 +4,6 @@ const getContent = require('ssb-msg-content')
 const { isPoll, isPosition, isPollUpdate, parsePollUpdate } = require('ssb-poll-schema')
 
 const buildResults = require('../../results/sync/buildResults')
-const { CHOOSE_ONE, ERROR_POSITION_TYPE } = require('../../types')
-const publishChooseOnePosition = require('../../position/async/publishChooseOne')
 
 module.exports = function (server) {
   return function get (key, cb) {
@@ -58,7 +56,7 @@ function decoratePoll (poll, msgs = [], myKey) {
       },
       recps,
       mentions
-    },
+    }
   } = poll.value
 
   const pollDoc = Object.assign({}, poll, {
@@ -114,10 +112,14 @@ function decoratePosition ({position, poll}) {
   // NOTE this isn't deep enough to be a safe clone
   var newPosition = Object.assign({ reason }, position)
 
+  const pollChoices = getContent(poll).details.choices
+
+  if (isPoll.meetingTime(poll)) {
+    newPosition.choices = details.choices.map(i => pollChoices[i])
+  }
+
   if (isPoll.chooseOne(poll)) {
-    var choiceIndex = details.choice
-    newPosition.choice = getContent(poll).details.choices[choiceIndex]
+    newPosition.choice = pollChoices[details.choice]
   }
   return newPosition
 }
-

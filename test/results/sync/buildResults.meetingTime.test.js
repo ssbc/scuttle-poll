@@ -210,7 +210,7 @@ test('MeetingTimeResults - A position stated before the closing time of the poll
   publishMeetingTimePoll(validPoll, function (err, poll) {
     t.error(err)
     const positions = [
-      { value: { content: {choices: [0]}, author: pietId, timestamp: now - 1e3 }, key: '%dfkjsdlkjf'}
+      { value: { content: {choices: [0]}, author: pietId, timestamp: now - 1e3 }, key: '%dfkjsdlkjf' }
     ]
 
     pull(
@@ -236,7 +236,7 @@ test('MeetingTimeResults - A position stated after the closing time of the poll 
   publishMeetingTimePoll(validPoll, function (err, poll) {
     t.error(err)
     const positions = [
-      { value: { content: {choices: [0, 1]}, author: pietId, timestamp: now + 1e3 }, key: '%dfljsdkdj'}
+      { value: { content: {choices: [0, 1]}, author: pietId, timestamp: now + 1e3 }, key: '%dfljsdkdj' }
     ]
 
     pull(
