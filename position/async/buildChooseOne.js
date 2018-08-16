@@ -8,7 +8,8 @@ module.exports = function (server) {
 
   return function ChooseOne ({ poll, choice, reason, mentions }, cb) {
     if (!isPoll(poll)) return cb(new Error('ChooseOne position factory requires a valid poll'))
-    if (choice >= getContent(poll).details.choices.length) return cb(new Error({type: ERROR_POSITION_TYPE, message: 'choice outside valid choices range'}))
+    if (choice > getContent(poll).details.choices.length - 1)
+      return cb(new Error({type: ERROR_POSITION_TYPE, message: 'choice outside valid choices range'}))
 
     const opts = {
       poll,

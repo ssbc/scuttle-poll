@@ -61,7 +61,7 @@ test('poll.async.get', t => {
 
         t.equal(data.positions.length, 2, 'has positions')
 
-        t.equal(data.closesAt, agesAway, 'gets the most recently published updated closing time')
+        t.deepEqual(data.closesAt, new Date(agesAway), 'gets the most recently published updated closing time')
 
         const positions = data.positions
         t.deepEqual(positions[0].value.content.branch, [poll.key], 'first published position has poll as branch')

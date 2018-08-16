@@ -1,4 +1,4 @@
-const buildChooseOne = require('./buildChooseOne')
+const buildMeetingTime = require('./buildMeetingTime')
 
 module.exports = function (server) {
   return function publishChooseOne ({ poll, choice, reason, mentions }, cb) {

@@ -9,8 +9,10 @@ module.exports = function (server) {
     if (!isPoll(poll) && !isMsg(poll)) return cb(new Error('Position factory expects a valid poll'))
 
     // NOTE - getPoll has to be required here to avoid circular deps
+    // TODO - either require a poll is always a pollMsg, or use backlinks (avoid all the decorations not needed!)
     const getPoll = require('../../poll/async/get')(server)
 
+    // TODO: check whether poll is closed or now
     pull(
       pullAsync(cb => {
         getPoll(typeof poll === 'string' ? poll : poll.key, cb)

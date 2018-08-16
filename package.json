@@ -33,10 +33,10 @@
     "pull-next-query": "^1.0.0",
     "pull-paramap": "^1.2.2",
     "pull-stream": "^3.6.2",
-    "scuttle-inject": "^1.0.0",
+    "scuttle-inject": "^1.0.3",
     "ssb-msg-content": "^1.0.1",
     "ssb-msg-schemas": "^6.3.0",
-    "ssb-poll-schema": "^1.6.1",
+    "ssb-poll-schema": "^1.6.3",
     "ssb-ref": "^2.9.0",
     "ssb-sort": "^1.1.0"
   },
