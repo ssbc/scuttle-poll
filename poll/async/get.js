@@ -1,12 +1,9 @@
 const pull = require('pull-stream')
 const sort = require('ssb-sort')
 const getContent = require('ssb-msg-content')
-const { isPoll, isPosition, isChooseOnePoll, isPollUpdate, isChooseOnePosition, parsePollUpdate } = require('ssb-poll-schema')
-isPoll.chooseOne = isChooseOnePoll
-isPosition.chooseOne = isChooseOnePosition
+const { isPoll, isPosition, isPollUpdate, parsePollUpdate } = require('ssb-poll-schema')
+
 const buildResults = require('../../results/sync/buildResults')
-const { CHOOSE_ONE, ERROR_POSITION_TYPE } = require('../../types')
-const publishChooseOnePosition = require('../../position/async/publishChooseOne')
 
 module.exports = function (server) {
   return function get (key, cb) {
@@ -19,20 +16,23 @@ module.exports = function (server) {
       if (!isPoll(poll)) return cb(new Error('scuttle-poll could not get poll, key provided was not a valid poll key'))
 
       pull(
-        createBacklinkStream(key),
+        backlinksSource(key),
         pull.collect((err, msgs) => {
           if (err) return cb(err)
 
-          cb(null, decoratePoll(poll, msgs, myKey))
+          cb(null, decoratePoll(poll, sort(msgs), myKey))
         })
       )
     })
   }
 
-  function createBacklinkStream (key) {
+  function backlinksSource (key) {
     var filterQuery = {
       $filter: {
-        dest: key
+        dest: key,
+        value: {
+          content: { root: key }
+        }
       }
     }
 
@@ -43,21 +43,25 @@ module.exports = function (server) {
   }
 }
 
-function decoratePoll (rawPoll, msgs = [], myKey) {
+function decoratePoll (poll, msgs = [], myKey) {
   const {
     author,
     content: {
       title,
       body,
       channel,
-      details: { type }
-    },
-    recps,
-    mentions
-  } = rawPoll.value
+      details: {
+        type,
+        closesAt
+      },
+      recps,
+      mentions
+    }
+  } = poll.value
 
-  const poll = Object.assign({}, rawPoll, {
+  const pollDoc = Object.assign({}, poll, {
     type,
+    closesAt: getClosesAt(msgs, closesAt),
     author,
     title,
     body,
@@ -65,82 +69,57 @@ function decoratePoll (rawPoll, msgs = [], myKey) {
     recps,
     mentions,
 
-    actions: {
-      publishPosition
-    },
     positions: [],
     results: {},
     errors: [],
     decorated: true
   })
 
-  function publishPosition (opts, cb) {
-    if (poll.type === CHOOSE_ONE) {
-      publishChooseOnePosition({
-        poll,
-        choice: opts.choice,
-        reason: opts.reason
-      }, cb)
-    }
-  }
-
-  function doesMsgRefPoll (msg) {
-    return msg.value.content.root === poll.key
-  }
-
   // TODO add missingContext warnings to each msg
-  msgs = sort(msgs)
 
-  const latestClosingTime = msgs
-    .filter(doesMsgRefPoll)
-    .filter(isPollUpdate)
-    .map(msg => parsePollUpdate(msg).closesAt)
-    .pop()
-
-  if (latestClosingTime) poll.closesAt = latestClosingTime
-
-  poll.positions = msgs
-    .filter(doesMsgRefPoll)
+  pollDoc.positions = msgs
     .filter(isPosition[type])
     .map(position => {
-      return decoratePosition({position, poll})
+      return decoratePosition({position, poll: pollDoc})
     })
 
-  poll.myPosition = poll.positions
+  pollDoc.myPosition = pollDoc.positions
     .filter(p => p.value.author === myKey)
     .sort((a, b) => {
       return a.value.timestamp > b.value.timestamp ? -1 : +1
     })[0]
 
-  poll.errors = msgs
-    .filter(doesMsgRefPoll)
-    .filter(msg => isPosition(msg) && !isPosition[type](msg))
-    .map(position => {
-      return {
-        type: ERROR_POSITION_TYPE,
-        message: `Position responses need to be of the ${type} type for this poll`,
-        position
-      }
-    })
+  const { results, errors } = buildResults({ poll, positions: pollDoc.positions })
+  pollDoc.results = results
+  pollDoc.errors = errors || []
 
-  const {results, errors} = buildResults({ poll, positions: poll.positions })
-  poll.results = results
-  poll.errors = poll.errors.concat(errors)
-
-  return poll
+  return pollDoc
 }
 
-function decoratePosition ({position: rawPosition, poll: rawPoll}) {
-  var position = getContent(rawPosition)
-  var poll = getContent(rawPoll)
+function getClosesAt (msgs, closesAt) {
+  const update = msgs
+    .filter(isPollUpdate)
+    .pop()
+
+  if (update) return new Date(parsePollUpdate(update).closesAt)
+
+  return new Date(closesAt)
+}
+
+function decoratePosition ({position, poll}) {
+  const { details, reason } = getContent(position)
 
   // NOTE this isn't deep enough to be a safe clone
-  var newPosition = Object.assign({}, rawPosition)
-  newPosition.reason = position.reason
+  var newPosition = Object.assign({ reason }, position)
+
+  const pollChoices = getContent(poll).details.choices
+
+  if (isPoll.meetingTime(poll)) {
+    newPosition.choices = details.choices.map(i => pollChoices[i])
+  }
 
   if (isPoll.chooseOne(poll)) {
-    var choiceIndex = position.details.choice
-    newPosition.choice = poll.details.choices[choiceIndex]
+    newPosition.choice = pollChoices[details.choice]
   }
   return newPosition
 }

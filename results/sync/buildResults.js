@@ -1,5 +1,5 @@
 const getContent = require('ssb-msg-content')
-const { isChooseOnePoll, isPosition } = require('ssb-poll-schema')
+const { isPoll, isPosition } = require('ssb-poll-schema')
 const PositionChoiceError = require('../../errors/sync/positionChoiceError')
 const PositionLateError = require('../../errors/sync/positionLateError')
 const PositionTypeError = require('../../errors/sync/positionTypeError')
@@ -18,15 +18,68 @@ const PositionTypeError = require('../../errors/sync/positionTypeError')
 
 // TODO find a better home for this (it is not strongly in poll nor position domain)
 module.exports = function ({positions, poll}) {
-  if (isChooseOnePoll(poll)) {
+  if (isPoll.chooseOne(poll)) {
     return chooseOneResults({positions, poll})
+  }
+
+  if (isPoll.meetingTime(poll)) {
+    return meetingTimeResults({positions, poll})
+  }
+
+  return { results: [], errors: [] }
+}
+
+function meetingTimeResults ({positions, poll}) {
+  const { choices } = getContent(poll).details
+
+  var results = choices
+    .map(choice => {
+      return {
+        choice: new Date(choice),
+        voters: {}
+      }
+    })
+
+  return positions.reduce((acc, position) => {
+    const { author } = position.value
+    const { choices } = getContent(position).details // << note multiple choices
+
+    if (isInvalidType({position, poll})) {
+      acc.errors.push(PositionTypeError({position}))
+      return acc
+    }
+
+    if (isInvalidChoices({position, poll})) {
+      acc.errors.push(PositionChoiceError({position}))
+      return acc
+    }
+
+    if (isPositionLate({position, poll})) {
+      acc.errors.push(PositionLateError({position}))
+      return acc
+    }
+
+    deleteExistingVotesByAuthor({results: acc.results, author})
+    choices.forEach(choice => {
+      acc.results[choice].voters[author] = position
+    })
+
+    return acc
+  }, {errors: [], results})
+
+  function isInvalidChoices ({position, poll}) {
+    const { choices } = position.value.content.details
+    // TODO: this is fragile. We should be using a parsed or decorated poll
+    return choices.some(choice => {
+      return choice > poll.value.content.details.choices.length - 1
+    })
   }
 }
 
 function chooseOneResults ({positions, poll}) {
-  var results = getContent(poll)
-    .details
-    .choices
+  const { choices } = getContent(poll).details
+
+  var results = choices
     .map(choice => {
       return {
         choice,
@@ -34,12 +87,11 @@ function chooseOneResults ({positions, poll}) {
       }
     })
 
-  return positions.reduce(function (acc, position) {
+  return positions.reduce((acc, position) => {
     const { author } = position.value
-    const { choice } = getContent(position).details
+    const { choice } = getContent(position).details // << note singular choice
 
     if (isInvalidType({position, poll})) {
-      console.log('got an aninvalid position type')
       acc.errors.push(PositionTypeError({position}))
       return acc
     }
@@ -59,6 +111,12 @@ function chooseOneResults ({positions, poll}) {
 
     return acc
   }, {errors: [], results})
+
+  function isInvalidChoice ({position, poll}) {
+    const { choice } = position.value.content.details
+    // TODO: this is fragile. We should be using a parsed or decorated poll
+    return choice > poll.value.content.details.choices.length - 1
+  }
 }
 
 // !!! assumes these are already sorted by time.
@@ -72,18 +130,12 @@ function deleteExistingVotesByAuthor ({author, results}) {
 }
 
 function isInvalidType ({position, poll}) {
-  // TODO:this is super fragile. We should be using a parsed or decorated poll
+  // TODO:this is fragile. We should be using a parsed or decorated poll
   const pollType = poll.value.content.details.type
   return !isPosition[pollType](position)
 }
 
-function isInvalidChoice ({position, poll}) {
-  const { choice } = position.value.content.details
-  // TODO:this is super fragile. We should be using a parsed or decorated poll
-  return choice >= poll.value.content.details.choices.length
-}
-
 function isPositionLate ({position, poll}) {
-  // TODO:this is super fragile. We should be using a parsed or decorated poll
-  return position.value.timestamp > poll.value.content.closesAt
+  // TODO:this is fragile. We should be using a parsed or decorated poll
+  return new Date(position.value.timestamp) > new Date(poll.value.content.closesAt)
 }

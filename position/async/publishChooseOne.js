@@ -1,4 +1,4 @@
-const buildChooseOne = require('../async/buildChooseOne')
+const buildChooseOne = require('./buildChooseOne')
 
 module.exports = function (server) {
   return function publishChooseOne ({ poll, choice, reason, mentions }, cb) {

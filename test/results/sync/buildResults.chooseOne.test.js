@@ -14,12 +14,12 @@ const timmyId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/3=.ed25519'
 const tommyId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/4=.ed25519'
 const sallyId = '@Mq8D3YC6VdErKQzV3oi2oK5hHSoIwR0hUQr4M46wr/5=.ed25519'
 
-const now = new Date().toISOString()
+const now = Date.now()
 
 const validPoll = {
   choices: [1, 2, 'three'],
   title: 'how many food',
-  closesAt: now
+  closesAt: new Date(now).toISOString()
 }
 
 test.onFinish(() => server.close())
@@ -199,7 +199,7 @@ test('ChooseOneResults - A position stated before the closing time of the poll i
   PublishChooseOnePoll(validPoll, function (err, poll) {
     t.error(err)
     const positions = [
-      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now - 1 }, key: '%dfkjsdlkjf'}
+      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now - 1e3 }, key: '%dfkjsdlkjf' }
     ]
 
     pull(
@@ -225,7 +225,7 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
   PublishChooseOnePoll(validPoll, function (err, poll) {
     t.error(err)
     const positions = [
-      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now + 1 }, key: '%dfljsdkdj'}
+      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now + 1e3 }, key: '%dfljsdkdj' }
     ]
 
     pull(
@@ -251,7 +251,7 @@ test('ChooseOneResults - A position stated after the closing time of the poll is
   PublishChooseOnePoll(validPoll, function (err, poll) {
     t.error(err)
     const positions = [
-      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now + 1 }, key: '%dfrdkjfd' }
+      { value: { content: {choice: 0, poll}, author: pietId, timestamp: now + 1e3 }, key: '%dfrdkjfd' }
     ]
 
     pull(

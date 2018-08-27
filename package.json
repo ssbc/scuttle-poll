@@ -4,7 +4,10 @@
   "description": "Create and vote on polls on ssb",
   "main": "index.js",
   "scripts": {
-    "test": "tape 'test/**/*.js' | tap-spec"
+    "test": "npm run test:js && npm run test:lint",
+    "test:js": "tape 'test/**/*.js' | tap-spec",
+    "test:lint": "standard",
+    "lint": "standard --fix"
   },
   "repository": {
     "type": "git",
@@ -33,16 +36,17 @@
     "pull-next-query": "^1.0.0",
     "pull-paramap": "^1.2.2",
     "pull-stream": "^3.6.2",
-    "scuttle-inject": "^1.0.0",
+    "scuttle-inject": "^1.0.3",
     "ssb-msg-content": "^1.0.1",
     "ssb-msg-schemas": "^6.3.0",
-    "ssb-poll-schema": "^1.6.1",
+    "ssb-poll-schema": "^1.6.3",
     "ssb-ref": "^2.9.0",
     "ssb-sort": "^1.1.0"
   },
   "devDependencies": {
     "scuttle-testbot": "^1.1.4",
     "ssb-backlinks": "^0.6.1",
+    "standard": "^11.0.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.8.0"
   }
