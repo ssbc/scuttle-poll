@@ -6,6 +6,7 @@ module.exports = {
     async: {
       get: require('./poll/async/get'),
       publishChooseOne: require('./poll/async/publishChooseOne'),
+      publishMeetingTime: require('./poll/async/publishMeetingTime'),
       publishUpdatedClosingTime: require('./poll/async/publishUpdatedClosingTime')
     },
     // DEPRECATED - we think this is a bad idea, see notes in file
