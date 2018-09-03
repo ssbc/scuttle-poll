@@ -21,7 +21,8 @@ module.exports = {
       closed: require('./poll/pull/closed'),
       open: require('./poll/pull/open'),
       all: require('./poll/pull/all'),
-      mine: require('./poll/pull/mine')
+      mine: require('./poll/pull/mine'),
+      updates: require('./poll/pull/updates')
     }
   },
   position: {

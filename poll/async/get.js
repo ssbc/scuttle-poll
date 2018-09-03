@@ -48,22 +48,20 @@ function decoratePoll (poll, msgs = [], myKey) {
     author,
     content: {
       title,
+      closesAt,
       body,
       channel,
-      details: {
-        type,
-        closesAt
-      },
-      recps,
-      mentions
+      details: { type },
+      recps = [],
+      mentions = []
     }
   } = poll.value
 
   const pollDoc = Object.assign({}, poll, {
-    type,
-    closesAt: getClosesAt(msgs, closesAt),
     author,
     title,
+    closesAt: getClosesAt(msgs, closesAt),
+    type,
     body,
     channel,
     recps,
