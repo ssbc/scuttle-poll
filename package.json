@@ -39,7 +39,7 @@
     "scuttle-inject": "^1.0.3",
     "ssb-msg-content": "^1.0.1",
     "ssb-msg-schemas": "^6.3.0",
-    "ssb-poll-schema": "^1.6.5",
+    "ssb-poll-schema": "^1.7.0",
     "ssb-ref": "^2.9.0",
     "ssb-sort": "^1.1.0"
   },

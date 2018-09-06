@@ -1,9 +1,9 @@
-const pull = require('pull-stream')
-const sort = require('ssb-sort')
 const getContent = require('ssb-msg-content')
-const { isPoll, isPosition, isPollUpdate, parsePollUpdate } = require('ssb-poll-schema')
+const { isPoll, isPosition, isPollUpdate, parsePollUpdate, isPollResolution, parsePollResolution } = require('ssb-poll-schema')
 
 const buildResults = require('../../results/sync/buildResults')
+const getMessages = require('./getMessages')
+const getHeads = require('../sync/getHeads')
 
 module.exports = function (server) {
   return function get (key, cb) {
@@ -15,30 +15,11 @@ module.exports = function (server) {
       var poll = { key, value }
       if (!isPoll(poll)) return cb(new Error('scuttle-poll could not get poll, key provided was not a valid poll key'))
 
-      pull(
-        backlinksSource(key),
-        pull.collect((err, msgs) => {
-          if (err) return cb(err)
+      getMessages(server)(key, (err, msgs) => {
+        if (err) return cb(err)
 
-          cb(null, decoratePoll(poll, sort(msgs), myKey))
-        })
-      )
-    })
-  }
-
-  function backlinksSource (key) {
-    var filterQuery = {
-      $filter: {
-        dest: key,
-        value: {
-          content: { root: key }
-        }
-      }
-    }
-
-    return server.backlinks.read({
-      query: [filterQuery],
-      index: 'DTA' // use asserted timestamps
+        cb(null, decoratePoll(poll, msgs, myKey))
+      })
     })
   }
 }
@@ -69,7 +50,9 @@ function decoratePoll (poll, msgs = [], myKey) {
 
     positions: [],
     results: {},
+    resolution: getResolution(poll, msgs),
     errors: [],
+    heads: getHeads(poll, msgs),
     decorated: true
   })
 
@@ -102,6 +85,16 @@ function getClosesAt (msgs, closesAt) {
   if (update) return new Date(parsePollUpdate(update).closesAt)
 
   return new Date(closesAt)
+}
+
+function getResolution (poll, msgs) {
+  const author = poll.value.author
+  const resolution = msgs
+    .filter(m => m.value.author === author)
+    .filter(isPollResolution)
+    .pop()
+
+  if (resolution) return parsePollResolution(resolution)
 }
 
 function decoratePosition ({position, poll}) {

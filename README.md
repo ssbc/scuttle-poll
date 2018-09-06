@@ -87,16 +87,20 @@ fetches all the messages associated with a particular poll, and returns a deligh
 
 ```js
 {
-  key:       MessageKey,
-  value:     MessageValue,
+  key:        MessageKey,
+  value:      MessageValue,
 
-  author:    FeedId,
-  title:     String,
-  body:      (String|Null),
+  author:     FeedId,
+  title:      String,
+  body:       (String|Null),
 
-  positions: Array,
-  results:   Array,
-  errors:    Object
+  positions:  Array,
+  myPosition: Object,
+  results:    Array,
+  resolution: Msessage,
+  errors:     Object
+
+  heads:      Array
 }
 ```
 
