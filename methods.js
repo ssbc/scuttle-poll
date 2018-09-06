@@ -7,7 +7,8 @@ module.exports = {
       get: require('./poll/async/get'),
       publishChooseOne: require('./poll/async/publishChooseOne'),
       publishMeetingTime: require('./poll/async/publishMeetingTime'),
-      publishUpdatedClosingTime: require('./poll/async/publishUpdatedClosingTime')
+      publishUpdatedClosingTime: require('./poll/async/publishUpdatedClosingTime'),
+      publishResolution: require('./poll/async/publishResolution')
     },
     // DEPRECATED - we think this is a bad idea, see notes in file
     // obs: {

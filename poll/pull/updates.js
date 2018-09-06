@@ -8,7 +8,12 @@ module.exports = function (server) {
       live: true,
       old: false,
       query: [{
-        $filter: { dest: key }
+        $filter: {
+          dest: key,
+          value: {
+            content: { root: key }
+          }
+        }
       }, {
         $map: {
           key: ['key'],

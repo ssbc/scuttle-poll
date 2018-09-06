@@ -30,6 +30,8 @@ module.exports = function ({positions, poll}) {
 }
 
 function meetingTimeResults ({positions, poll}) {
+  // NOTE - patchbay-scry modifies these results a lot for it's display
+  // consider pulling those definitions in here?
   const { choices } = getContent(poll).details
 
   var results = choices
