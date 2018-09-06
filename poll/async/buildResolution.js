@@ -28,7 +28,7 @@ module.exports = function (server) {
 
     pull(
       pullAsync(cb => {
-        getMessages(poll, (err, msgs) => {
+        getMessages(server)(poll, (err, msgs) => {
           if (err) return cb(err)
 
           cb(null, { key: poll.key || poll, heads: getHeads(poll, msgs) })
