@@ -2,34 +2,37 @@ const pull = require('pull-stream')
 const pullAsync = require('pull-async')
 const { isMsg } = require('ssb-ref')
 const { isPoll, isPollResolution, versionStrings: {V1_SCHEMA_VERSION_STRING} } = require('ssb-poll-schema')
+const getMessages = require('./getMessages')
+const getHeads = require('../sync/getHeads')
 
 module.exports = function (server) {
   return function Resolution ({ poll, choices, body, mentions, recps }, cb) {
     if (!isPoll(poll) && !isMsg(poll)) return cb(new Error('Resolution factory expects a valid poll'))
 
-    function build (pollDoc) {
+    function build ({ key, heads }) {
       // NOTE - poll here is a decorated poll
       const content = {
         type: 'poll-resolution',
         version: V1_SCHEMA_VERSION_STRING,
         choices,
-        root: pollDoc.key,
-        branch: pollDoc.heads
+        root: key,
+        branch: heads
       }
 
       if (body) content.body = body
       if (recps) content.recps = recps
       if (mentions) content.mentions = mentions
-      if (poll.channel) content.channel = poll.channel
 
       return content
     }
 
-    // NOTE - getPoll has to be required here to avoid circular deps
-    const getPoll = require('../../poll/async/get')(server)
     pull(
       pullAsync(cb => {
-        getPoll(typeof poll === 'string' ? poll : poll.key, cb)
+        getMessages(poll, (err, msgs) => {
+          if (err) return cb(err)
+
+          cb(null, { key: poll.key || poll, heads: getHeads(poll, msgs) })
+        })
       }),
       pull.map(build),
       pull.drain(resolution => {
