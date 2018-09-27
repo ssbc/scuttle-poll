@@ -1,6 +1,7 @@
 const sort = require('ssb-sort')
 const { isMsg } = require('ssb-ref')
 const pull = require('pull-stream')
+const getContent = require('ssb-msg-content')
 
 module.exports = function (server) {
   return function getMessages (poll, cb) {
@@ -12,17 +13,27 @@ module.exports = function (server) {
       pull.collect((err, msgs) => {
         if (err) return cb(err)
 
-        cb(null, sort(msgs))
+        const _msgs = msgs.reduce((acc, msg) => {
+          if (getContent(msg).root === poll) acc.thread.push(msg)
+          else acc.backlinks.push(msg)
+
+          return acc
+        }, { thread: [], backlinks: [] })
+
+        _msgs.thread = sort(_msgs.thread)
+
+        cb(null, _msgs)
       })
     )
 
     function backlinksSource (key) {
       var filterQuery = {
         $filter: {
-          dest: key,
-          value: {
-            content: { root: key }
-          }
+          dest: key
+          // disabled this in order to pick up gatherings backlinking
+          // value: {
+          //   content: { root: key }
+          // }
         }
       }
 

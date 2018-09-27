@@ -24,7 +24,7 @@ module.exports = function (server) {
   }
 }
 
-function decoratePoll (poll, msgs = [], myKey) {
+function decoratePoll (poll, msgs = { thread: [], backlinks: [] }, myKey) {
   const {
     author,
     content: {
@@ -38,10 +38,12 @@ function decoratePoll (poll, msgs = [], myKey) {
     }
   } = poll.value
 
+  const { thread, backlinks } = msgs
+
   const pollDoc = Object.assign({}, poll, {
     author,
     title,
-    closesAt: getClosesAt(msgs, closesAt),
+    closesAt: getClosesAt(thread, closesAt),
     type,
     body,
     channel,
@@ -50,15 +52,16 @@ function decoratePoll (poll, msgs = [], myKey) {
 
     positions: [],
     results: {},
-    resolution: getResolution(poll, msgs),
+    resolution: getResolution(poll, thread),
     errors: [],
-    heads: getHeads(poll, msgs),
+    heads: getHeads(poll, thread),
+    backlinks,
     decorated: true
   })
 
   // TODO add missingContext warnings to each msg
 
-  pollDoc.positions = msgs
+  pollDoc.positions = thread
     .filter(isPosition[type])
     .map(position => {
       return decoratePosition({position, poll: pollDoc})
@@ -77,8 +80,8 @@ function decoratePoll (poll, msgs = [], myKey) {
   return pollDoc
 }
 
-function getClosesAt (msgs, closesAt) {
-  const update = msgs
+function getClosesAt (thread, closesAt) {
+  const update = thread
     .filter(isPollUpdate)
     .pop()
 
@@ -87,9 +90,9 @@ function getClosesAt (msgs, closesAt) {
   return new Date(closesAt)
 }
 
-function getResolution (poll, msgs) {
+function getResolution (poll, thread) {
   const author = poll.value.author
-  const resolution = msgs
+  const resolution = thread
     .filter(m => m.value.author === author)
     .filter(isPollResolution)
     .pop()

@@ -30,7 +30,10 @@ module.exports = function (server) {
         getMessages(server)(poll, (err, msgs) => {
           if (err) return cb(err)
 
-          cb(null, { key: poll.key || poll, heads: getHeads(poll, msgs) })
+          cb(null, {
+            key: poll.key || poll,
+            heads: getHeads(poll, msgs.thread)
+          })
         })
       }),
       pull.map(build),
