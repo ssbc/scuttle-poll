@@ -1,6 +1,6 @@
 {
   "name": "scuttle-poll",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Create and vote on polls on ssb",
   "main": "index.js",
   "scripts": {
