@@ -9,10 +9,11 @@ module.exports = function (server) {
       old: false,
       query: [{
         $filter: {
-          dest: key,
-          value: {
-            content: { root: key }
-          }
+          dest: key
+          // drop this to trigger update on gathering creation
+          // value: {
+          //   content: { root: key }
+          // }
         }
       }, {
         $map: {
